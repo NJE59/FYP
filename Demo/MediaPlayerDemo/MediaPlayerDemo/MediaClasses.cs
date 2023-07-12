@@ -13,10 +13,10 @@ namespace MediaPlayerDemo.MediaClass
         public string Album { get; set; }
         public string Artist { get; set; }
 
-        public Track(string title, int songNo, string album, string artist) { 
-            Title = title;
-            SongNo = songNo;
+        public Track(string album, int songNo, string title, string artist) {
             Album = album;
+            SongNo = songNo;
+            Title = title;
             Artist = artist;
         }
     }

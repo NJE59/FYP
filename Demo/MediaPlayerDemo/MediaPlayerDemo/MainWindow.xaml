@@ -8,7 +8,7 @@
         Title="GUI Demo" Height="450" Width="800">
     
     <DockPanel>
-        
+
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Open" />
@@ -18,11 +18,19 @@
             <MenuItem Header="Playlists">
                 <MenuItem Header="Create Playlist" />
                 <MenuItem Header="Playlists">
-                    <ListBox Name="lbPlaylists" />
+                    <ListBox Margin="0" Width="Auto" Name="lbPlaylists">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <TextBlock Text="{Binding Name}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </MenuItem>
             </MenuItem>
         </Menu>
-            
+
         <ToolBarTray DockPanel.Dock="Bottom">
             <ToolBar>
                 <Label>p1</Label>
@@ -58,7 +66,7 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Album" DisplayMemberBinding="{Binding Album}" Width="Auto" />
-                        <GridViewColumn Header="#" DisplayMemberBinding="{Binding SongNo}" Width="Auto" />
+                        <GridViewColumn Header="#" DisplayMemberBinding="{Binding SongNo}" Width="25" />
                         <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" Width="Auto" />
                         <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding Artist}" Width="Auto" />
                     </GridView>
