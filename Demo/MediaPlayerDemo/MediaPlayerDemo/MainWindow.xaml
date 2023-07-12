@@ -5,8 +5,66 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MediaPlayerDemo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="GUI Demo" Height="450" Width="800">
+    
+    <DockPanel>
         
-    </Grid>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Open" />
+                <Separator />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Playlists">
+                <MenuItem Header="Create Playlist" />
+                <MenuItem Header="Playlists">
+                    <ListBox Name="lbPlaylists" />
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+            
+        <ToolBarTray DockPanel.Dock="Bottom">
+            <ToolBar>
+                <Label>p1</Label>
+                <Label>p2</Label>
+            </ToolBar>
+            <ToolBar>
+                <Label>r1</Label>
+                <Label>r2</Label>
+            </ToolBar>
+        </ToolBarTray>
+            
+        <StackPanel DockPanel.Dock="Left" MinWidth="100">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="5" />
+                </Style>
+            </StackPanel.Resources>
+            <Button>Songs</Button>
+            <Button>Albums</Button>
+            <Button>Artists</Button>            
+            <Button>Playlists</Button>
+        </StackPanel>
+            
+        <Grid DockPanel.Dock="Right">
+            <ListBox Name="lbQueue">
+                <ListBoxItem>Placerholder1</ListBoxItem>
+            </ListBox>
+        </Grid>
+            
+        <Grid>
+            <ListView Name="lvSongs">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Album" Width="Auto" />
+                        <GridViewColumn Header="#" Width="Auto" />
+                        <GridViewColumn Header="Title" Width="Auto" />
+                        <GridViewColumn Header="Artist" Width="Auto" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+            
+    </DockPanel>
+        
 </Window>
