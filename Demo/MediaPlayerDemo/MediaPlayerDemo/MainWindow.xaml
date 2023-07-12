@@ -40,10 +40,10 @@
                     <Setter Property="Margin" Value="5" />
                 </Style>
             </StackPanel.Resources>
-            <Button>Songs</Button>
-            <Button>Albums</Button>
-            <Button>Artists</Button>            
-            <Button>Playlists</Button>
+            <Button Name="btnSongs" Click="btnSongs_Click">Songs</Button>
+            <Button Name="btnAlbums" Click="btnAlbums_Click">Albums</Button>
+            <Button Name="btnArtists" Click="btnArtists_Click">Artists</Button>
+            <Button Name="btnPlaylists" Click="btnPlaylists_Click">Playlists</Button>
         </StackPanel>
             
         <Grid DockPanel.Dock="Right">
@@ -53,16 +53,52 @@
         </Grid>
             
         <Grid>
+            
             <ListView Name="lvSongs">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Album" Width="Auto" />
-                        <GridViewColumn Header="#" Width="Auto" />
-                        <GridViewColumn Header="Title" Width="Auto" />
-                        <GridViewColumn Header="Artist" Width="Auto" />
+                        <GridViewColumn Header="Album" DisplayMemberBinding="{Binding Album}" Width="Auto" />
+                        <GridViewColumn Header="#" DisplayMemberBinding="{Binding SongNo}" Width="Auto" />
+                        <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" Width="Auto" />
+                        <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding Artist}" Width="Auto" />
                     </GridView>
                 </ListView.View>
             </ListView>
+
+            <ListView Name="lvAlbums" Visibility="Collapsed">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Name="btnAlbum" Content="{Binding Name}" Click="btnAlbum_Click" Margin="1" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ListView Name="lvArtists" Visibility="Collapsed">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Button Name="btnArtist" Content="{Binding Name}" Click="btnArtist_Click" Margin="1" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <ListView Name="lvPlaylists" Visibility="Collapsed">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="Auto" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            
         </Grid>
             
     </DockPanel>
