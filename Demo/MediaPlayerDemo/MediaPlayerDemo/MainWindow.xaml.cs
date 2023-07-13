@@ -1,4 +1,5 @@
-﻿using MediaPlayerDemo.MediaClass;
+﻿using MediaPlayerDemo.Dialogs;
+using MediaPlayerDemo.MediaClass;
 using Microsoft.Win32;
 using System;
 using System.Collections;
@@ -162,11 +163,12 @@ namespace MediaPlayerDemo
 
         private void btnAlbum_Click(object sender, RoutedEventArgs e)
         {
+            btnView_Click(btnTracks, e);
         }
 
         private void btnArtist_Click(object sender, RoutedEventArgs e)
         {
-
+            btnView_Click(btnTracks, e);
         }
 
         private bool TrackFilter(object item)
@@ -212,11 +214,6 @@ namespace MediaPlayerDemo
             CollectionViewSource.GetDefaultView(searchFilter[sender as TextBox].ItemsSource).Refresh();
         }
 
-        private void txtPlaylists_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
         private void SearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             if((sender as TextBox).Foreground == Brushes.Gray) {
@@ -240,6 +237,13 @@ namespace MediaPlayerDemo
             }            
         }
 
-       
+        private void mnuCreatePlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            InputDialog playlistDialog = new InputDialog("Playlist name");
+            if((bool)playlistDialog.ShowDialog())
+            {
+                Playlists.Add(new Playlist(playlistDialog.PlaylistName));
+            }
+        }
     }
 }

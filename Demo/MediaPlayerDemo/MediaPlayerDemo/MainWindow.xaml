@@ -25,9 +25,9 @@
                     <MenuItem Header="Exit" />
                 </MenuItem>
                 <MenuItem Header="Playlists">
-                    <MenuItem Header="Create Playlist" />
-                    <MenuItem Header="Playlists">
-                        <ListBox Margin="0" Width="Auto" Name="lbPlaylists">
+                    <MenuItem Name="mnuCreatePlaylist" Header="Create Playlist" Click="mnuCreatePlaylist_Click" />
+                    <MenuItem Header="Playlists" Margin="0">
+                        <ListBox Width="Auto" Name="lbPlaylists">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
