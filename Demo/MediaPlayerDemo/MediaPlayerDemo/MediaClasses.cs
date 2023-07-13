@@ -9,13 +9,13 @@ namespace MediaPlayerDemo.MediaClass
     public class Track
     {
         public string Title { get; set; }
-        public int SongNo { get; set; }
+        public int TrackNo { get; set; }
         public string Album { get; set; }
         public string Artist { get; set; }
 
-        public Track(string album, int songNo, string title, string artist) {
+        public Track(string album, int trackNo, string title, string artist) {
             Album = album;
-            SongNo = songNo;
+            TrackNo = trackNo;
             Title = title;
             Artist = artist;
         }

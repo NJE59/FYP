@@ -9,28 +9,40 @@
     
     <DockPanel>
 
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Open" />
-                <Separator />
-                <MenuItem Header="Exit" />
-            </MenuItem>
-            <MenuItem Header="Playlists">
-                <MenuItem Header="Create Playlist" />
-                <MenuItem Header="Playlists">
-                    <ListBox Margin="0" Width="Auto" Name="lbPlaylists">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <TextBlock Text="{Binding Name}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
+        <DockPanel DockPanel.Dock="Top">
 
+            <Grid DockPanel.Dock="Right" Width="150">                
+                <TextBox Name="txtTracks" Foreground="Gray" FontStyle="Italic" GotKeyboardFocus="SearchBox_GotKeyboardFocus" LostKeyboardFocus="SearchBox_LostKeyboardFocus" TextChanged="SearchBox_TextChanged" />
+                <TextBox Name="txtAlbums" Foreground="Gray" FontStyle="Italic" GotKeyboardFocus="SearchBox_GotKeyboardFocus" LostKeyboardFocus="SearchBox_LostKeyboardFocus" TextChanged="SearchBox_TextChanged" Visibility="Collapsed" />
+                <TextBox Name="txtArtists" Foreground="Gray" FontStyle="Italic" GotKeyboardFocus="SearchBox_GotKeyboardFocus" LostKeyboardFocus="SearchBox_LostKeyboardFocus" TextChanged="SearchBox_TextChanged" Visibility="Collapsed" />
+                <TextBox Name="txtPlaylists" Foreground="Gray" FontStyle="Italic" GotKeyboardFocus="SearchBox_GotKeyboardFocus" LostKeyboardFocus="SearchBox_LostKeyboardFocus" TextChanged="SearchBox_TextChanged" Visibility="Collapsed" />
+            </Grid>
+            
+            <Menu>
+                <MenuItem Header="File">
+                    <MenuItem Header="Open" />
+                    <Separator />
+                    <MenuItem Header="Exit" />
+                </MenuItem>
+                <MenuItem Header="Playlists">
+                    <MenuItem Header="Create Playlist" />
+                    <MenuItem Header="Playlists">
+                        <ListBox Margin="0" Width="Auto" Name="lbPlaylists">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
+
+        </DockPanel>
+
+        
         <ToolBarTray DockPanel.Dock="Bottom">
             <ToolBar>
                 <Label>p1</Label>
@@ -48,10 +60,10 @@
                     <Setter Property="Margin" Value="5" />
                 </Style>
             </StackPanel.Resources>
-            <Button Name="btnSongs" Click="btnSongs_Click">Songs</Button>
-            <Button Name="btnAlbums" Click="btnAlbums_Click">Albums</Button>
-            <Button Name="btnArtists" Click="btnArtists_Click">Artists</Button>
-            <Button Name="btnPlaylists" Click="btnPlaylists_Click">Playlists</Button>
+            <Button Name="btnTracks" Click="btnView_Click">Songs</Button>
+            <Button Name="btnAlbums" Click="btnView_Click">Albums</Button>
+            <Button Name="btnArtists" Click="btnView_Click">Artists</Button>
+            <Button Name="btnPlaylists" Click="btnView_Click">Playlists</Button>
         </StackPanel>
             
         <Grid DockPanel.Dock="Right">
@@ -62,11 +74,11 @@
             
         <Grid>
             
-            <ListView Name="lvSongs">
+            <ListView Name="lvTracks">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Album" DisplayMemberBinding="{Binding Album}" Width="Auto" />
-                        <GridViewColumn Header="#" DisplayMemberBinding="{Binding SongNo}" Width="25" />
+                        <GridViewColumn Header="#" DisplayMemberBinding="{Binding TrackNo}" Width="25" />
                         <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" Width="Auto" />
                         <GridViewColumn Header="Artist" DisplayMemberBinding="{Binding Artist}" Width="Auto" />
                     </GridView>
