@@ -22,19 +22,61 @@
             </MenuItem>
         </Menu>
 
-        <ToolBarTray DockPanel.Dock="Bottom">
-            <ToolBar>
-                <Label>p1</Label>
-                <Label>p2</Label>
-            </ToolBar>
-            <ToolBar>
-                <Label>r1</Label>
-                <Label>r2</Label>
-            </ToolBar>
-        </ToolBarTray>
+        <StatusBar DockPanel.Dock="Bottom" Name="sbControl">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Row="0" Grid.ColumnSpan="3">
+                <Slider Maximum="100" HorizontalContentAlignment="Stretch" Width="{Binding Path=ActualWidth, ElementName=sbControl}"/>
+            </StatusBarItem>
+            <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
+                <WrapPanel>
+                    <WrapPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Margin" Value="5,0" />
+                        </Style>
+                    </WrapPanel.Resources>
+                    <Button Content="Stop" />
+                    <Button Content="Skip" />
+                    <ToggleButton Width="35">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content" Value="Play"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="Pause"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <Button Content="Skip" />
+                    <Slider Maximum="100" Width="50" Name="slVolume" AutoToolTipPlacement="BottomRight"/>
+                </WrapPanel>
+            </StatusBarItem>
+        </StatusBar>
             
-        <StackPanel DockPanel.Dock="Left" Width="100">
-            <TreeView>
+        <StackPanel DockPanel.Dock="Left" Width="150">
+            <TreeView ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <TreeView.Resources>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </TreeView.Resources>
                 <TreeViewItem Header="Playlists">
                     <TreeViewItem Header="Playlist1" />
                     <TreeViewItem Header="New Playlist" />
@@ -47,7 +89,7 @@
                 </TreeViewItem>
             </TreeView>
         </StackPanel>
-        <Grid DockPanel.Dock="Right">
+        <Grid DockPanel.Dock="Right" Width="150">
             <ListView>
                 <ListViewItem Content="The Root Of All Evil" />
                 <ListViewItem Content="Bridge Across Forever" />
