@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MediaPlayer"
+        xmlns:local="clr-namespace:MediaPlayer.Windows"
+        xmlns:classes="clr-namespace:MediaPlayer.Classes"
         mc:Ignorable="d"
         Title="Media Player" Height="540" Width="960">
     <DockPanel>
@@ -70,37 +71,26 @@
             </StatusBarItem>
         </StatusBar>
             
-        <StackPanel DockPanel.Dock="Left" Width="150">
-            <TreeView ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <Grid DockPanel.Dock="Left" Width="150">
+            <TreeView Name="tvNav" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="tvNav_MouseDoubleClick">
                 <TreeView.Resources>
                     <Style TargetType="TreeViewItem">
                         <Setter Property="IsExpanded" Value="True" />
                     </Style>
                 </TreeView.Resources>
-                <TreeViewItem Header="Playlists">
-                    <TreeViewItem Header="Playlist1" />
-                    <TreeViewItem Header="New Playlist" />
-                </TreeViewItem>
-                <TreeViewItem Header="Music">
-                    <TreeViewItem Header="Album" />
-                    <TreeViewItem Header="Artist" />
-                    <TreeViewItem Header="Genre" />
-                    <TreeViewItem Header="Year" />
-                </TreeViewItem>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type classes:MenuItem}" ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Title}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
             </TreeView>
-        </StackPanel>
+        </Grid>
         <Grid DockPanel.Dock="Right" Width="150">
             <ListView>
                 <ListViewItem Content="The Root Of All Evil" />
                 <ListViewItem Content="Bridge Across Forever" />
             </ListView>
         </Grid>
-        <Grid>
-            <DataGrid Name="dgTracks"></DataGrid>
-            <DataGrid Name="dgAlbums" Visibility="Collapsed"></DataGrid>
-            <DataGrid Name="dgArtists" Visibility="Collapsed"></DataGrid>
-            <DataGrid Name="dgGenres" Visibility="Collapsed"></DataGrid>
-            <DataGrid Name="dgYears" Visibility="Collapsed"></DataGrid>
-        </Grid>
+        <Frame x:Name="MainView" />
     </DockPanel>
 </Window>
