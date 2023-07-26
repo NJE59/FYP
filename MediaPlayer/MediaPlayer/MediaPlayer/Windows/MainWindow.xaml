@@ -6,7 +6,59 @@
         xmlns:local="clr-namespace:MediaPlayer"
         mc:Ignorable="d"
         Title="Media Player" Height="540" Width="960">
-    <Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header=" = Open" />
+                <Separator />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Playlists">
+                <MenuItem Header="Create Playlist" />
+                <MenuItem Header="Playlists">
+                    <MenuItem Header="Playlist1" />
+                    <MenuItem Header="New Playlist" />
+                </MenuItem>
+            </MenuItem>
+        </Menu>
 
-    </Grid>
+        <ToolBarTray DockPanel.Dock="Bottom">
+            <ToolBar>
+                <Label>p1</Label>
+                <Label>p2</Label>
+            </ToolBar>
+            <ToolBar>
+                <Label>r1</Label>
+                <Label>r2</Label>
+            </ToolBar>
+        </ToolBarTray>
+            
+        <StackPanel DockPanel.Dock="Left" Width="100">
+            <TreeView>
+                <TreeViewItem Header="Playlists">
+                    <TreeViewItem Header="Playlist1" />
+                    <TreeViewItem Header="New Playlist" />
+                </TreeViewItem>
+                <TreeViewItem Header="Music">
+                    <TreeViewItem Header="Album" />
+                    <TreeViewItem Header="Artist" />
+                    <TreeViewItem Header="Genre" />
+                    <TreeViewItem Header="Year" />
+                </TreeViewItem>
+            </TreeView>
+        </StackPanel>
+        <Grid DockPanel.Dock="Right">
+            <ListView>
+                <ListViewItem Content="The Root Of All Evil" />
+                <ListViewItem Content="Bridge Across Forever" />
+            </ListView>
+        </Grid>
+        <Grid>
+            <DataGrid Name="dgTracks"></DataGrid>
+            <DataGrid Name="dgAlbums" Visibility="Collapsed"></DataGrid>
+            <DataGrid Name="dgArtists" Visibility="Collapsed"></DataGrid>
+            <DataGrid Name="dgGenres" Visibility="Collapsed"></DataGrid>
+            <DataGrid Name="dgYears" Visibility="Collapsed"></DataGrid>
+        </Grid>
+    </DockPanel>
 </Window>
