@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MediaPlayer.Models
@@ -13,6 +14,6 @@ namespace MediaPlayer.Models
         public string? DiscName { get; set; }
         public int AlbumID { get; set; }
         public Album Album { get; set; } = null!;
-        public ICollection<Track> Tracks { get; set; } = null!;
+        public virtual ICollection<Track> Tracks { get; private set; } = new ObservableCollection<Track>();
     }
 }

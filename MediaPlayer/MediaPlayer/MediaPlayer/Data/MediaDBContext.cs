@@ -3,11 +3,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MediaPlayer.Data
 {
-    public class MediaDBContext
+    public class MediaDBContext : DbContext
     {
         public DbSet<Track> Tracks { get; set; } = null!;
         public DbSet<Disc> Discs { get; set; } = null!;
         public DbSet<Album> Albums { get; set; } = null!;
         public DbSet<Artist> Artists { get; set; } = null!;
+        public DbSet<Contribution> Contributions { get; set; } = null!;
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<TrackGenre> TrackGenres { get; set; } = null!;
+        public DbSet<Playlist> Playlists { get; set; } = null!;
+        public DbSet<Listing> Listings { get; set; } = null!;
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite(
+                "Data Source=MediaDB.db");
+            optionsBuilder.UseLazyLoadingProxies();
+        }
     }
 }
