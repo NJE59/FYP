@@ -11,7 +11,7 @@ namespace MediaPlayer.Models
         public int ArtistID { get; set; }
         public string ArtistName { get; set; } = null!;
         public string? Biography { get; set; }
-        public ICollection<Album> Albums { get; set; } = null!;
+        public virtual ICollection<Album> Albums { get; set; } = null!;
         public virtual ICollection<Contribution> Contributions { get; private set; } = new ObservableCollection<Contribution>();
     }
 }

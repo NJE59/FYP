@@ -10,7 +10,7 @@ namespace MediaPlayer.Models
         [Key]
         public int GenreID { get; set; }
         public string GenreName { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public string? Description { get; set; }
         public virtual ICollection<TrackGenre> TrackGenres { get; private set; } = new ObservableCollection<TrackGenre>();
     }
 }

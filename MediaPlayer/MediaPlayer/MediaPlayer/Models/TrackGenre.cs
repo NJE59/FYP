@@ -7,8 +7,8 @@ namespace MediaPlayer.Models
         [Key]
         public int TrackGenreID { get; set; }
         public int TrackID { get; set; }
-        public Track Track { get; set; } = null!;
+        public virtual Track Track { get; set; } = null!;
         public int GenreID { get; set; }
-        public Genre Genre { get; set; } = null!;
+        public virtual Genre Genre { get; set; } = null!;
     }
 }

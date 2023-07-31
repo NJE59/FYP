@@ -8,8 +8,8 @@ namespace MediaPlayer.Models
         public int ListingID { get; set; }
         public int TrackPos { get; set; }
         public int TrackID { get; set; }
-        public Track Track { get; set; } = null!;
+        public virtual Track Track { get; set; } = null!;
         public int PlaylistID { get; set; }
-        public Playlist Playlist { get; set; } = null!;
+        public virtual Playlist Playlist { get; set; } = null!;
     }
 }

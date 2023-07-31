@@ -17,7 +17,7 @@ namespace MediaPlayer.Models
         public string? Description { get; set; }
         public string? Lyrics { get; set; }
         public int DiscID { get; set; }
-        public Disc Disc { get; set; } = null!;
+        public virtual Disc Disc { get; set; } = null!;
         public virtual ICollection<Contribution> Contributions { get; private set; } = new ObservableCollection<Contribution>();
         public virtual ICollection<TrackGenre> TrackGenres { get; private set; } = new ObservableCollection<TrackGenre>();
         public virtual ICollection<Listing> Listings { get; private set; } = new ObservableCollection<Listing>();

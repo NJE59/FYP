@@ -1,5 +1,6 @@
 ﻿using MediaPlayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace MediaPlayer.Data
 {
@@ -18,8 +19,12 @@ namespace MediaPlayer.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(
-                "Data Source=MediaDB.db");
+                "FileName=MediaDB.db", option =>
+                {
+                    option.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName);
+                });
             optionsBuilder.UseLazyLoadingProxies();
+            base.OnConfiguring(optionsBuilder);
         }
     }
 }

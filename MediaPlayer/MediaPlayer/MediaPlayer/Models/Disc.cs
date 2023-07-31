@@ -13,7 +13,7 @@ namespace MediaPlayer.Models
         public int DiscNum { get; set; }
         public string? DiscName { get; set; }
         public int AlbumID { get; set; }
-        public Album Album { get; set; } = null!;
+        public virtual Album Album { get; set; } = null!;
         public virtual ICollection<Track> Tracks { get; private set; } = new ObservableCollection<Track>();
     }
 }
