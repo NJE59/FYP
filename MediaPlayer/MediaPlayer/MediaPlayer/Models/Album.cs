@@ -8,7 +8,6 @@ namespace MediaPlayer.Models
     {
         [Key]
         public int AlbumID { get; set; }
-        //public int AlbPicID { get; set; }
         public int ReleaseYear { get; set; }
         public string AlbumName { get; set; } = null!;
         public string? Description { get; set; }

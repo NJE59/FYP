@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MediaPlayer.Models
@@ -15,5 +17,8 @@ namespace MediaPlayer.Models
         public string? Lyrics { get; set; }
         public int DiscID { get; set; }
         public Disc Disc { get; set; } = null!;
+        public ICollection<Contribution> Contributions { get; set; } = null!;
+        public ICollection<TrackGenre> SongGenres { get; set; } = null!;
+        public ICollection<Listing> Listings { get; set; } = null!;
     }
 }

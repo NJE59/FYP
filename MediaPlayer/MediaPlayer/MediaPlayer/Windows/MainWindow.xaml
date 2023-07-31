@@ -6,7 +6,19 @@
         xmlns:local="clr-namespace:MediaPlayer"
         mc:Ignorable="d"
         Title="Media Player" Height="540" Width="960">
-    <Grid>
-
-    </Grid>
+    <Window.Resources>
+        <CollectionViewSource x:Key="artistsViewSource" />
+        <CollectionViewSource x:Key="artistsAlbumsViewSource" 
+                              Source="{Binding Albums, Source={StaticResource artistsViewSource}}"/>
+        <CollectionViewSource x:Key="albumsDiscsViewSource" 
+                              Source="{Binding Discs, Source={StaticResource artistsAlbumsViewSource}}"/>
+        <CollectionViewSource x:Key="discsTracksViewSource" 
+                              Source="{Binding Tracks, Source={StaticResource albumsDiscsViewSource}}"/>
+    </Window.Resources>
+    <StackPanel>
+        <DataGrid x:Name="dgArtists" AutoGenerateColumns="False"
+                  >
+            
+        </DataGrid>
+    </StackPanel>
 </Window>
