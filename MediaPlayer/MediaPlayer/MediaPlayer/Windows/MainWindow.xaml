@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MediaPlayer"
         mc:Ignorable="d"
-        Title="Media Player" Height="540" Width="960">
+        Title="Media Player" Height="540" Width="960" Loaded="Window_Loaded">
     <Window.Resources>
         <CollectionViewSource x:Key="artistsViewSource" />
         <CollectionViewSource x:Key="artistsAlbumsViewSource" 
@@ -17,8 +17,17 @@
     </Window.Resources>
     <StackPanel>
         <DataGrid x:Name="dgArtists" AutoGenerateColumns="False"
-                  >
-            
+                  EnableRowVirtualization="True"
+                  ItemsSource="{Binding Source={StaticResource artistsViewSource}}"
+                  Margin="13,13,43,229" RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding ArtistID}"
+                                    Header="Artist ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                <DataGridTextColumn Binding="{Binding ArtistName}"
+                                    Header="Name" Width="*" />
+            </DataGrid.Columns>
         </DataGrid>
+        <Button Content="Save" HorizontalAlignment="Center" Click="Button_Click"/>
     </StackPanel>
 </Window>
