@@ -12,6 +12,7 @@ namespace MediaPlayer.Models
         public int ReleaseYear { get; set; }
         public string AlbumName { get; set; } = null!;
         public string? Description { get; set; }
+        public bool IsMultiDisc { get; set; }
         public int ArtistID { get; set; }
         public virtual Artist Artist { get; set; } = null!;
         public virtual ICollection<Disc> Discs { get; private set; } = new ObservableCollection<Disc>();
