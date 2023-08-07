@@ -6,15 +6,15 @@ namespace MediaPlayer.Data
 {
     public class MediaDBContext : DbContext
     {
-        public DbSet<Track> Tracks { get; set; } = null!;
-        public DbSet<Disc> Discs { get; set; } = null!;
-        public DbSet<Album> Albums { get; set; } = null!;
-        public DbSet<Artist> Artists { get; set; } = null!;
-        public DbSet<Contribution> Contributions { get; set; } = null!;
+        public DbSet<Track> Tracks { get; set; }
+        public DbSet<Disc> Discs { get; set; }
+        public DbSet<Album> Albums { get; set; }
+        public DbSet<Artist> Artists { get; set; }
+        public DbSet<Contribution> Contributions { get; set; }
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<SongStyle> SongStyles { get; set; } = null!;
-        public DbSet<Playlist> Playlists { get; set; } = null!;
-        public DbSet<Listing> Listings { get; set; } = null!;
+        public DbSet<SongStyle> SongStyles { get; set; }
+        public DbSet<Playlist> Playlists { get; set; }
+        public DbSet<Listing> Listings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

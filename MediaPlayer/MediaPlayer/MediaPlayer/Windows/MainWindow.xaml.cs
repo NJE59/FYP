@@ -45,18 +45,18 @@ namespace MediaPlayer.Windows
         public MainWindow()
         {
             InitializeComponent();
-            MediaDB.Albums.RemoveRange(MediaDB.Albums);
-            MediaDB.Artists.RemoveRange(MediaDB.Artists);
-            MediaDB.Contributions.RemoveRange(MediaDB.Contributions);
-            MediaDB.Discs.RemoveRange(MediaDB.Discs);
-            MediaDB.Genres.RemoveRange(MediaDB.Genres);
-            MediaDB.Listings.RemoveRange(MediaDB.Listings);
-            MediaDB.Playlists.RemoveRange(MediaDB.Playlists);
-            MediaDB.SongStyles.RemoveRange(MediaDB.SongStyles);
-            MediaDB.Tracks.RemoveRange(MediaDB.Tracks);
+            MediaDB.RemoveRange(MediaDB.Albums);
+            MediaDB.RemoveRange(MediaDB.Artists);
+            MediaDB.RemoveRange(MediaDB.Contributions);
+            MediaDB.RemoveRange(MediaDB.Discs);
+            MediaDB.RemoveRange(MediaDB.Genres);
+            MediaDB.RemoveRange(MediaDB.Listings);
+            MediaDB.RemoveRange(MediaDB.Playlists);
+            MediaDB.RemoveRange(MediaDB.SongStyles);
+            MediaDB.RemoveRange(MediaDB.Tracks);
             MediaDB.SaveChanges();
             artistsViewSource = (CollectionViewSource)FindResource(nameof(artistsViewSource));
-            LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
+                LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -130,6 +130,8 @@ namespace MediaPlayer.Windows
 
                     foreach(var albumGroup in albumGroupedTracks)
                     {
+                        MediaDB.SaveChanges();
+
                         var album = (albumArtist.Albums.
                             Where(albumRecord =>
                                 albumRecord.AlbumName == albumGroup.Key.Album &&
@@ -216,7 +218,6 @@ namespace MediaPlayer.Windows
                                 }
                                 else
                                     track.Path = trackProperties.Path;
-                                MediaDB.SaveChanges();
                                 
                             }
                         }
