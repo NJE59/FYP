@@ -15,11 +15,13 @@
         <CollectionViewSource x:Key="discsTracksViewSource" 
                               Source="{Binding Tracks, Source={StaticResource albumsDiscsViewSource}}"/>
     </Window.Resources>
-    <StackPanel>
-        <DataGrid x:Name="dgArtists" AutoGenerateColumns="False"
+    <Grid>
+        <DataGrid Name="dgArtists" AutoGenerateColumns="False"
                   EnableRowVirtualization="True"
                   ItemsSource="{Binding Source={StaticResource artistsViewSource}}"
-                  Margin="13,13,43,229" RowDetailsVisibilityMode="VisibleWhenSelected">
+                  Margin="13,13,43,229" RowDetailsVisibilityMode="VisibleWhenSelected"
+                  ScrollViewer.CanContentScroll="True"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding ArtistID}"
                                     Header="Artist ID" Width="SizeToHeader"
@@ -28,6 +30,6 @@
                                     Header="Name" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Save" HorizontalAlignment="Center" Click="Button_Click"/>
-    </StackPanel>
+        <Button Content="Save" VerticalAlignment="Bottom" HorizontalAlignment="Center" Click="Button_Click"/>
+    </Grid>
 </Window>

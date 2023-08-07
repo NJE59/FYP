@@ -3,6 +3,7 @@ using System;
 using MediaPlayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediaPlayer.Migrations
 {
     [DbContext(typeof(MediaDBContext))]
-    partial class MediaDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230807120405_RenamedTrackGenresToSongStyles")]
+    partial class RenamedTrackGenresToSongStyles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -193,7 +196,7 @@ namespace MediaPlayer.Migrations
 
                     b.HasIndex("TrackID");
 
-                    b.ToTable("SongStyles");
+                    b.ToTable("TrackGenres");
                 });
 
             modelBuilder.Entity("MediaPlayer.Models.Track", b =>

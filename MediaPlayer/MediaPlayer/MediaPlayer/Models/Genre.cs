@@ -11,6 +11,6 @@ namespace MediaPlayer.Models
         public int GenreID { get; set; }
         public string GenreName { get; set; } = null!;
         public string? Description { get; set; }
-        public virtual ICollection<TrackGenre> TrackGenres { get; private set; } = new ObservableCollection<TrackGenre>();
+        public virtual ICollection<SongStyle> TrackGenres { get; private set; } = new ObservableCollection<SongStyle>();
     }
 }

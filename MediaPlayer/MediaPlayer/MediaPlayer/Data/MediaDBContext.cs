@@ -12,7 +12,7 @@ namespace MediaPlayer.Data
         public DbSet<Artist> Artists { get; set; } = null!;
         public DbSet<Contribution> Contributions { get; set; } = null!;
         public DbSet<Genre> Genres { get; set; }
-        public DbSet<TrackGenre> TrackGenres { get; set; } = null!;
+        public DbSet<SongStyle> SongStyles { get; set; } = null!;
         public DbSet<Playlist> Playlists { get; set; } = null!;
         public DbSet<Listing> Listings { get; set; } = null!;
 
