@@ -6,7 +6,13 @@
         xmlns:local="clr-namespace:MediaPlayer.Windows"
         xmlns:classes="clr-namespace:MediaPlayer.Classes"
         mc:Ignorable="d"
-        Title="Media Player" Height="540" Width="960">
+   Title="Media Player" Height="540" Width="960" Loaded="Window_Loaded">
+    <Window.Resources>
+        <CollectionViewSource x:Key="artistsViewSource" />
+        <CollectionViewSource x:Key="albumsViewSource" Source="{Binding Albums, Source={StaticResource artistsViewSource}}" />
+        <CollectionViewSource x:Key="discsViewSource" Source="{Binding Discs, Source={StaticResource albumsViewSource}}" />
+        <CollectionViewSource x:Key="tracksViewSource" Source="{Binding Tracks, Source={StaticResource discsViewSource}}"/>
+    </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -70,7 +76,7 @@
                 </WrapPanel>
             </StatusBarItem>
         </StatusBar>
-            
+
         <Grid DockPanel.Dock="Left" Width="150">
             <TreeView Name="tvNav" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MouseDoubleClick="tvNav_MouseDoubleClick">
                 <TreeView.Resources>
@@ -92,5 +98,83 @@
             </ListView>
         </Grid>
         <Frame x:Name="MainView" />
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <DataGrid x:Name="dgArtists" AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  ItemsSource="{Binding Source={StaticResource artistsViewSource}}"
+                  Grid.Row="0" RowDetailsVisibilityMode="VisibleWhenSelected"
+                  ScrollViewer.CanContentScroll="True"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding ArtistID}"
+                                    Header="Artist ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding ArtistName}"
+                                    Header="Name" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid x:Name="dgAlbums" AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  ItemsSource="{Binding Source={StaticResource albumsViewSource}}"
+                 Grid.Row="1" RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding ArtistID}"
+                                    Header="Artist ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding AlbumID}"
+                                    Header="Album ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding AlbumName}"
+                                    Header="Album Name"
+                                    IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid x:Name="dgDiscs" AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  ItemsSource="{Binding Source={StaticResource discsViewSource}}"
+                 Grid.Row="2" RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding AlbumID}"
+                                    Header="Album ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding DiscID}"
+                                    Header="Disc ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding DiscNum}"
+                                    Header="Disc Number"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding DiscName}"
+                                    Header="Disc Name"
+                                    IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid x:Name="dgTracks" AutoGenerateColumns="False"
+                  EnableRowVirtualization="True"
+                  ItemsSource="{Binding Source={StaticResource tracksViewSource}}"
+                 Grid.Row="3" RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding DiscID}"
+                                    Header="Disc ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding TrackID}"
+                                    Header="Track ID" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding TrackNum}"
+                                    Header="Track Number" Width="SizeToHeader"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding TrackName}"
+                                    Header="Track Name"
+                                    IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
+            <Button Grid.Row="4" Content="Save" HorizontalAlignment="Center" Click="Button_Click"/>
+        </Grid>
     </DockPanel>
 </Window>
