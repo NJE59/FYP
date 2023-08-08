@@ -41,7 +41,7 @@ namespace MediaPlayer.Windows
         private int defaultDiscNum = 0;
         
         private readonly MediaDBContext MediaDB = new MediaDBContext();
-        private CollectionViewSource artistsViewSource;
+        private CollectionViewSource artistsViewSource, albumsViewSource, discsViewSource, tracksViewSource;
         public MainWindow()
         {
             InitializeComponent();
@@ -56,7 +56,9 @@ namespace MediaPlayer.Windows
             MediaDB.RemoveRange(MediaDB.Tracks);
             MediaDB.SaveChanges();
             artistsViewSource = (CollectionViewSource)FindResource(nameof(artistsViewSource));
-                LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
+            albumsViewSource = (CollectionViewSource)FindResource(nameof(albumsViewSource));
+            discsViewSource = (CollectionViewSource)FindResource(nameof(discsViewSource));
+            tracksViewSource = (CollectionViewSource)FindResource(nameof(tracksViewSource));
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -110,6 +112,7 @@ namespace MediaPlayer.Windows
                             genreCheck : 
                             MediaDB.Genres.Add(new Genre() { GenreName = genreName }).Entity
                     );
+                    MediaDB.SaveChanges();
                 }
                 var artistGroupedTracks = genreGroup.
                     GroupBy(trackProperties => trackProperties.MusicProperties.AlbumArtist);
@@ -121,6 +124,7 @@ namespace MediaPlayer.Windows
                         is Artist artistCheck) ? 
                             artistCheck : 
                             MediaDB.Artists.Add(new Artist() { ArtistName = artistGroup.Key }).Entity;
+                    MediaDB.SaveChanges();
                     var albumGroupedTracks = artistGroup.
                         GroupBy(trackProperties => new 
                         { 
@@ -130,7 +134,6 @@ namespace MediaPlayer.Windows
 
                     foreach(var albumGroup in albumGroupedTracks)
                     {
-                        MediaDB.SaveChanges();
 
                         var album = (albumArtist.Albums.
                             Where(albumRecord =>
@@ -138,12 +141,13 @@ namespace MediaPlayer.Windows
                                 albumRecord.ReleaseYear == albumGroup.Key.Year).SingleOrDefault()
                             is Album albumCheck) ?
                                 albumCheck :
-                                albumArtist.Albums.Append(new Album()
+                                MediaDB.Albums.Add(new Album()
                                 {
                                     AlbumName = albumGroup.Key.Album,
-                                    ReleaseYear = (int)albumGroup.Key.Year
-                                }).Last();
-
+                                    ReleaseYear = (int)albumGroup.Key.Year,
+                                    Artist = albumArtist
+                                }).Entity;
+                        MediaDB.SaveChanges();
                         var isMultiDiscCheck = !albumGroup.All(fileProperties => 
                             fileProperties.DiscNum == defaultDiscNum) && 
                             (album.Discs.Count == 0 ||
@@ -163,13 +167,14 @@ namespace MediaPlayer.Windows
                                     discRec.DiscName == discGroup.Key.DiscName).SingleOrDefault()
                                 is Disc discCheck) ?
                                     discCheck :
-                                    album.Discs.Append(new Disc()
+                                    MediaDB.Discs.Add(new Disc()
                                     {
                                         DiscNum = discGroup.Key.DiscNum,
-                                        DiscName = discGroup.Key.DiscName
-                                    }).Last();
-
-                            foreach(var trackProperties in discGroup)
+                                        DiscName = discGroup.Key.DiscName,
+                                        Album = album
+                                    }).Entity;
+                            MediaDB.SaveChanges();
+                            foreach (var trackProperties in discGroup)
                             {
                                 var trackGenreList = genreList;
                                 var contributorList = new List<Artist>();
@@ -198,7 +203,7 @@ namespace MediaPlayer.Windows
                                             Equals(trackGenreList)).
                                         SingleOrDefault() is Track trackCheck) ?
                                             trackCheck :
-                                            disc.Tracks.Append(new Track()).Last();
+                                            MediaDB.Tracks.Add(new Track() { Disc = disc, Path = trackProperties.Path }).Entity;
                                 /////////////////////////////////////////////////////
                                 if (File.Exists(track.Path))
                                 {
@@ -209,16 +214,17 @@ namespace MediaPlayer.Windows
                                         if(contributorList.Find(contributorRecord => contributorRecord.Equals(contribution.Contributor)) is Artist contributorCheck)
                                             contributorList.Remove(contributorCheck);
                                     foreach(var contributor in  contributorList)
-                                        track.Contributions.Add(new Contribution() { Contributor = contributor });
+                                        MediaDB.Contributions.Add(new Contribution() { Contributor = contributor, Track = track });
                                     foreach(var songStyle in track.SongStyles)
                                         if (trackGenreList.Find(trackGenreRecord => trackGenreRecord.Equals(songStyle.TrackGenre)) is Genre trackGenreCheck)
                                             trackGenreList.Remove(trackGenreCheck);
                                     foreach (var trackGenre in trackGenreList)
-                                        track.SongStyles.Add(new SongStyle() { TrackGenre = trackGenre });
+                                        MediaDB.SongStyles.Add(new SongStyle() { TrackGenre = trackGenre, Track = track });
                                 }
                                 else
                                     track.Path = trackProperties.Path;
-                                
+                                MediaDB.SaveChanges();
+
                             }
                         }
                         
@@ -230,14 +236,17 @@ namespace MediaPlayer.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            MediaDB.Artists.Load();
+            LoadSongs(rootFolder: "D:\\natha\\Music\\1test", DateTime.MinValue);
+            artistsViewSource.SortDescriptions.Add(new SortDescription("ArtistName", ListSortDirection.Ascending));
+            albumsViewSource.SortDescriptions.Add(new SortDescription("AlbumName", ListSortDirection.Ascending));
+            discsViewSource.SortDescriptions.Add(new SortDescription("DiscNum", ListSortDirection.Ascending));
+            tracksViewSource.SortDescriptions.Add(new SortDescription("TrackNum", ListSortDirection.Ascending));
             artistsViewSource.Source = MediaDB.Artists.Local.ToObservableCollection();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            MediaDB.SaveChanges();
-            dgArtists.Items.Refresh();
+            int x = 1;
         }
 
         protected override void OnClosing(CancelEventArgs e)
