@@ -115,7 +115,7 @@ namespace MediaPlayer.Windows
                     Path = songFile.Path,
                     Artists = (songFile.Properties.RetrieveProperty("System.Music.Artist")
                         is String[] artistsCheck) ?
-                        artistsCheck.ToList<string>() :
+                        artistsCheck.OrderBy(artistName => artistName).ToList<string>() :
                         new List<string>(),
                     DiscNum = (songFile.Properties.RetrieveProperty("System.Music.PartOfSet")
                             is string discNumCheck &&
@@ -212,58 +212,71 @@ namespace MediaPlayer.Windows
                                         Album = album
                                     }).Entity;
                             MediaDB.SaveChanges();
-                            foreach (var trackProperties in discGroup)
-                            {
-                                var trackGenreList = genreList;
-                                var contributorList = new List<Artist>();
 
-                                foreach (var contributorName in trackProperties.Artists)
+                            var contributorGroupedTracks = discGroup.
+                                GroupBy(trackProperties => trackProperties.Artists);
+
+                            foreach(var contributorGroup in contributorGroupedTracks)
+                            {
+                                List<Artist>? contributingArtistList = new List<Artist>();
+                                
+                                foreach (var contributorName in contributorGroup.Key)
                                 {
-                                    contributorList.Add((MediaDB.Artists.
+                                    contributingArtistList.Add((MediaDB.Artists.
                                         Where(artistRecord => artistRecord.ArtistName == contributorName).SingleOrDefault()
                                         is Artist contributorCheck) ?
                                             contributorCheck :
                                             MediaDB.Artists.Add(new Artist() { ArtistName = contributorName }).Entity
-                                    );
+                                    );                                    
                                 }
-
-                                var track = (disc.Tracks.
-                                    Where(trackRecord => 
-                                        (string.Equals(trackProperties.Path, trackRecord.Path, StringComparison.OrdinalIgnoreCase)) ||
-                                        (!File.Exists(trackRecord.Path) &&
-                                        (uint)trackRecord.TrackNum == trackProperties.MusicProperties.TrackNumber &&
-                                        string.Equals(trackRecord.TrackName, trackProperties.MusicProperties.Title, StringComparison.OrdinalIgnoreCase) &&
-                                        trackRecord.Contributions.
-                                            Select(contributionRecord => contributionRecord.Contributor).
-                                            Equals(contributorList)) &&
-                                        trackRecord.SongStyles.
-                                            Select(songStyleRecord => songStyleRecord.TrackGenre).
-                                            Equals(trackGenreList)).
-                                        SingleOrDefault() is Track trackCheck) ?
-                                            trackCheck :
-                                            MediaDB.Tracks.Add(new Track() { Disc = disc, Path = trackProperties.Path }).Entity;
-                                /////////////////////////////////////////////////////
-                                if (File.Exists(track.Path))
-                                {
-                                    track.TrackNum = (int)trackProperties.MusicProperties.TrackNumber;
-                                    track.TrackName = trackProperties.MusicProperties.Title;
-                                    track.TrackLength = trackProperties.MusicProperties.Duration;
-                                    foreach(var contribution in track.Contributions)
-                                        if(contributorList.Find(contributorRecord => contributorRecord.Equals(contribution.Contributor)) is Artist contributorCheck)
-                                            contributorList.Remove(contributorCheck);
-                                    foreach(var contributor in  contributorList)
-                                        MediaDB.Contributions.Add(new Contribution() { Contributor = contributor, Track = track });
-                                    foreach(var songStyle in track.SongStyles)
-                                        if (trackGenreList.Find(trackGenreRecord => trackGenreRecord.Equals(songStyle.TrackGenre)) is Genre trackGenreCheck)
-                                            trackGenreList.Remove(trackGenreCheck);
-                                    foreach (var trackGenre in trackGenreList)
-                                        MediaDB.SongStyles.Add(new SongStyle() { TrackGenre = trackGenre, Track = track });
-                                }
-                                else
-                                    track.Path = trackProperties.Path;
                                 MediaDB.SaveChanges();
 
+                                foreach (var trackProperties in contributorGroup)
+                                {
+                                    var trackGenreList = genreList;
+                                    var contributorList = contributingArtistList;
+
+                                    var track = (disc.Tracks.
+                                        Where(trackRecord =>
+                                            (string.Equals(trackProperties.Path, trackRecord.Path, StringComparison.OrdinalIgnoreCase)) ||
+                                            (!File.Exists(trackRecord.Path) &&
+                                            (uint)trackRecord.TrackNum == trackProperties.MusicProperties.TrackNumber &&
+                                            string.Equals(trackRecord.TrackName, trackProperties.MusicProperties.Title, StringComparison.OrdinalIgnoreCase) &&
+                                            trackRecord.Contributions.
+                                                Select(contributionRecord => contributionRecord.Contributor).
+                                                Equals(contributorList)) &&
+                                            trackRecord.SongStyles.
+                                                Select(songStyleRecord => songStyleRecord.TrackGenre).
+                                                Equals(trackGenreList)).
+                                            SingleOrDefault() is Track trackCheck) ?
+                                                trackCheck :
+                                                MediaDB.Tracks.Add(new Track() { Disc = disc, Path = trackProperties.Path }).Entity;
+                                    /////////////////////////////////////////////////////
+                                    if (File.Exists(track.Path))
+                                    {
+                                        track.TrackNum = (int)trackProperties.MusicProperties.TrackNumber;
+                                        track.TrackName = trackProperties.MusicProperties.Title;
+                                        track.TrackLength = trackProperties.MusicProperties.Duration;
+                                        foreach (var contribution in track.Contributions)
+                                            if (contributorList.Find(contributorRecord => contributorRecord.Equals(contribution.Contributor)) is Artist contributorCheck)
+                                                contributorList.Remove(contributorCheck);
+                                        foreach (var contributor in contributorList)
+                                            MediaDB.Contributions.Add(new Contribution() { Contributor = contributor, Track = track });
+                                        foreach (var songStyle in track.SongStyles)
+                                            if (trackGenreList.Find(trackGenreRecord => trackGenreRecord.Equals(songStyle.TrackGenre)) is Genre trackGenreCheck)
+                                                trackGenreList.Remove(trackGenreCheck);
+                                        foreach (var trackGenre in trackGenreList)
+                                            MediaDB.SongStyles.Add(new SongStyle() { TrackGenre = trackGenre, Track = track });
+                                    }
+                                    else
+                                        track.Path = trackProperties.Path;
+                                    MediaDB.SaveChanges();
+
+                                }
+
                             }
+
+                            
                         }
                         
                         

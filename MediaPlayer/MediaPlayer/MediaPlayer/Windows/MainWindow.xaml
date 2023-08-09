@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MediaPlayer.Windows"
         xmlns:classes="clr-namespace:MediaPlayer.Classes"
         mc:Ignorable="d"
-   Title="Media Player" Height="540" Width="960" Loaded="Window_Loaded">
+   Title="Media Player" Height="540" Width="960" Loaded="Window_Loaded" WindowState="Maximized">
     <Window.Resources>
         <CollectionViewSource x:Key="artistsViewSource" />
         <CollectionViewSource x:Key="albumsViewSource" Source="{Binding Albums, Source={StaticResource artistsViewSource}}" />
@@ -133,6 +133,9 @@
                                     IsReadOnly="True" />
                     <DataGridTextColumn Binding="{Binding AlbumName}"
                                     Header="Album Name"
+                                    IsReadOnly="True" />
+                    <DataGridTextColumn Binding="{Binding ReleaseYear}"
+                                    Header="Year"
                                     IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
