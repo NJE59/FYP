@@ -1,0 +1,15 @@
+﻿using MvvmCross.Platforms.Wpf.Views;
+
+namespace MediaPlayer.WPF.Views
+{
+    /// <summary>
+    /// Interaction logic for MediaPlayerView.xaml
+    /// </summary>
+    public partial class MediaLibraryView : MvxWpfView
+    {
+        public MediaLibraryView()
+        {
+            InitializeComponent();
+        }
+    }
+}

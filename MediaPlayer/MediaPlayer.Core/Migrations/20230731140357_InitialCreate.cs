@@ -1,0 +1,280 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+
+#nullable disable
+
+namespace MediaPlayer.Core.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Artists",
+                columns: table => new
+                {
+                    ArtistID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ArtistName = table.Column<string>(type: "TEXT", nullable: false),
+                    Biography = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Artists", x => x.ArtistID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    GenreID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GenreName = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.GenreID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Playlists",
+                columns: table => new
+                {
+                    PlaylistID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    PlaylistName = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Playlists", x => x.PlaylistID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Albums",
+                columns: table => new
+                {
+                    AlbumID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ReleaseYear = table.Column<int>(type: "INTEGER", nullable: false),
+                    AlbumName = table.Column<string>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    ArtistID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Albums", x => x.AlbumID);
+                    table.ForeignKey(
+                        name: "FK_Albums_Artists_ArtistID",
+                        column: x => x.ArtistID,
+                        principalTable: "Artists",
+                        principalColumn: "ArtistID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Discs",
+                columns: table => new
+                {
+                    DiscID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    DiscNum = table.Column<int>(type: "INTEGER", nullable: false),
+                    DiscName = table.Column<string>(type: "TEXT", nullable: true),
+                    AlbumID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Discs", x => x.DiscID);
+                    table.ForeignKey(
+                        name: "FK_Discs_Albums_AlbumID",
+                        column: x => x.AlbumID,
+                        principalTable: "Albums",
+                        principalColumn: "AlbumID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tracks",
+                columns: table => new
+                {
+                    TrackID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Path = table.Column<string>(type: "TEXT", nullable: false),
+                    TrackName = table.Column<string>(type: "TEXT", nullable: false),
+                    TrackNum = table.Column<int>(type: "INTEGER", nullable: false),
+                    TrackLength = table.Column<TimeSpan>(type: "TEXT", nullable: false),
+                    Description = table.Column<string>(type: "TEXT", nullable: true),
+                    Lyrics = table.Column<string>(type: "TEXT", nullable: true),
+                    DiscID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tracks", x => x.TrackID);
+                    table.ForeignKey(
+                        name: "FK_Tracks_Discs_DiscID",
+                        column: x => x.DiscID,
+                        principalTable: "Discs",
+                        principalColumn: "DiscID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Contributions",
+                columns: table => new
+                {
+                    ContributionID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ArtistID = table.Column<int>(type: "INTEGER", nullable: false),
+                    TrackID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contributions", x => x.ContributionID);
+                    table.ForeignKey(
+                        name: "FK_Contributions_Artists_ArtistID",
+                        column: x => x.ArtistID,
+                        principalTable: "Artists",
+                        principalColumn: "ArtistID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Contributions_Tracks_TrackID",
+                        column: x => x.TrackID,
+                        principalTable: "Tracks",
+                        principalColumn: "TrackID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Listings",
+                columns: table => new
+                {
+                    ListingID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TrackPos = table.Column<int>(type: "INTEGER", nullable: false),
+                    TrackID = table.Column<int>(type: "INTEGER", nullable: false),
+                    PlaylistID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Listings", x => x.ListingID);
+                    table.ForeignKey(
+                        name: "FK_Listings_Playlists_PlaylistID",
+                        column: x => x.PlaylistID,
+                        principalTable: "Playlists",
+                        principalColumn: "PlaylistID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Listings_Tracks_TrackID",
+                        column: x => x.TrackID,
+                        principalTable: "Tracks",
+                        principalColumn: "TrackID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TrackGenres",
+                columns: table => new
+                {
+                    TrackGenreID = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    TrackID = table.Column<int>(type: "INTEGER", nullable: false),
+                    GenreID = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrackGenres", x => x.TrackGenreID);
+                    table.ForeignKey(
+                        name: "FK_TrackGenres_Genres_GenreID",
+                        column: x => x.GenreID,
+                        principalTable: "Genres",
+                        principalColumn: "GenreID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TrackGenres_Tracks_TrackID",
+                        column: x => x.TrackID,
+                        principalTable: "Tracks",
+                        principalColumn: "TrackID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Albums_ArtistID",
+                table: "Albums",
+                column: "ArtistID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contributions_ArtistID",
+                table: "Contributions",
+                column: "ArtistID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contributions_TrackID",
+                table: "Contributions",
+                column: "TrackID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Discs_AlbumID",
+                table: "Discs",
+                column: "AlbumID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Listings_PlaylistID",
+                table: "Listings",
+                column: "PlaylistID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Listings_TrackID",
+                table: "Listings",
+                column: "TrackID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrackGenres_GenreID",
+                table: "TrackGenres",
+                column: "GenreID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrackGenres_TrackID",
+                table: "TrackGenres",
+                column: "TrackID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tracks_DiscID",
+                table: "Tracks",
+                column: "DiscID");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Contributions");
+
+            migrationBuilder.DropTable(
+                name: "Listings");
+
+            migrationBuilder.DropTable(
+                name: "TrackGenres");
+
+            migrationBuilder.DropTable(
+                name: "Playlists");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Tracks");
+
+            migrationBuilder.DropTable(
+                name: "Discs");
+
+            migrationBuilder.DropTable(
+                name: "Albums");
+
+            migrationBuilder.DropTable(
+                name: "Artists");
+        }
+    }
+}
