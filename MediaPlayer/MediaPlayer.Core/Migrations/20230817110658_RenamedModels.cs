@@ -1,0 +1,71 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace MediaPlayer.Core.Migrations
+{
+    /// <inheritdoc />
+    public partial class RenamedModels : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Contributions_Artists_ArtistID",
+                table: "Contributions");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Contributions_ArtistID",
+                table: "Contributions");
+
+            migrationBuilder.AddColumn<int>(
+                name: "ContributorArtistID",
+                table: "Contributions",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contributions_ContributorArtistID",
+                table: "Contributions",
+                column: "ContributorArtistID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Contributions_Artists_ContributorArtistID",
+                table: "Contributions",
+                column: "ContributorArtistID",
+                principalTable: "Artists",
+                principalColumn: "ArtistID",
+                onDelete: ReferentialAction.Cascade);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Contributions_Artists_ContributorArtistID",
+                table: "Contributions");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Contributions_ContributorArtistID",
+                table: "Contributions");
+
+            migrationBuilder.DropColumn(
+                name: "ContributorArtistID",
+                table: "Contributions");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contributions_ArtistID",
+                table: "Contributions",
+                column: "ArtistID");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Contributions_Artists_ArtistID",
+                table: "Contributions",
+                column: "ArtistID",
+                principalTable: "Artists",
+                principalColumn: "ArtistID",
+                onDelete: ReferentialAction.Cascade);
+        }
+    }
+}
