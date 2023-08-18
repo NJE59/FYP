@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MediaPlayer.Core.Models
 {
@@ -13,5 +14,8 @@ namespace MediaPlayer.Core.Models
         public int AlbumID { get; set; }
         public virtual AlbumModel Album { get; set; } = null!;
         public virtual ICollection<TrackModel> Tracks { get; private set; } = new ObservableCollection<TrackModel>();
+
+        [NotMapped]
+        public ArtistModel AlbumArtist => Album.Artist;
     }
 }

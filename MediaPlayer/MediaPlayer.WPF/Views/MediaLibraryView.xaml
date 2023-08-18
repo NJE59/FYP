@@ -6,15 +6,7 @@
                   xmlns:local="clr-namespace:MediaPlayer.WPF.Views"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
-                  mc:Ignorable="d"
-                  >
-    <!--Title="Media Player"Loaded="Window_Loaded"-->
-    <views:MvxWpfView.Resources>
-        <CollectionViewSource x:Key="artistsViewSource" />
-        <CollectionViewSource x:Key="albumsViewSource" Source="{Binding Albums, Source={StaticResource artistsViewSource}}" />
-        <CollectionViewSource x:Key="discsViewSource" Source="{Binding Discs, Source={StaticResource albumsViewSource}}" />
-        <CollectionViewSource x:Key="tracksViewSource" Source="{Binding Tracks, Source={StaticResource discsViewSource}}"/>
-    </views:MvxWpfView.Resources>
+                  mc:Ignorable="d">
     <DockPanel>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File">
@@ -110,11 +102,12 @@
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <DataGrid x:Name="dgArtists" AutoGenerateColumns="False"
-                  EnableRowVirtualization="True"
-                  ItemsSource="{Binding Source={StaticResource artistsViewSource}}"
-                  Grid.Row="0" RowDetailsVisibilityMode="VisibleWhenSelected"
-                  ScrollViewer.CanContentScroll="True"
-                  ScrollViewer.VerticalScrollBarVisibility="Visible">
+                      EnableRowVirtualization="True"
+                      ItemsSource="{Binding DisplayArtists}"                      
+                      SelectedItem="{Binding SelectedArtist, Mode=TwoWay}"
+                      Grid.Row="0" RowDetailsVisibilityMode="VisibleWhenSelected"
+                      ScrollViewer.CanContentScroll="True"
+                      ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding ArtistID}"
                                     Header="Artist ID" Width="SizeToHeader"
@@ -124,9 +117,10 @@
                 </DataGrid.Columns>
             </DataGrid>
             <DataGrid x:Name="dgAlbums" AutoGenerateColumns="False"
-                  EnableRowVirtualization="True"
-                  ItemsSource="{Binding Source={StaticResource albumsViewSource}}"
-                 Grid.Row="1" RowDetailsVisibilityMode="VisibleWhenSelected">
+                      EnableRowVirtualization="True"
+                      ItemsSource="{Binding DisplayArtistsAlbums}"
+                      SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}"
+                      Grid.Row="1" RowDetailsVisibilityMode="VisibleWhenSelected">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding ArtistID}"
                                     Header="Artist ID" Width="SizeToHeader"
@@ -143,9 +137,10 @@
                 </DataGrid.Columns>
             </DataGrid>
             <DataGrid x:Name="dgDiscs" AutoGenerateColumns="False"
-                  EnableRowVirtualization="True"
-                  ItemsSource="{Binding Source={StaticResource discsViewSource}}"
-                 Grid.Row="2" RowDetailsVisibilityMode="VisibleWhenSelected">
+                      EnableRowVirtualization="True"
+                      ItemsSource="{Binding DisplayAlbumsDiscs}"
+                      SelectedItem="{Binding SelectedDisc, Mode=TwoWay}"
+                      Grid.Row="2" RowDetailsVisibilityMode="VisibleWhenSelected">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding AlbumID}"
                                     Header="Album ID" Width="SizeToHeader"
@@ -163,7 +158,7 @@
             </DataGrid>
             <DataGrid x:Name="dgTracks" AutoGenerateColumns="False"
                   EnableRowVirtualization="True"
-                  ItemsSource="{Binding Source={StaticResource tracksViewSource}}"
+                  ItemsSource="{Binding DisplayDiscsTracks}"
                  Grid.Row="3" RowDetailsVisibilityMode="VisibleWhenSelected">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding DiscID}"

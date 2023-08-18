@@ -6,6 +6,7 @@ using MvvmCross.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 //using System.Windows.Data;
 using Windows.Storage;
 
@@ -19,6 +20,66 @@ namespace MediaPlayer.Core.ViewModels
 		{
 			get { return _mediaDB; }
 		}
+
+        public ObservableCollection<ArtistModel> DisplayArtists => new ObservableCollection<ArtistModel>(
+            MediaDB.Artists.
+                OrderBy(artist => artist.ArtistName));
+
+        private ArtistModel _selectedArtist;
+        public ArtistModel SelectedArtist
+        {
+            get { return _selectedArtist; }
+            set 
+            { 
+                SetProperty(ref _selectedArtist, value);
+                SelectedAlbum = DisplayArtistsAlbums.First();
+                RaisePropertyChanged(() => DisplayArtistsAlbums);
+            }
+        }
+
+        public ObservableCollection<AlbumModel> DisplayArtistsAlbums => new ObservableCollection<AlbumModel>(
+            SelectedArtist.Albums.
+                OrderBy(album => album.AlbumName));
+
+        private AlbumModel _selectedAlbum;
+        public AlbumModel SelectedAlbum
+        {
+            get { return _selectedAlbum; }
+            set
+            {
+                SetProperty(ref _selectedAlbum, value);
+                SelectedDisc = DisplayAlbumsDiscs.First();
+                RaisePropertyChanged(() => DisplayAlbumsDiscs);
+            }
+        }
+
+        public ObservableCollection<DiscModel> DisplayAlbumsDiscs => new ObservableCollection<DiscModel>(
+            SelectedAlbum.Discs.
+                OrderBy(disc => disc.DiscNum));
+
+        private DiscModel _selectedDisc;
+        public DiscModel SelectedDisc
+        {
+            get { return _selectedDisc; }
+            set
+            {
+                SetProperty(ref _selectedDisc, value);
+                RaisePropertyChanged(() => DisplayDiscsTracks);
+            }
+        }
+
+        public ObservableCollection<TrackModel> DisplayDiscsTracks => new ObservableCollection<TrackModel>(
+            SelectedDisc.Tracks.
+                OrderBy(track => track.TrackNum));
+
+
+        public ObservableCollection<TrackModel> TracksDisplay => new ObservableCollection<TrackModel>(
+            MediaDB.Tracks.
+            OrderBy(track => track.AlbumArtist.ArtistName).
+                ThenBy(track => track.Album.AlbumName).
+                ThenBy(track => track.Disc.DiscNum).
+                ThenBy(track => track.TrackNum).
+                ThenBy(track => track.TrackID));
 
         /// <summary>
         /// <see cref="ObservableCollection{MenuItemModel}"/> of <see cref="MenuItem">MenuItems</see> for populating <see cref="tvNav">tvNav</see> on the <see cref="MainWindow"/>
@@ -56,6 +117,12 @@ namespace MediaPlayer.Core.ViewModels
             tracksViewSource = (CollectionViewSource)FindResource(nameof(tracksViewSource));*/
             btnClickCommand = new MvxCommand(btnClick);
             NavigateCommand = new MvxCommand(Navigate);
+            LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
+            SelectedArtist = MediaDB.Artists.FirstOrDefault();
+            SelectedAlbum = SelectedArtist.Albums.FirstOrDefault();
+            SelectedDisc = SelectedAlbum.Discs.FirstOrDefault();
+
+            var test = new ObservableCollection<ArtistModel>(MediaDB.Artists);
         }
         private void Window_Loaded()
         {
