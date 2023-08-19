@@ -8,22 +8,24 @@
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   mc:Ignorable="d">
     <DockPanel>
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Header="File">
-                    <MenuItem Header=" = Open" />
-                    <Separator />
-                    <MenuItem Header="Exit" />
-                </MenuItem>
-                <MenuItem Header="Playlists">
-                    <MenuItem Header="Create Playlist" />
-                    <MenuItem Header="Playlists">
-                        <MenuItem Header="Playlist1" />
-                        <MenuItem Header="New Playlist" />
-                    </MenuItem>
-                </MenuItem>
-            </Menu>
+        <MediaElement Source="{Binding LoadedTrack}" LoadedBehavior="Play" />
 
-            <StatusBar DockPanel.Dock="Bottom" Name="sbControl">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header=" = Open" />
+                <Separator />
+                <MenuItem Header="Exit" />
+            </MenuItem>
+            <MenuItem Header="Playlists">
+                <MenuItem Header="Create Playlist" />
+                <MenuItem Header="Playlists">
+                    <MenuItem Header="Playlist1" />
+                    <MenuItem Header="New Playlist" />
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <StatusBar DockPanel.Dock="Bottom" Name="sbControl">
                 <StatusBar.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Grid>
@@ -71,28 +73,30 @@
                 </StatusBarItem>
             </StatusBar>
 
-            <Grid DockPanel.Dock="Left" Width="150">
-                <TreeView ItemsSource="{Binding NavItems}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" mvx:Bi.nd="Command NavigateCommand">
-                <TreeView.Resources>
-                    <Style TargetType="TreeViewItem">
-                        <Setter Property="IsExpanded" Value="True">
-                        </Setter>
-                    </Style>
-                </TreeView.Resources>
-                    <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                            <TextBlock Text="{Binding Title}" />
-                        </HierarchicalDataTemplate>
-                    </TreeView.ItemTemplate>                    
-                </TreeView>
-            </Grid>
-            <Grid DockPanel.Dock="Right" Width="150">
-                <ListView>
-                    <ListViewItem Content="The Root Of All Evil" />
-                    <ListViewItem Content="Bridge Across Forever" />
-                </ListView>
-            </Grid>
-            <Frame x:Name="MainView" />
+        <Grid DockPanel.Dock="Left" Width="150">
+            <TreeView ItemsSource="{Binding NavItems}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" mvx:Bi.nd="Command NavigateCommand">
+            <TreeView.Resources>
+                <Style TargetType="TreeViewItem">
+                    <Setter Property="IsExpanded" Value="True">
+                    </Setter>
+                </Style>
+            </TreeView.Resources>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Title}" />
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>                    
+            </TreeView>
+        </Grid>
+        
+        <Grid DockPanel.Dock="Right" Width="150">
+            <ListView>
+                <ListViewItem Content="The Root Of All Evil" />
+                <ListViewItem Content="Bridge Across Forever" />
+            </ListView>
+        </Grid>
+        
+        <Frame x:Name="MainView" />
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -157,9 +161,15 @@
                 </DataGrid.Columns>
             </DataGrid>
             <DataGrid x:Name="dgTracks" AutoGenerateColumns="False"
-                  EnableRowVirtualization="True"
-                  ItemsSource="{Binding DisplayDiscsTracks}"
-                 Grid.Row="3" RowDetailsVisibilityMode="VisibleWhenSelected">
+                      EnableRowVirtualization="True"
+                      ItemsSource="{Binding DisplayDiscsTracks}"
+                      SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                      Grid.Row="3" RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Play Song" mvx:Bi.nd="Command PlayTrackCommand" />
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding DiscID}"
                                     Header="Disc ID" Width="SizeToHeader"

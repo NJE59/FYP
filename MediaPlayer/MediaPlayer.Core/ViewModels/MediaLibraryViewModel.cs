@@ -1,6 +1,7 @@
 ﻿using MediaPlayer.Core.Classes;
 using MediaPlayer.Core.Data;
 using MediaPlayer.Core.Models;
+using Microsoft.UI.Xaml;
 using MvvmCross.Commands;
 using MvvmCross.ViewModels;
 using System.Collections.ObjectModel;
@@ -64,6 +65,7 @@ namespace MediaPlayer.Core.ViewModels
             set
             {
                 SetProperty(ref _selectedDisc, value);
+                SelectedTrack = DisplayDiscsTracks.First();
                 RaisePropertyChanged(() => DisplayDiscsTracks);
             }
         }
@@ -71,6 +73,14 @@ namespace MediaPlayer.Core.ViewModels
         public ObservableCollection<TrackModel> DisplayDiscsTracks => new ObservableCollection<TrackModel>(
             SelectedDisc.Tracks.
                 OrderBy(track => track.TrackNum));
+
+        private TrackModel _selectedTrack;
+
+        public TrackModel SelectedTrack
+        {
+            get { return _selectedTrack; }
+            set { SetProperty(ref _selectedTrack, value); }
+        }
 
 
         public ObservableCollection<TrackModel> TracksDisplay => new ObservableCollection<TrackModel>(
@@ -90,6 +100,16 @@ namespace MediaPlayer.Core.ViewModels
 			get { return _navItems; }
 			set { SetProperty(ref _navItems, value); }
 		}
+
+        private Uri _loadedTrack;
+
+        public Uri LoadedTrack
+        {
+            get { return _loadedTrack; }
+            set { SetProperty(ref _loadedTrack, value); }
+        }
+
+
 
         /// <summary>
         /// Value for disc number property in single disc albums and for unconfigured discs
@@ -117,13 +137,28 @@ namespace MediaPlayer.Core.ViewModels
             tracksViewSource = (CollectionViewSource)FindResource(nameof(tracksViewSource));*/
             btnClickCommand = new MvxCommand(btnClick);
             NavigateCommand = new MvxCommand(Navigate);
+            PlayTrackCommand = new MvxCommand(PlayTrack);
             LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
             SelectedArtist = MediaDB.Artists.FirstOrDefault();
             SelectedAlbum = SelectedArtist.Albums.FirstOrDefault();
             SelectedDisc = SelectedAlbum.Discs.FirstOrDefault();
-
-            var test = new ObservableCollection<ArtistModel>(MediaDB.Artists);
+            //DispatcherTimer timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromSeconds(1);
+            //timer.Tick += Timer_Tick;
+            //timer.Start();
         }
+
+        private void Timer_Tick(object? sender, object e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMvxCommand PlayTrackCommand { get; set; }
+        public void PlayTrack()
+        {
+            LoadedTrack = new Uri(SelectedTrack.Path);
+        }
+
         private void Window_Loaded()
         {
             /*artistsViewSource.SortDescriptions.Add(new SortDescription("ArtistName", ListSortDirection.Ascending));
