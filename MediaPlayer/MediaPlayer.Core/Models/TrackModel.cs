@@ -24,5 +24,11 @@ namespace MediaPlayer.Core.Models
         public AlbumModel Album => Disc.Album;
         [NotMapped]
         public ArtistModel AlbumArtist => Disc.Album.Artist;
+        [NotMapped]
+        public Uri LoadPath => new Uri(Path);
+        [NotMapped]
+        public bool IsLongerThanHour => TrackLength > TimeSpan.FromHours(1);
+        [NotMapped]
+        public string DisplayLength => TrackLength.ToString($"{((TrackLength > TimeSpan.FromHours(1)) ? "hh\\:" : "")}mm\\:ss");
     }
 }

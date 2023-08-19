@@ -101,15 +101,13 @@ namespace MediaPlayer.Core.ViewModels
 			set { SetProperty(ref _navItems, value); }
 		}
 
-        private Uri _loadedTrack;
+        private TrackModel _loadedTrack;
 
-        public Uri LoadedTrack
+        public TrackModel LoadedTrack
         {
             get { return _loadedTrack; }
             set { SetProperty(ref _loadedTrack, value); }
         }
-
-
 
         /// <summary>
         /// Value for disc number property in single disc albums and for unconfigured discs
@@ -156,7 +154,7 @@ namespace MediaPlayer.Core.ViewModels
         public IMvxCommand PlayTrackCommand { get; set; }
         public void PlayTrack()
         {
-            LoadedTrack = new Uri(SelectedTrack.Path);
+            LoadedTrack = SelectedTrack;
         }
 
         private void Window_Loaded()

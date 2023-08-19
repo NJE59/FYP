@@ -8,9 +8,12 @@
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   mc:Ignorable="d">
     <DockPanel>
-        <MediaElement Source="{Binding LoadedTrack}" LoadedBehavior="Play" />
+        <MediaElement x:Name="MusicPlayer" 
+                      Source="{Binding LoadedTrack.LoadPath}"
+                      LoadedBehavior="Play"
+                      Visibility="Collapsed"/>
 
-        <Menu DockPanel.Dock="Top">
+        <Menu x:Name="TopMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header=" = Open" />
                 <Separator />
@@ -25,62 +28,71 @@
             </MenuItem>
         </Menu>
 
-        <StatusBar DockPanel.Dock="Bottom" Name="sbControl">
-                <StatusBar.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                        </Grid>
-                    </ItemsPanelTemplate>
-                </StatusBar.ItemsPanel>
-                <StatusBarItem Grid.Row="0" Grid.ColumnSpan="3">
-                    <Slider Maximum="100" HorizontalContentAlignment="Stretch" Width="{Binding Path=ActualWidth, ElementName=sbControl}"/>
-                </StatusBarItem>
-                <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
-                    <WrapPanel>
-                        <WrapPanel.Resources>
-                            <Style TargetType="Button">
-                                <Setter Property="Margin" Value="5,0" />
+        <StatusBar x:Name="PlayPanel" DockPanel.Dock="Bottom">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Row="0" Grid.ColumnSpan="5">
+                <Slider Maximum="100"
+                        Width="{Binding Path=ActualWidth, ElementName=sbControl}"
+                        HorizontalContentAlignment="Stretch" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right">
+                <TextBlock Text="{Binding LoadedTrack.DisplayLength}" />
+            </StatusBarItem>
+            <StatusBarItem Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
+                <WrapPanel>
+                    <WrapPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Margin" Value="5,0" />
+                        </Style>
+                    </WrapPanel.Resources>
+                    
+                    <Button Content="Stop" />
+                    <Button Content="Skip" />
+                    <ToggleButton Width="35" HorizontalAlignment="Center">
+                        <ToggleButton.Style>
+                            <Style TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="False">
+                                        <Setter Property="Content" Value="Play"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Content" Value="Pause"/>
+                                    </Trigger>
+                                </Style.Triggers>
                             </Style>
-                        </WrapPanel.Resources>
-                        <Button Content="Stop" />
-                        <Button Content="Skip" />
-                        <ToggleButton Width="35">
-                            <ToggleButton.Style>
-                                <Style TargetType="ToggleButton">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsChecked" Value="False">
-                                            <Setter Property="Content" Value="Play"/>
-                                        </Trigger>
-                                        <Trigger Property="IsChecked" Value="True">
-                                            <Setter Property="Content" Value="Pause"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ToggleButton.Style>
-                        </ToggleButton>
-                        <Button Content="Skip" />
-                        <Slider Maximum="100" Width="50" Name="slVolume" AutoToolTipPlacement="BottomRight"/>
-                    </WrapPanel>
-                </StatusBarItem>
-            </StatusBar>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <Button Content="Skip" />
+                    <Slider Maximum="100" Width="50" Name="slVolume" AutoToolTipPlacement="BottomRight"/>
+                </WrapPanel>
+            </StatusBarItem>
+        </StatusBar>
 
-        <Grid DockPanel.Dock="Left" Width="150">
-            <TreeView ItemsSource="{Binding NavItems}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" mvx:Bi.nd="Command NavigateCommand">
-            <TreeView.Resources>
-                <Style TargetType="TreeViewItem">
-                    <Setter Property="IsExpanded" Value="True">
-                    </Setter>
-                </Style>
-            </TreeView.Resources>
+        <Grid x:Name="NavigationPanel" DockPanel.Dock="Left" Width="150">
+            <TreeView ItemsSource="{Binding NavItems}" 
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      mvx:Bi.nd="Command NavigateCommand">
+                <TreeView.Resources>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True" />
+                    </Style>
+                </TreeView.Resources>
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <TextBlock Text="{Binding Title}" />
@@ -89,7 +101,7 @@
             </TreeView>
         </Grid>
         
-        <Grid DockPanel.Dock="Right" Width="150">
+        <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="150">
             <ListView>
                 <ListViewItem Content="The Root Of All Evil" />
                 <ListViewItem Content="Bridge Across Forever" />
@@ -97,95 +109,110 @@
         </Grid>
         
         <Frame x:Name="MainView" />
-        <Grid>
+        <Grid x:Name="MainViewPanel">
+            <Grid.Resources>
+                <Style TargetType="DataGrid">
+                    <Setter Property="AutoGenerateColumns" Value="False" />
+                    <Setter Property="EnableRowVirtualization" Value="True" />
+                    <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                    <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
+                </Style>
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <DataGrid x:Name="dgArtists" AutoGenerateColumns="False"
-                      EnableRowVirtualization="True"
+            <DataGrid x:Name="dgArtists"
+                      Grid.Row="0"
                       ItemsSource="{Binding DisplayArtists}"                      
-                      SelectedItem="{Binding SelectedArtist, Mode=TwoWay}"
-                      Grid.Row="0" RowDetailsVisibilityMode="VisibleWhenSelected"
-                      ScrollViewer.CanContentScroll="True"
-                      ScrollViewer.VerticalScrollBarVisibility="Visible">
+                      SelectedItem="{Binding SelectedArtist, Mode=TwoWay}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding ArtistID}"
-                                    Header="Artist ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding ArtistName}"
-                                    Header="Name" Width="*" />
+                    <DataGridTextColumn Header="Artist ID"
+                                        Binding="{Binding ArtistID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Name" 
+                                        Binding="{Binding ArtistName}"
+                                        Width="*" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid x:Name="dgAlbums" AutoGenerateColumns="False"
-                      EnableRowVirtualization="True"
+            <DataGrid x:Name="dgAlbums"
+                      Grid.Row="1"
                       ItemsSource="{Binding DisplayArtistsAlbums}"
-                      SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}"
-                      Grid.Row="1" RowDetailsVisibilityMode="VisibleWhenSelected">
+                      SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding ArtistID}"
-                                    Header="Artist ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding AlbumID}"
-                                    Header="Album ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding AlbumName}"
-                                    Header="Album Name"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding ReleaseYear}"
-                                    Header="Year"
-                                    IsReadOnly="True" />
+                    <DataGridTextColumn Header="Artist ID"
+                                        Binding="{Binding ArtistID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Album ID" 
+                                        Binding="{Binding AlbumID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Album Name"
+                                        Binding="{Binding AlbumName}"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Year"
+                                        Binding="{Binding ReleaseYear}"
+                                        IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid x:Name="dgDiscs" AutoGenerateColumns="False"
-                      EnableRowVirtualization="True"
+            <DataGrid x:Name="dgDiscs"
+                      Grid.Row="2"
                       ItemsSource="{Binding DisplayAlbumsDiscs}"
-                      SelectedItem="{Binding SelectedDisc, Mode=TwoWay}"
-                      Grid.Row="2" RowDetailsVisibilityMode="VisibleWhenSelected">
+                      SelectedItem="{Binding SelectedDisc, Mode=TwoWay}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding AlbumID}"
-                                    Header="Album ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding DiscID}"
-                                    Header="Disc ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding DiscNum}"
-                                    Header="Disc Number"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding DiscName}"
-                                    Header="Disc Name"
-                                    IsReadOnly="True" />
+                    <DataGridTextColumn Header="Album ID"
+                                        Binding="{Binding AlbumID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Disc ID"
+                                        Binding="{Binding DiscID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Disc Number"
+                                        Binding="{Binding DiscNum}"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Disc Name"
+                                        Binding="{Binding DiscName}"
+                                        IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid x:Name="dgTracks" AutoGenerateColumns="False"
-                      EnableRowVirtualization="True"
+            <DataGrid x:Name="dgTracks"                      
+                      Grid.Row="3"
                       ItemsSource="{Binding DisplayDiscsTracks}"
-                      SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
-                      Grid.Row="3" RowDetailsVisibilityMode="VisibleWhenSelected">
+                      SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play Song" mvx:Bi.nd="Command PlayTrackCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding DiscID}"
-                                    Header="Disc ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding TrackID}"
-                                    Header="Track ID" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding TrackNum}"
-                                    Header="Track Number" Width="SizeToHeader"
-                                    IsReadOnly="True" />
-                    <DataGridTextColumn Binding="{Binding TrackName}"
-                                    Header="Track Name"
-                                    IsReadOnly="True" />
+                    <DataGridTextColumn Header="Disc ID"
+                                        Binding="{Binding DiscID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Track ID"
+                                        Binding="{Binding TrackID}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Track Number"
+                                        Binding="{Binding TrackNum}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Track Name"
+                                        Binding="{Binding TrackName}"
+                                        IsReadOnly="True" />
                 </DataGrid.Columns>
             </DataGrid>
-            <Button Grid.Row="4" Content="Save" HorizontalAlignment="Center" mvx:Bi.nd="Command btnClickCommand">
+            <Button Content="Save"
+                    Grid.Row="4"
+                    mvx:Bi.nd="Command btnClickCommand"
+                    HorizontalAlignment="Center">
                 <!--Click="Button_Click"-->
             </Button>
         </Grid>
