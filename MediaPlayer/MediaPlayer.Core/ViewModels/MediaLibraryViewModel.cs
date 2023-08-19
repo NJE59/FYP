@@ -109,6 +109,20 @@ namespace MediaPlayer.Core.ViewModels
             set { SetProperty(ref _loadedTrack, value); }
         }
 
+        private int _controlVolume = 50;
+
+        public int ControlVolume
+        {
+            get { return _controlVolume; }
+            set
+            {
+                SetProperty(ref _controlVolume, value);
+                RaisePropertyChanged(() => PlayerVolume);
+            }
+        }
+
+        public double PlayerVolume => (double)ControlVolume / (double)100;
+
         /// <summary>
         /// Value for disc number property in single disc albums and for unconfigured discs
         /// </summary>

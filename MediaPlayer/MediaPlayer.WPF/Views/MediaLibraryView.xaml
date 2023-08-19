@@ -11,6 +11,7 @@
         <MediaElement x:Name="MusicPlayer" 
                       Source="{Binding LoadedTrack.LoadPath}"
                       LoadedBehavior="Play"
+                      Volume="{Binding PlayerVolume}"
                       Visibility="Collapsed"/>
 
         <Menu x:Name="TopMenu" DockPanel.Dock="Top">
@@ -52,7 +53,9 @@
                         HorizontalContentAlignment="Stretch" />
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right">
-                <TextBlock Text="{Binding LoadedTrack.DisplayLength}" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding LoadedTrack.DisplayLength}" />
+                </StackPanel>
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
                 <WrapPanel>
@@ -61,7 +64,6 @@
                             <Setter Property="Margin" Value="5,0" />
                         </Style>
                     </WrapPanel.Resources>
-                    
                     <Button Content="Stop" />
                     <Button Content="Skip" />
                     <ToggleButton Width="35" HorizontalAlignment="Center">
@@ -79,7 +81,13 @@
                         </ToggleButton.Style>
                     </ToggleButton>
                     <Button Content="Skip" />
-                    <Slider Maximum="100" Width="50" Name="slVolume" AutoToolTipPlacement="BottomRight"/>
+                    <Slider x:Name="VolumeSlider"
+                            Minimum="0"
+                            Maximum="100"
+                            Interval="1"
+                            Value="{Binding ControlVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Width="50"
+                            AutoToolTipPlacement="BottomRight" />
                 </WrapPanel>
             </StatusBarItem>
         </StatusBar>
