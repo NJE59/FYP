@@ -5,6 +5,8 @@
 namespace MediaPlayer.Core.Models
 {
     using System.Collections.ObjectModel;
+    using Page = Microsoft.UI.Xaml.Controls.Page;
+    using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
 
     /// <summary>
     /// Heirarchical class structure for populating a <see cref="TreeView"/>.
@@ -37,7 +39,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="Page"/> to be opened by this <see cref="MenuItem">MenuItem</see>.
+        /// Gets or sets the <see cref="Page"/> to be opened by this <see cref="MenuItemModel"/>.
         /// </summary>
         public Type PageType
         {

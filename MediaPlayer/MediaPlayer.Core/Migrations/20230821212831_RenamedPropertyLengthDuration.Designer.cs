@@ -3,6 +3,7 @@ using System;
 using MediaPlayer.Core.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MediaPlayer.Core.Migrations
 {
     [DbContext(typeof(MediaDBContext))]
-    partial class MediaDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230821212831_RenamedPropertyLengthDuration")]
+    partial class RenamedPropertyLengthDuration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,7 +176,7 @@ namespace MediaPlayer.Core.Migrations
 
             modelBuilder.Entity("MediaPlayer.Core.Models.SongStyleModel", b =>
                 {
-                    b.Property<int>("SongStyleID")
+                    b.Property<int>("TrackGenreID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -186,7 +189,7 @@ namespace MediaPlayer.Core.Migrations
                     b.Property<int>("TrackID")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("SongStyleID");
+                    b.HasKey("TrackGenreID");
 
                     b.HasIndex("TrackGenreGenreID");
 

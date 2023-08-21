@@ -42,7 +42,7 @@ namespace MediaPlayer.WPF
         /// <summary>
         /// PLACEHOLDER.
         /// </summary>
-        /// <param name="iocProvider"><inheritdoc cref="IMvxIocProvider" path='/summary'/></param>
+        /// <param name="iocProvider"><inheritdoc cref="Mvx.IoCProvider" path='/summary'/></param>
         protected override void InitializeFirstChance(IMvxIoCProvider iocProvider)
         {
             Mvx.IoCProvider.RegisterType<ITimerFactory, TimerFactory>();

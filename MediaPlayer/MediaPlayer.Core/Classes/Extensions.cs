@@ -6,6 +6,7 @@ namespace MediaPlayer.Core.Classes
 {
     using System.Collections.ObjectModel;
     using MediaPlayer.Core.Models;
+    using MediaPlayer.Core.ViewModels;
     using Windows.Storage;
     using Windows.Storage.FileProperties;
     using Windows.Storage.Search;
@@ -77,9 +78,9 @@ namespace MediaPlayer.Core.Classes
         }
 
         /// <summary>
-        /// Method for populating <see cref="NavItems"/>.
+        /// Method for populating <see cref="MediaLibraryViewModel.NavItems"/>.
         /// </summary>
-        /// <param name="navItems">PLACEHOLDER.</param>
+        /// <param name="navItems"><inheritdoc cref="MediaLibraryViewModel.NavItems" path='/summary'/></param>
         /// <returns>1PLACEHOLDER.</returns>
         public static ObservableCollection<MenuItemModel> CreateNavItems(this ObservableCollection<MenuItemModel> navItems)
         {

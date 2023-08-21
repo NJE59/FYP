@@ -26,7 +26,7 @@ namespace MediaPlayer.Core.Models
         private string trackName = null!;
         private string? description;
         private string? lyrics;
-        private TimeSpan trackLength;
+        private TimeSpan trackDuration;
 
         // Primary Key Backed Properties
 
@@ -109,11 +109,11 @@ namespace MediaPlayer.Core.Models
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        [BackingField(nameof(this.trackLength))]
-        public TimeSpan TrackLength
+        [BackingField(nameof(this.trackDuration))]
+        public TimeSpan TrackDuration
         {
-            get => this.trackLength;
-            set => this.trackLength = value;
+            get => this.trackDuration;
+            set => this.trackDuration = value;
         }
 
         // Navigation Properties
@@ -162,18 +162,18 @@ namespace MediaPlayer.Core.Models
         /// Gets a value indicating whether PLACEHOLDER.
         /// </summary>
         [NotMapped]
-        public bool IsLongerThanHour => this.TrackLength > TimeSpan.FromHours(1);
+        public bool IsLongerThanHour => this.TrackDuration > TimeSpan.FromHours(1);
 
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
         [NotMapped]
-        public string DisplayDurationFormat => $"{((this.TrackLength > TimeSpan.FromHours(1)) ? "hh\\:" : string.Empty)}mm\\:ss";
+        public string DisplayDurationFormat => $"{((this.TrackDuration > TimeSpan.FromHours(1)) ? "hh\\:" : string.Empty)}mm\\:ss";
 
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
         [NotMapped]
-        public string DisplayDuration => this.TrackLength.ToString(this.DisplayDurationFormat);
+        public string DisplayDuration => this.TrackDuration.ToString(this.DisplayDurationFormat);
     }
 }

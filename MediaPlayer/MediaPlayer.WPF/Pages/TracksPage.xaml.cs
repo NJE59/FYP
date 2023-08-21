@@ -8,6 +8,9 @@ namespace MediaPlayer.Pages
     /// </summary>
     public partial class TracksPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TracksPage"/> class.
+        /// </summary>
         public TracksPage()
         {
             InitializeComponent();

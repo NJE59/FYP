@@ -52,7 +52,7 @@ namespace MediaPlayer.Core.ViewModels
         {
             /////////////////////////////////////////////FIX TYPES IN EXTENSION
             this.NavItems.CreateNavItems();
-            this.MediaDB.RemoveRange(this.MediaDB.Albums);
+            /*this.MediaDB.RemoveRange(this.MediaDB.Albums);
             this.MediaDB.RemoveRange(this.MediaDB.Artists);
             this.MediaDB.RemoveRange(this.MediaDB.Contributions);
             this.MediaDB.RemoveRange(this.MediaDB.Discs);
@@ -61,7 +61,7 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.Playlists);
             this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
-            this.MediaDB.SaveChanges();
+            this.MediaDB.SaveChanges();*/
             this.BtnClickCommand = new MvxCommand(this.BtnClick);
             this.NavigateCommand = new MvxCommand(this.Navigate);
             this.PlayTrackCommand = new MvxCommand(this.PlayTrack);
@@ -192,7 +192,7 @@ namespace MediaPlayer.Core.ViewModels
             {
                 this.SetProperty(ref this.loadedTrack, value);
                 this.mediaController.Source = this.LoadedTrack.LoadPath;
-                this.DisplayPosition = TimeSpan.Zero.ToString(this.LoadedTrack.DisplayDurationFormat);
+                this.DisplayPosition = (this.LoadedTrack != null) ? TimeSpan.Zero.ToString(this.LoadedTrack.DisplayDurationFormat) : string.Empty;
                 this.mediaController.Play();
             }
         }
@@ -442,7 +442,7 @@ namespace MediaPlayer.Core.ViewModels
                                     {
                                         track.TrackNum = (int)trackProperties.MusicProps.TrackNumber;
                                         track.TrackName = trackProperties.MusicProps.Title;
-                                        track.TrackLength = trackProperties.MusicProps.Duration;
+                                        track.TrackDuration = trackProperties.MusicProps.Duration;
                                         foreach (var contribution in track.Contributions)
                                         {
                                             if (contributorList.Find(contributorRecord => contributorRecord.Equals(contribution.Contributor)) is ArtistModel contributorCheck)

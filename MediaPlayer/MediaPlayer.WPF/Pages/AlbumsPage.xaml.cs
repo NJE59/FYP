@@ -8,6 +8,9 @@ namespace MediaPlayer.Pages
     /// </summary>
     public partial class AlbumsPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AlbumsPage"/> class.
+        /// </summary>
         public AlbumsPage() => InitializeComponent();
     }
 }

@@ -23,7 +23,7 @@ namespace MediaPlayer.Core.Models
         // Backed Properties
 
         /// <summary>
-        /// Gets or sets what number disc in the album the song is on; saved in files as <see cref="System.Music.PartOfSet"/>.
+        /// Gets or sets what number disc in the album the song is on; saved in files as "System.Music.PartOfSet".
         /// </summary>
         public int DiscNum
         {
@@ -32,7 +32,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets the name of the disc; saved in file as <see cref="System.Music.GroupDescription"/>.
+        /// Gets or sets the name of the disc; saved in file as "System.Music.GroupDescription".
         /// </summary>
         public string DiscName
         {
@@ -50,7 +50,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets a <see cref="List{string}"/> of contributing artists; saved in files as <see cref="System.Music.Artist"/>.
+        /// Gets or sets a <see cref="List{T}"/> of contributing artists; saved in files as "System.Music.Artist".
         /// </summary>
         public List<string> Artists
         {

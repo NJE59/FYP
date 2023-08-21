@@ -14,7 +14,7 @@ namespace MediaPlayer.Core.Models
     public class SongStyleModel
     {
         // Primary Key Backing Fields
-        private int trackGenreID;
+        private int songStyleID;
 
         // Foreign Key Backing Fields
         private int trackID;
@@ -25,12 +25,12 @@ namespace MediaPlayer.Core.Models
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        [BackingField(nameof(this.trackGenreID))]
+        [BackingField(nameof(this.songStyleID))]
         [Key]
-        public int TrackGenreID
+        public int SongStyleID
         {
-            get => this.trackGenreID;
-            set => this.trackGenreID = value;
+            get => this.songStyleID;
+            set => this.songStyleID = value;
         }
 
         // Foreign Key Backed Properties

@@ -8,6 +8,9 @@ namespace MediaPlayer.WPF.Views
     /// </summary>
     public partial class MediaLibraryView : MvxWpfView
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MediaLibraryView"/> class.
+        /// </summary>
         public MediaLibraryView()
         {
             InitializeComponent();
