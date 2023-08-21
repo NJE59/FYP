@@ -1,35 +1,70 @@
-﻿using Windows.Storage.FileProperties;
+﻿// <copyright file="FilePropertiesModel.cs" company="Nathan Errington">
+// Copyright (c) Nathan Errington. All rights reserved.
+// </copyright>
 
 namespace MediaPlayer.Core.Models
 {
+    using Windows.Storage.FileProperties;
+
     /// <summary>
-    /// Class used for handling properties of music files not handled by the <see cref="MusicProperties"/> class
+    /// Class used for handling properties of music files not handled by the <see cref="MusicProperties"/> class.
     /// </summary>
     public class FilePropertiesModel
     {
+        // Backing Fields
+        private int discNum;
+
+        private string discName = null!;
+        private string path = null!;
+
+        private List<string> artists = null!;
+        private MusicProperties musicProps = null!;
+
+        // Backed Properties
+
         /// <summary>
-        /// Full path to the file
+        /// Gets or sets what number disc in the album the song is on; saved in files as <see cref="System.Music.PartOfSet"/>.
         /// </summary>
-        public string Path = null!;
+        public int DiscNum
+        {
+            get => this.discNum;
+            set => this.discNum = value;
+        }
+
         /// <summary>
-        /// List of contributing artists; saved in files as <see cref="System.Music.Artist"/>
+        /// Gets or sets the name of the disc; saved in file as <see cref="System.Music.GroupDescription"/>.
         /// </summary>
-        public List<string> Artists = null!;
+        public string DiscName
+        {
+            get => this.discName;
+            set => this.discName = value;
+        }
+
         /// <summary>
-        /// What number disc in the album the song is on; saved in files as <see cref="System.Music.PartOfSet"/>
+        /// Gets or sets the full path to the file.
         /// </summary>
-        public int DiscNum;
+        public string Path
+        {
+            get => this.path;
+            set => this.path = value;
+        }
+
         /// <summary>
-        /// Name of disc in album; saved in file as <see cref="System.Music.GroupDescription"/>
+        /// Gets or sets a <see cref="List{string}"/> of contributing artists; saved in files as <see cref="System.Music.Artist"/>.
         /// </summary>
-        public string DiscName = null!;
+        public List<string> Artists
+        {
+            get => this.artists;
+            set => this.artists = value;
+        }
+
         /// <summary>
-        /// Denotes whether or not album has multiple discs; saved in file as <see cref="System.Music.IsCompilation"/>
+        /// Gets or sets the standard music file properties (album, title etc).
         /// </summary>
-        public bool IsMultiDisc;
-        /// <summary>
-        /// Standard music file properties (album, title etc)
-        /// </summary>
-        public MusicProperties MusicProperties = null!;
+        public MusicProperties MusicProps
+        {
+            get => this.musicProps;
+            set => this.musicProps = value;
+        }
     }
 }

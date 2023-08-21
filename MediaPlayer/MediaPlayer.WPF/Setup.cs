@@ -1,22 +1,34 @@
-﻿using MediaPlayer.Core;
-using MediaPlayer.Core.Interfaces;
-using MediaPlayer.WPF.Classes;
-using Microsoft.Extensions.Logging;
-using MvvmCross;
-using MvvmCross.IoC;
-using MvvmCross.Platforms.Wpf.Core;
-using Serilog;
-using Serilog.Extensions.Logging;
+﻿// <copyright file="Setup.cs" company="Nathan Errington">
+// Copyright (c) Nathan Errington. All rights reserved.
+// </copyright>
 
 namespace MediaPlayer.WPF
 {
+    using MediaPlayer.Core.Interfaces;
+    using MediaPlayer.WPF.Classes;
+    using Microsoft.Extensions.Logging;
+    using MvvmCross;
+    using MvvmCross.IoC;
+    using MvvmCross.Platforms.Wpf.Core;
+    using Serilog;
+    using Serilog.Extensions.Logging;
+
+    /// <inheritdoc cref="MvxWpfSetup" path='/summary'/>
     public class Setup : MvxWpfSetup<Core.Application>
     {
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        /// <returns><inheritdoc cref="SerilogLoggerProvider" path='/summary'/></returns>
         protected override ILoggerProvider? CreateLogProvider()
         {
             return new SerilogLoggerProvider();
         }
 
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        /// <returns><inheritdoc cref="SerilogLoggerFactory" path='/summary'/></returns>
         protected override ILoggerFactory? CreateLogFactory()
         {
             // serilog configuration
@@ -27,6 +39,10 @@ namespace MediaPlayer.WPF
             return new SerilogLoggerFactory();
         }
 
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        /// <param name="iocProvider"><inheritdoc cref="IMvxIocProvider" path='/summary'/></param>
         protected override void InitializeFirstChance(IMvxIoCProvider iocProvider)
         {
             Mvx.IoCProvider.RegisterType<ITimerFactory, TimerFactory>();

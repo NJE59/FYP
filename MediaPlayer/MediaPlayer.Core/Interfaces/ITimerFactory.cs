@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// <copyright file="ITimerFactory.cs" company="Nathan Errington">
+// Copyright (c) Nathan Errington. All rights reserved.
+// </copyright>
 
 namespace MediaPlayer.Core.Interfaces
 {
+    /// <summary>
+    /// PLACEHOLDER.
+    /// </summary>
     public interface ITimerFactory
     {
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        /// <returns>PLACEHOLDER1.</returns>
         ITimer CreateTimer();
     }
 }

@@ -1,5 +1,5 @@
-﻿// <copyright file="MediaLibraryViewModel.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="MediaLibraryViewModel.cs" company="Nathan Errington">
+// Copyright (c) Nathan Errington. All rights reserved.
 // </copyright>
 
 namespace MediaPlayer.Core.ViewModels
@@ -33,13 +33,13 @@ namespace MediaPlayer.Core.ViewModels
 
         private int playerVolume = 50;
 
-        private string displayPosition;
+        private string displayPosition = null!;
 
-        private AlbumModel selectedAlbum;
-        private ArtistModel selectedArtist;
-        private DiscModel selectedDisc;
-        private TrackModel selectedTrack;
-        private TrackModel loadedTrack;
+        private AlbumModel selectedAlbum = null!;
+        private ArtistModel selectedArtist = null!;
+        private DiscModel selectedDisc = null!;
+        private TrackModel selectedTrack = null!;
+        private TrackModel loadedTrack = null!;
 
         private ObservableCollection<MenuItemModel> navItems = new ();
 
@@ -52,16 +52,16 @@ namespace MediaPlayer.Core.ViewModels
         {
             /////////////////////////////////////////////FIX TYPES IN EXTENSION
             this.NavItems.CreateNavItems();
-            /*MediaDB.RemoveRange(MediaDB.Albums);
-            MediaDB.RemoveRange(MediaDB.Artists);
-            MediaDB.RemoveRange(MediaDB.Contributions);
-            MediaDB.RemoveRange(MediaDB.Discs);
-            MediaDB.RemoveRange(MediaDB.Genres);
-            MediaDB.RemoveRange(MediaDB.Listings);
-            MediaDB.RemoveRange(MediaDB.Playlists);
-            MediaDB.RemoveRange(MediaDB.SongStyles);
-            MediaDB.RemoveRange(MediaDB.Tracks);
-            MediaDB.SaveChanges();*/
+            this.MediaDB.RemoveRange(this.MediaDB.Albums);
+            this.MediaDB.RemoveRange(this.MediaDB.Artists);
+            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
+            this.MediaDB.RemoveRange(this.MediaDB.Discs);
+            this.MediaDB.RemoveRange(this.MediaDB.Genres);
+            this.MediaDB.RemoveRange(this.MediaDB.Listings);
+            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
+            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
+            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
+            this.MediaDB.SaveChanges();
             this.BtnClickCommand = new MvxCommand(this.BtnClick);
             this.NavigateCommand = new MvxCommand(this.Navigate);
             this.PlayTrackCommand = new MvxCommand(this.PlayTrack);
@@ -192,6 +192,7 @@ namespace MediaPlayer.Core.ViewModels
             {
                 this.SetProperty(ref this.loadedTrack, value);
                 this.mediaController.Source = this.LoadedTrack.LoadPath;
+                this.DisplayPosition = TimeSpan.Zero.ToString(this.LoadedTrack.DisplayDurationFormat);
                 this.mediaController.Play();
             }
         }
@@ -271,7 +272,7 @@ namespace MediaPlayer.Core.ViewModels
         {
             if (this.mediaController.Source != null && this.mediaController.HasTimeSpan)
             {
-                this.DisplayPosition = this.mediaController.Position.ToString(this.LoadedTrack.DisplayFormat);
+                this.DisplayPosition = this.mediaController.Position.ToString(this.LoadedTrack.DisplayDurationFormat);
             }
             else
             {
@@ -322,11 +323,9 @@ namespace MediaPlayer.Core.ViewModels
                         is string discNameCheck) ?
                             discNameCheck :
                             string.Empty,
-                    IsMultiDisc = (songFile.Properties.RetrieveProperty("System.Music.IsCompilation")
-                        is bool isMultiDiscCheck) && isMultiDiscCheck,
-                    MusicProperties = songFile.Properties.GetMusicProperties(),
+                    MusicProps = songFile.Properties.GetMusicProperties(),
                 }).
-                GroupBy(trackProperties => trackProperties.MusicProperties.Genre);
+                GroupBy(trackProperties => trackProperties.MusicProps.Genre);
 
             foreach (var genreGroup in genreGroupedTracks)
             {
@@ -343,7 +342,7 @@ namespace MediaPlayer.Core.ViewModels
                 }
 
                 var artistGroupedTracks = genreGroup.
-                    GroupBy(trackProperties => trackProperties.MusicProperties.AlbumArtist);
+                    GroupBy(trackProperties => trackProperties.MusicProps.AlbumArtist);
 
                 foreach (var artistGroup in artistGroupedTracks)
                 {
@@ -356,8 +355,8 @@ namespace MediaPlayer.Core.ViewModels
                     var albumGroupedTracks = artistGroup.
                         GroupBy(trackProperties => new
                         {
-                            trackProperties.MusicProperties.Album,
-                            trackProperties.MusicProperties.Year,
+                            trackProperties.MusicProps.Album,
+                            trackProperties.MusicProps.Year,
                         });
 
                     foreach (var albumGroup in albumGroupedTracks)
@@ -428,8 +427,8 @@ namespace MediaPlayer.Core.ViewModels
                                     var track = (disc.Tracks.SingleOrDefault(trackRecord =>
                                             string.Equals(trackProperties.Path, trackRecord.Path, StringComparison.OrdinalIgnoreCase) ||
                                             (!File.Exists(trackRecord.Path) &&
-                                            (uint)trackRecord.TrackNum == trackProperties.MusicProperties.TrackNumber &&
-                                            string.Equals(trackRecord.TrackName, trackProperties.MusicProperties.Title, StringComparison.OrdinalIgnoreCase) &&
+                                            (uint)trackRecord.TrackNum == trackProperties.MusicProps.TrackNumber &&
+                                            string.Equals(trackRecord.TrackName, trackProperties.MusicProps.Title, StringComparison.OrdinalIgnoreCase) &&
                                             trackRecord.Contributions.
                                                 Select(contributionRecord => contributionRecord.Contributor).
                                                 Equals(contributorList) &&
@@ -441,9 +440,9 @@ namespace MediaPlayer.Core.ViewModels
                                     /////////////////////////////////////////////////////
                                     if (File.Exists(track.Path))
                                     {
-                                        track.TrackNum = (int)trackProperties.MusicProperties.TrackNumber;
-                                        track.TrackName = trackProperties.MusicProperties.Title;
-                                        track.TrackLength = trackProperties.MusicProperties.Duration;
+                                        track.TrackNum = (int)trackProperties.MusicProps.TrackNumber;
+                                        track.TrackName = trackProperties.MusicProps.Title;
+                                        track.TrackLength = trackProperties.MusicProps.Duration;
                                         foreach (var contribution in track.Contributions)
                                         {
                                             if (contributorList.Find(contributorRecord => contributorRecord.Equals(contribution.Contributor)) is ArtistModel contributorCheck)

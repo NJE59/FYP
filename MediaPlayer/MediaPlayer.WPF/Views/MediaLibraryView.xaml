@@ -50,7 +50,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding DisplayPosition}" />
                     <TextBlock Text=" / " />
-                    <TextBlock Text="{Binding LoadedTrack.DisplayLength}" />
+                    <TextBlock Text="{Binding LoadedTrack.DisplayDuration}" />
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
@@ -81,7 +81,7 @@
                             Minimum="0"
                             Maximum="100"
                             Interval="1"
-                            Value="{Binding ControlVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            Value="{Binding PlayerVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Width="50"
                             AutoToolTipPlacement="BottomRight" />
                 </WrapPanel>

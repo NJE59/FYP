@@ -1,22 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
-    <RuntimeIdentifiers>win10-x64;win10-x86;win10-arm64</RuntimeIdentifiers>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FFmpeg.Shared" Version="4.0.2" />
-    <PackageReference Include="MvvmCross.Platforms.Wpf" Version="9.1.1" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="zgabi.FFME.Windows" Version="6.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\MediaPlayer.Core\MediaPlayer.Core.csproj" />
-  </ItemGroup>
-
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
+		<RuntimeIdentifiers>win10-x64;win10-x86;win10-arm64</RuntimeIdentifiers>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="FFmpeg.Shared" Version="4.0.2" />
+		<PackageReference Include="MvvmCross.Platforms.Wpf" Version="9.1.1" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
+		<PackageReference Include="zgabi.FFME.Windows" Version="6.0.2" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\MediaPlayer.Core\MediaPlayer.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="stylecop.json" />
+	</ItemGroup>
 </Project>

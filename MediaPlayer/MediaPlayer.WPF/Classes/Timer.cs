@@ -1,37 +1,63 @@
-﻿using MediaPlayer.Core.Interfaces;
-using System;
-using System.Windows.Threading;
+﻿// <copyright file="Timer.cs" company="Nathan Errington">
+// Copyright (c) Nathan Errington. All rights reserved.
+// </copyright>
 
 namespace MediaPlayer.WPF.Classes
 {
+    using System;
+    using System.Windows.Threading;
+    using MediaPlayer.Core.Interfaces;
+
+    /// <summary>
+    /// PLACEHOLDER.
+    /// </summary>
     public class Timer : ITimer
     {
         private readonly DispatcherTimer internalTimer;
-        
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Timer"/> class.
+        /// </summary>
         public Timer()
         {
-            internalTimer = new DispatcherTimer();
+            this.internalTimer = new DispatcherTimer();
         }
 
-        public bool IsEnabled
-        {
-            get => internalTimer.IsEnabled;
-            set => internalTimer.IsEnabled = value;
-        }
-
-        public TimeSpan Interval
-        {
-            get => internalTimer.Interval;
-            set => internalTimer.Interval = value;
-        }
-
-        public void Start() => internalTimer.Start();
-        public void Stop() => internalTimer.Stop();
-
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
         public event EventHandler Tick
         {
-            add => internalTimer.Tick += value;
-            remove => internalTimer.Tick -= value;
+            add => this.internalTimer.Tick += value;
+            remove => this.internalTimer.Tick -= value;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        public bool IsEnabled
+        {
+            get => this.internalTimer.IsEnabled;
+            set => this.internalTimer.IsEnabled = value;
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public TimeSpan Interval
+        {
+            get => this.internalTimer.Interval;
+            set => this.internalTimer.Interval = value;
+        }
+
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        public void Start() => this.internalTimer.Start();
+
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        public void Stop() => this.internalTimer.Stop();
     }
 }
