@@ -29,6 +29,8 @@ namespace MediaPlayer.Core.Models
         [NotMapped]
         public bool IsLongerThanHour => TrackLength > TimeSpan.FromHours(1);
         [NotMapped]
-        public string DisplayLength => TrackLength.ToString($"{((TrackLength > TimeSpan.FromHours(1)) ? "hh\\:" : "")}mm\\:ss");
+        public string DisplayFormat => $"{((TrackLength > TimeSpan.FromHours(1)) ? "hh\\:" : "")}mm\\:ss";
+        [NotMapped]
+        public string DisplayLength => TrackLength.ToString(DisplayFormat);
     }
 }

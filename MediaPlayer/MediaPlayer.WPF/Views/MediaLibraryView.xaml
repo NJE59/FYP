@@ -8,12 +8,6 @@
                   xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
                   mc:Ignorable="d">
     <DockPanel>
-        <MediaElement x:Name="MusicPlayer" 
-                      Source="{Binding LoadedTrack.LoadPath}"
-                      LoadedBehavior="Play"
-                      Volume="{Binding PlayerVolume}"
-                      Visibility="Collapsed"/>
-
         <Menu x:Name="TopMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header=" = Open" />
@@ -54,6 +48,8 @@
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding DisplayPosition}" />
+                    <TextBlock Text=" / " />
                     <TextBlock Text="{Binding LoadedTrack.DisplayLength}" />
                 </StackPanel>
             </StatusBarItem>
