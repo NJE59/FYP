@@ -97,5 +97,13 @@ namespace MediaPlayer.Core.Classes
             navItems.Add(mniPlaylists);
             return navItems;
         }
+
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        /// <typeparam name="T">.</typeparam>
+        /// <param name="input"><inheritdoc cref="IEnumerable{T}" path='/summary'/></param>
+        /// <returns>new PLACEHOLDER.</returns>
+        public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> input) => new (input);
     }
 }

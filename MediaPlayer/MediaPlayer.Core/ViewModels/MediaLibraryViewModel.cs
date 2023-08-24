@@ -6,6 +6,7 @@ namespace MediaPlayer.Core.ViewModels
 {
     using System.Collections.ObjectModel;
     using System.Diagnostics;
+    using System.Windows.Input;
     using MediaPlayer.Core.Classes;
     using MediaPlayer.Core.Data;
     using MediaPlayer.Core.Interfaces;
@@ -19,29 +20,39 @@ namespace MediaPlayer.Core.ViewModels
     /// </summary>
     public class MediaLibraryViewModel : MvxViewModel
     {
-        /// <summary>
-        /// Value for disc number property in single disc albums and for unconfigured discs.
-        /// </summary>
+        // Readonly Primitive Backing Fields
         private readonly int defaultDiscNum = 0;
 
-        private readonly ITimerFactory timerFactory;
-        private readonly ITimer timer;
+        // Readonly Non-Primitive Backing Fields
         private readonly IMediaControllerFactory mediaControllerFactory;
         private readonly IMediaController mediaController;
-
+        private readonly ITimerFactory timerFactory;
+        private readonly ITimer timer;
         private readonly MediaDBContext mediaDB = new ();
 
+        // Primitive Backing Fields
+        private bool isUserDraggingPosition = false;
+        private int playerPosition = 0;
         private int playerVolume = 50;
 
-        private string displayPosition = null!;
-
+        // Non-Primitive Backing Fields
         private AlbumModel selectedAlbum = null!;
         private ArtistModel selectedArtist = null!;
         private DiscModel selectedDisc = null!;
         private TrackModel selectedTrack = null!;
         private TrackModel loadedTrack = null!;
 
+        // Command Backing Fields
+        private IMvxCommand btnClickCommand;
+        private IMvxCommand navigateCommand;
+        private IMvxCommand playTrackCommand;
+        private IMvxCommand slideStartedCommand;
+        private IMvxCommand slideCompletedCommand;
+
+        // private TimeSpan _trackPosition = TimeSpan.Zero;
         private ObservableCollection<MenuItemModel> navItems = new ();
+
+        // Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaLibraryViewModel"/> class.
@@ -62,138 +73,47 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
             this.MediaDB.SaveChanges();*/
-            this.BtnClickCommand = new MvxCommand(this.BtnClick);
-            this.NavigateCommand = new MvxCommand(this.Navigate);
-            this.PlayTrackCommand = new MvxCommand(this.PlayTrack);
+            this.btnClickCommand = new MvxCommand(this.BtnClick);
+            this.navigateCommand = new MvxCommand(this.Navigate);
+            this.playTrackCommand = new MvxCommand(this.PlayTrack);
+            this.slideStartedCommand = new MvxCommand(this.SlideStarted);
+            this.slideCompletedCommand = new MvxCommand(this.SlideCompleted);
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
+#pragma warning disable CS8601 // Possible null reference assignment.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
             this.SelectedAlbum = this.SelectedArtist.Albums.FirstOrDefault();
             this.SelectedDisc = this.SelectedAlbum.Discs.FirstOrDefault();
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             this.mediaControllerFactory = newMediaControllerFactory;
             this.mediaController = this.mediaControllerFactory.CreateMediaController();
             this.timerFactory = newTimerFactory;
             this.timer = this.timerFactory.CreateTimer();
             this.timer.Interval = TimeSpan.FromSeconds(1);
-            this.timer.Tick += this.Timer_Tick;
+            this.timer.Tick += this.TimerTick;
             this.timer.Start();
         }
+
+        // Readonly Backed Properties
 
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
         public MediaDBContext MediaDB => this.mediaDB;
 
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        public ObservableCollection<ArtistModel> DisplayArtists => new (
-        this.MediaDB.Artists.
-                OrderBy(artist => artist.ArtistName));
+        // Primitive Backed Properties
 
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public ArtistModel SelectedArtist
+        public int PlayerPosition
         {
-            get => this.selectedArtist;
+            get => this.playerPosition;
             set
             {
-                this.SetProperty(ref this.selectedArtist, value);
-                this.SelectedAlbum = this.DisplayArtistsAlbums.First();
-                this.RaisePropertyChanged(() => this.DisplayArtistsAlbums);
-            }
-        }
-
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        public ObservableCollection<AlbumModel> DisplayArtistsAlbums => new (
-            this.SelectedArtist.Albums.
-                OrderBy(album => album.AlbumName));
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public AlbumModel SelectedAlbum
-        {
-            get => this.selectedAlbum;
-            set
-            {
-                this.SetProperty(ref this.selectedAlbum, value);
-                this.SelectedDisc = this.DisplayAlbumsDiscs.First();
-                this.RaisePropertyChanged(() => this.DisplayAlbumsDiscs);
-            }
-        }
-
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        public ObservableCollection<DiscModel> DisplayAlbumsDiscs => new (
-            this.SelectedAlbum.Discs.
-                OrderBy(disc => disc.DiscNum));
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public DiscModel SelectedDisc
-        {
-            get => this.selectedDisc;
-            set
-            {
-                this.SetProperty(ref this.selectedDisc, value);
-                this.SelectedTrack = this.DisplayDiscsTracks.First();
-                this.RaisePropertyChanged(() => this.DisplayDiscsTracks);
-            }
-        }
-
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        public ObservableCollection<TrackModel> DisplayDiscsTracks => new (
-            this.SelectedDisc.Tracks.
-                OrderBy(track => track.TrackNum));
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public TrackModel SelectedTrack
-        {
-            get => this.selectedTrack;
-            set => this.SetProperty(ref this.selectedTrack, value);
-        }
-
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        public ObservableCollection<TrackModel> TracksDisplay => new (
-            this.MediaDB.Tracks.
-            OrderBy(track => track.AlbumArtist.ArtistName).
-                ThenBy(track => track.Album.AlbumName).
-                ThenBy(track => track.Disc.DiscNum).
-                ThenBy(track => track.TrackNum).
-                ThenBy(track => track.TrackID));
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public ObservableCollection<MenuItemModel> NavItems
-        {
-            get => this.navItems;
-            set => this.SetProperty(ref this.navItems, value);
-        }
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public TrackModel LoadedTrack
-        {
-            get => this.loadedTrack;
-            set
-            {
-                this.SetProperty(ref this.loadedTrack, value);
-                this.mediaController.Source = this.LoadedTrack.LoadPath;
-                this.DisplayPosition = (this.LoadedTrack != null) ? TimeSpan.Zero.ToString(this.LoadedTrack.DisplayDurationFormat) : string.Empty;
-                this.mediaController.Play();
+                this.SetProperty(ref this.playerPosition, value);
+                this.RaisePropertyChanged(() => this.DisplayPosition);
             }
         }
 
@@ -210,53 +130,194 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
+        // Non-Primitive Backed Properties
+
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public string DisplayPosition
+        public ArtistModel SelectedArtist
         {
-            get => this.displayPosition;
-            set => this.SetProperty(ref this.displayPosition, value);
-        }
-
-        /*private TimeSpan _trackPosition = TimeSpan.Zero;
-
-        public TimeSpan TrackPosition
-        {
-            get { return _trackPosition; }
-            set { SetProperty(ref _trackPosition, value); }
-        }*/
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand PlayTrackCommand { get; set; }
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand NavigateCommand { get; set; }
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand BtnClickCommand { get; set; }
-
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
-        public void PlayTrack()
-        {
-            this.LoadedTrack = this.SelectedTrack;
+            get => this.selectedArtist;
+            set
+            {
+                this.SetProperty(ref this.selectedArtist, value);
+                this.SelectedAlbum = this.DisplayArtistsAlbums.First();
+                this.RaisePropertyChanged(() => this.DisplayArtistsAlbums);
+            }
         }
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public void BtnClick()
+        public AlbumModel SelectedAlbum
         {
-            Debug.WriteLine("Testing");
+            get => this.selectedAlbum;
+            set
+            {
+                this.SetProperty(ref this.selectedAlbum, value);
+                this.SelectedDisc = this.DisplayAlbumsDiscs.First();
+                this.RaisePropertyChanged(() => this.DisplayAlbumsDiscs);
+            }
         }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public DiscModel SelectedDisc
+        {
+            get => this.selectedDisc;
+            set
+            {
+                this.SetProperty(ref this.selectedDisc, value);
+                this.SelectedTrack = this.DisplayDiscsTracks.First();
+                this.RaisePropertyChanged(() => this.DisplayDiscsTracks);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public TrackModel SelectedTrack
+        {
+            get => this.selectedTrack;
+            set => this.SetProperty(ref this.selectedTrack, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public TrackModel LoadedTrack
+        {
+            get => this.loadedTrack;
+            set
+            {
+                this.SetProperty(ref this.loadedTrack, value);
+
+                if (this.IsTrackLoaded)
+                {
+                    this.mediaController.Source = this.LoadedTrack.LoadPath;
+                    this.mediaController.Play();
+                }
+
+                this.RaisePropertyChanged(() => this.IsTrackLoaded);
+                this.RaisePropertyChanged(() => this.DisplayPosition);
+            }
+        }
+
+        /*public TimeSpan TrackPosition
+       {
+           get { return _trackPosition; }
+           set { SetProperty(ref _trackPosition, value); }
+       }*/
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<MenuItemModel> NavItems
+        {
+            get => this.navItems;
+            set => this.SetProperty(ref this.navItems, value);
+        }
+
+        // Primitive Accessors
+
+        /// <summary>
+        /// Gets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        public bool IsTrackLoaded => this.MediaDB.Tracks.Contains(this.LoadedTrack);
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public string DisplayPosition => this.IsTrackLoaded ?
+            TimeSpan.FromSeconds(this.PlayerPosition).ToString(this.LoadedTrack.DisplayDurationFormat) :
+            string.Empty;
+
+        // Non-Primitive Accessors
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<ArtistModel> DisplayArtists => this.MediaDB.Artists.
+                OrderBy(artist => artist.ArtistName).ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<AlbumModel> DisplayArtistsAlbums => this.SelectedArtist.Albums.
+                OrderBy(album => album.AlbumName).ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<DiscModel> DisplayAlbumsDiscs => this.SelectedAlbum.Discs.
+            OrderBy(disc => disc.DiscNum).ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<TrackModel> DisplayDiscsTracks => this.SelectedDisc.Tracks.
+                OrderBy(track => track.TrackNum).ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<TrackModel> TracksDisplay => this.MediaDB.Tracks.
+            OrderBy(track => track.AlbumArtist.ArtistName).
+                ThenBy(track => track.Album.AlbumName).
+                ThenBy(track => track.Disc.DiscNum).
+                ThenBy(track => track.TrackNum).
+                ThenBy(track => track.TrackID).
+            ToObservableCollection();
+
+        // Command Backed Properties
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayTrackCommand
+        {
+            get => this.playTrackCommand ??= new MvxCommand(this.PlayTrack);
+            set => this.SetProperty(ref this.playTrackCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand NavigateCommand
+        {
+            get => this.navigateCommand ??= new MvxCommand(this.Navigate);
+            set => this.SetProperty(ref this.navigateCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand BtnClickCommand
+        {
+            get => this.btnClickCommand ??= new MvxCommand(this.BtnClick);
+            set => this.SetProperty(ref this.btnClickCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand SlideStartedCommand
+        {
+            get => this.slideStartedCommand;
+            set => this.SetProperty(ref this.slideStartedCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand SlideCompletedCommand
+        {
+            get => this.slideCompletedCommand ??= new MvxCommand(this.SlideCompleted);
+            set => this.SetProperty(ref this.slideCompletedCommand, value);
+        }
+
+        // Protected Methods
 
         /// <summary>
         /// PLACEHOLDER.
@@ -268,26 +329,10 @@ namespace MediaPlayer.Core.ViewModels
             // base.OnClosing(e);
         }
 
-        private void Timer_Tick(object? sender, object e)
+        // Private Methods
+        private void BtnClick()
         {
-            if (this.mediaController.Source != null && this.mediaController.HasTimeSpan)
-            {
-                this.DisplayPosition = this.mediaController.Position.ToString(this.LoadedTrack.DisplayDurationFormat);
-            }
-            else
-            {
-                this.DisplayPosition = string.Empty;
-            }
-        }
-
-        private void Navigate()
-        {
-            Debug.WriteLine("Navigating");
-            /*if (tvNav.SelectedItem != null)
-            {
-                Type pageType = ((MenuItem)tvNav.SelectedItem).PageType;
-                MainView.Content = (Page)Activator.CreateInstance(pageType);
-            }*/
+            Debug.WriteLine("Testing");
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -480,6 +525,46 @@ namespace MediaPlayer.Core.ViewModels
                         }
                     }
                 }
+            }
+        }
+
+        private void Navigate()
+        {
+            Debug.WriteLine("Navigating");
+            /*if (tvNav.SelectedItem != null)
+            {
+                Type pageType = ((MenuItem)tvNav.SelectedItem).PageType;
+                MainView.Content = (Page)Activator.CreateInstance(pageType);
+            }*/
+        }
+
+        private void PlayTrack()
+        {
+            this.LoadedTrack = this.SelectedTrack;
+        }
+
+        private void SlideStarted()
+        {
+            Debug.WriteLine("Slide Started");
+            this.isUserDraggingPosition = true;
+        }
+
+        private void SlideCompleted()
+        {
+            Debug.WriteLine("Slide Completed");
+            this.isUserDraggingPosition = false;
+            this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
+        }
+
+        private void TimerTick(object? sender, object e)
+        {
+            if (this.mediaController.Source != null && this.mediaController.HasTimeSpan)
+            {
+                this.PlayerPosition = this.isUserDraggingPosition ? this.PlayerPosition : (int)this.mediaController.Position.TotalSeconds;
+            }
+            else
+            {
+                this.PlayerPosition = 0;
             }
         }
     }

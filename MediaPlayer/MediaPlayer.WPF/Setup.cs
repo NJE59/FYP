@@ -45,7 +45,9 @@ namespace MediaPlayer.WPF
         /// <param name="iocProvider"><inheritdoc cref="Mvx.IoCProvider" path='/summary'/></param>
         protected override void InitializeFirstChance(IMvxIoCProvider iocProvider)
         {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             Mvx.IoCProvider.RegisterType<ITimerFactory, TimerFactory>();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             Mvx.IoCProvider.RegisterType<IMediaControllerFactory, MediaControllerFactory>();
             base.InitializeFirstChance(iocProvider);
         }

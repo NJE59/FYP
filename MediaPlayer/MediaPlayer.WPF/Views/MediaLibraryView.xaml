@@ -4,9 +4,15 @@
                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                   xmlns:local="clr-namespace:MediaPlayer.WPF.Views"
+                  xmlns:extensions="clr-namespace:MediaPlayer.WPF.Classes"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
+                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf" 
+                  xmlns:viewmodels="clr-namespace:MediaPlayer.Core.ViewModels;assembly=MediaPlayer.Core"
+                  d:DataContext="{d:DesignInstance Type=viewmodels:MediaLibraryViewModel}"
                   mc:Ignorable="d">
+    <views:MvxWpfView.Resources>
+        
+    </views:MvxWpfView.Resources>
     <DockPanel>
         <Menu x:Name="TopMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">
@@ -42,9 +48,14 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
             <StatusBarItem Grid.Row="0" Grid.ColumnSpan="5">
-                <Slider Maximum="100"
-                        Width="{Binding Path=ActualWidth, ElementName=sbControl}"
-                        HorizontalContentAlignment="Stretch" />
+                <Slider Minimum="0"
+                        Maximum="{Binding LoadedTrack.ControlDuration}"
+                        Width="{Binding Path=ActualWidth, ElementName=PlayPanel}"
+                        extensions:SliderExtension.DragStartedCommand="{Binding SlideStartedCommand}"
+                        extensions:SliderExtension.DragCompletedCommand="{Binding SlideCompletedCommand}"
+                        Value="{Binding PlayerPosition, Mode=TwoWay}"
+                        HorizontalContentAlignment="Stretch"
+                        IsEnabled="{Binding IsTrackLoaded}" />
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
@@ -84,6 +95,7 @@
                             Value="{Binding PlayerVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Width="50"
                             AutoToolTipPlacement="BottomRight" />
+                    <TextBlock Text="{Binding Test}" />
                 </WrapPanel>
             </StatusBarItem>
         </StatusBar>
@@ -215,7 +227,7 @@
             </DataGrid>
             <Button Content="Save"
                     Grid.Row="4"
-                    mvx:Bi.nd="Command btnClickCommand"
+                    mvx:Bi.nd="Command BtnClickCommand"
                     HorizontalAlignment="Center">
                 <!--Click="Button_Click"-->
             </Button>

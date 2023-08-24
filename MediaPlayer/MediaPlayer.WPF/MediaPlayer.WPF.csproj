@@ -9,10 +9,12 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FFmpeg.Shared" Version="4.0.2" />
 		<PackageReference Include="MvvmCross.Platforms.Wpf" Version="9.1.1" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
-		<PackageReference Include="zgabi.FFME.Windows" Version="6.0.2" />
+		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 	</ItemGroup>
 	
 	<ItemGroup>

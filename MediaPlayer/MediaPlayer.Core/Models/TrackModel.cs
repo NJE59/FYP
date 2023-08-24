@@ -141,6 +141,30 @@ namespace MediaPlayer.Core.Models
         // NotMapped Properties
 
         /// <summary>
+        /// Gets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public bool IsLongerThanHour => this.TrackDuration > TimeSpan.FromHours(1);
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public int ControlDuration => (int)this.TrackDuration.TotalSeconds;
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public string DisplayDurationFormat => $"{((this.TrackDuration > TimeSpan.FromHours(1)) ? "hh\\:" : string.Empty)}mm\\:ss";
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public string DisplayDuration => this.TrackDuration.ToString(this.DisplayDurationFormat);
+
+        /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
         [NotMapped]
@@ -157,23 +181,5 @@ namespace MediaPlayer.Core.Models
         /// </summary>
         [NotMapped]
         public Uri LoadPath => new Uri(this.Path);
-
-        /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
-        /// </summary>
-        [NotMapped]
-        public bool IsLongerThanHour => this.TrackDuration > TimeSpan.FromHours(1);
-
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        [NotMapped]
-        public string DisplayDurationFormat => $"{((this.TrackDuration > TimeSpan.FromHours(1)) ? "hh\\:" : string.Empty)}mm\\:ss";
-
-        /// <summary>
-        /// Gets PLACEHOLDER.
-        /// </summary>
-        [NotMapped]
-        public string DisplayDuration => this.TrackDuration.ToString(this.DisplayDurationFormat);
     }
 }
