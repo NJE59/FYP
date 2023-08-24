@@ -31,6 +31,7 @@ namespace MediaPlayer.Core.ViewModels
         private readonly MediaDBContext mediaDB = new ();
 
         // Primitive Backing Fields
+        private bool isSongPlaying = false;
         private bool isUserDraggingPosition = false;
         private int playerPosition = 0;
         private int playerVolume = 50;
@@ -44,10 +45,12 @@ namespace MediaPlayer.Core.ViewModels
 
         // Command Backing Fields
         private IMvxCommand btnClickCommand;
-        private IMvxCommand navigateCommand;
-        private IMvxCommand playTrackCommand;
+        private IMvxCommand playPauseCommand;
+        private IMvxCommand stopCommand;
         private IMvxCommand slideStartedCommand;
         private IMvxCommand slideCompletedCommand;
+        private IMvxCommand startTrackCommand;
+        private IMvxCommand navigateCommand;
 
         // private TimeSpan _trackPosition = TimeSpan.Zero;
         private ObservableCollection<MenuItemModel> navItems = new ();
@@ -73,12 +76,17 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
             this.MediaDB.SaveChanges();*/
+
             this.btnClickCommand = new MvxCommand(this.BtnClick);
             this.navigateCommand = new MvxCommand(this.Navigate);
-            this.playTrackCommand = new MvxCommand(this.PlayTrack);
+            this.playPauseCommand = new MvxCommand(this.PlayPause);
+            this.stopCommand = new MvxCommand(this.Stop);
             this.slideStartedCommand = new MvxCommand(this.SlideStarted);
             this.slideCompletedCommand = new MvxCommand(this.SlideCompleted);
+            this.startTrackCommand = new MvxCommand(this.StartTrack);
+
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
+
 #pragma warning disable CS8601 // Possible null reference assignment.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
@@ -86,6 +94,7 @@ namespace MediaPlayer.Core.ViewModels
             this.SelectedDisc = this.SelectedAlbum.Discs.FirstOrDefault();
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
+
             this.mediaControllerFactory = newMediaControllerFactory;
             this.mediaController = this.mediaControllerFactory.CreateMediaController();
             this.timerFactory = newTimerFactory;
@@ -105,6 +114,15 @@ namespace MediaPlayer.Core.ViewModels
         // Primitive Backed Properties
 
         /// <summary>
+        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        public bool IsSongPlaying
+        {
+            get => this.isSongPlaying;
+            set => this.SetProperty(ref this.isSongPlaying, value);
+        }
+
+        /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
         public int PlayerPosition
@@ -114,6 +132,7 @@ namespace MediaPlayer.Core.ViewModels
             {
                 this.SetProperty(ref this.playerPosition, value);
                 this.RaisePropertyChanged(() => this.DisplayPosition);
+                this.RaisePropertyChanged(() => this.DisplayProgression);
             }
         }
 
@@ -196,7 +215,7 @@ namespace MediaPlayer.Core.ViewModels
                 if (this.IsTrackLoaded)
                 {
                     this.mediaController.Source = this.LoadedTrack.LoadPath;
-                    this.mediaController.Play();
+                    this.PlayPause();
                 }
 
                 this.RaisePropertyChanged(() => this.IsTrackLoaded);
@@ -229,9 +248,12 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
-        public string DisplayPosition => this.IsTrackLoaded ?
-            TimeSpan.FromSeconds(this.PlayerPosition).ToString(this.LoadedTrack.DisplayDurationFormat) :
-            string.Empty;
+        public string DisplayPosition => TimeSpan.FromSeconds(this.PlayerPosition).ToString(this.LoadedTrack.DisplayDurationFormat);
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public string DisplayProgression => this.IsSongPlaying ? $"{this.DisplayPosition} / {this.LoadedTrack.DisplayDuration}" : string.Empty;
 
         // Non-Primitive Accessors
 
@@ -275,10 +297,10 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public IMvxCommand PlayTrackCommand
+        public IMvxCommand BtnClickCommand
         {
-            get => this.playTrackCommand ??= new MvxCommand(this.PlayTrack);
-            set => this.SetProperty(ref this.playTrackCommand, value);
+            get => this.btnClickCommand ??= new MvxCommand(this.BtnClick);
+            set => this.SetProperty(ref this.btnClickCommand, value);
         }
 
         /// <summary>
@@ -293,10 +315,28 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public IMvxCommand BtnClickCommand
+        public IMvxCommand StartTrackCommand
         {
-            get => this.btnClickCommand ??= new MvxCommand(this.BtnClick);
-            set => this.SetProperty(ref this.btnClickCommand, value);
+            get => this.startTrackCommand ??= new MvxCommand(this.StartTrack);
+            set => this.SetProperty(ref this.startTrackCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayPauseCommand
+        {
+            get => this.playPauseCommand ??= new MvxCommand(this.PlayPause);
+            set => this.SetProperty(ref this.playPauseCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand StopCommand
+        {
+            get => this.stopCommand ??= new MvxCommand(this.Stop);
+            set => this.SetProperty(ref this.stopCommand, value);
         }
 
         /// <summary>
@@ -320,8 +360,8 @@ namespace MediaPlayer.Core.ViewModels
         // Protected Methods
 
         /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+/// PLACEHOLDER.
+/// </summary>
         protected void OnClosing()
         {
             this.MediaDB.Dispose();
@@ -538,9 +578,33 @@ namespace MediaPlayer.Core.ViewModels
             }*/
         }
 
-        private void PlayTrack()
+        private void PlayPause()
         {
-            this.LoadedTrack = this.SelectedTrack;
+            if (this.IsTrackLoaded)
+            {
+                if (this.isSongPlaying)
+                {
+                    Debug.WriteLine("Pause");
+                    this.mediaController.Pause();
+                    this.IsSongPlaying = false;
+                }
+                else
+                {
+                    Debug.WriteLine("Play");
+                    this.mediaController.Play();
+                    this.IsSongPlaying = true;
+                }
+            }
+        }
+
+        private void Stop()
+        {
+            Debug.WriteLine("Stop");
+            if (this.IsTrackLoaded)
+            {
+                this.mediaController.Stop();
+                this.IsSongPlaying = false;
+            }
         }
 
         private void SlideStarted()
@@ -554,6 +618,11 @@ namespace MediaPlayer.Core.ViewModels
             Debug.WriteLine("Slide Completed");
             this.isUserDraggingPosition = false;
             this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
+        }
+
+        private void StartTrack()
+        {
+            this.LoadedTrack = this.SelectedTrack;
         }
 
         private void TimerTick(object? sender, object e)

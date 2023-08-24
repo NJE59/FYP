@@ -59,9 +59,7 @@
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding DisplayPosition}" />
-                    <TextBlock Text=" / " />
-                    <TextBlock Text="{Binding LoadedTrack.DisplayDuration}" />
+                    <TextBlock Text="{Binding DisplayProgression}" />
                 </StackPanel>
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" HorizontalContentAlignment="Center">
@@ -71,9 +69,12 @@
                             <Setter Property="Margin" Value="5,0" />
                         </Style>
                     </WrapPanel.Resources>
-                    <Button Content="Stop" />
+                    <Button Content="Stop" mvx:Bi.nd="Command StopCommand" />
                     <Button Content="Skip" />
-                    <ToggleButton Width="35" HorizontalAlignment="Center">
+                    <ToggleButton Width="35"
+                                  HorizontalAlignment="Center"
+                                  mvx:Bi.nd="Command PlayPauseCommand"
+                                  IsChecked="{Binding IsSongPlaying, Mode=OneWay}">
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton">
                                 <Style.Triggers>
@@ -204,7 +205,7 @@
                       SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Play Song" mvx:Bi.nd="Command PlayTrackCommand" />
+                        <MenuItem Header="Play Song" mvx:Bi.nd="Command StartTrackCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
