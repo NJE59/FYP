@@ -48,7 +48,10 @@ namespace MediaPlayer.Core.ViewModels
         private ObservableCollection<TrackModel> trackQueue = new ();
 
         // Command Backing Fields
-        private IMvxCommand addTrackCommand;
+        private IMvxCommand addSelectedArtistCommand;
+        private IMvxCommand addSelectedAlbumCommand;
+        private IMvxCommand addSelectedDiscCommand;
+        private IMvxCommand addSelectedTrackCommand;
         private IMvxCommand btnClickCommand;
         private IMvxCommand playPauseCommand;
         private IMvxCommand stopCommand;
@@ -81,7 +84,10 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
             this.MediaDB.SaveChanges();*/
 
-            this.addTrackCommand = new MvxCommand(this.AddTrack);
+            this.addSelectedArtistCommand = new MvxCommand(this.AddSelectedArtist);
+            this.addSelectedAlbumCommand = new MvxCommand(this.AddSelectedAlbum);
+            this.addSelectedDiscCommand = new MvxCommand(this.AddSelectedDisc);
+            this.addSelectedTrackCommand = new MvxCommand(this.AddSelectedTrack);
             this.btnClickCommand = new MvxCommand(this.BtnClick);
             this.navigateCommand = new MvxCommand(this.Navigate);
             this.playPauseCommand = new MvxCommand(this.PlayPause);
@@ -320,10 +326,37 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public IMvxCommand AddTrackCommand
+        public IMvxCommand AddSelectedArtistCommand
         {
-            get => this.addTrackCommand ??= new MvxCommand(this.AddTrack);
-            set => this.SetProperty(ref this.addTrackCommand, value);
+            get => this.addSelectedArtistCommand ??= new MvxCommand(this.AddSelectedArtist);
+            set => this.SetProperty(ref this.addSelectedArtistCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand AddSelectedAlbumCommand
+        {
+            get => this.addSelectedAlbumCommand ??= new MvxCommand(this.AddSelectedAlbum);
+            set => this.SetProperty(ref this.addSelectedAlbumCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand AddSelectedDiscCommand
+        {
+            get => this.addSelectedDiscCommand ??= new MvxCommand(this.AddSelectedDisc);
+            set => this.SetProperty(ref this.addSelectedDiscCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand AddSelectedTrackCommand
+        {
+            get => this.addSelectedTrackCommand ??= new MvxCommand(this.AddSelectedTrack);
+            set => this.SetProperty(ref this.addSelectedTrackCommand, value);
         }
 
         /// <summary>
@@ -404,14 +437,6 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         // Private Methods
-        private void AddTrack()
-        {
-            if (this.SelectedTrack != null)
-            {
-                this.TrackQueue.Add(this.SelectedTrack);
-            }
-        }
-
         private void BtnClick()
         {
             Debug.WriteLine("Testing");
@@ -677,6 +702,63 @@ namespace MediaPlayer.Core.ViewModels
             {
                 this.PlayerPosition = 0;
             }
+        }
+
+        private void AddSelectedArtist()
+        {
+            this.AddArtist(this.SelectedArtist);
+        }
+
+        private void AddSelectedAlbum()
+        {
+            this.AddAlbum(this.SelectedAlbum);
+        }
+
+        private void AddSelectedDisc()
+        {
+            this.AddDisc(this.SelectedDisc);
+        }
+
+        private void AddSelectedTrack()
+        {
+            this.AddTrack(this.SelectedTrack);
+        }
+
+        private void AddArtist(ArtistModel artist)
+        {
+            foreach (var album in artist.Albums.OrderBy(albumRecord => albumRecord.AlbumName))
+            {
+                this.AddAlbum(album);
+            }
+        }
+
+        private void AddAlbum(AlbumModel album)
+        {
+            foreach (var disc in album.Discs.OrderBy(discRecord => discRecord.DiscNum))
+            {
+                this.AddDisc(disc);
+            }
+        }
+
+        private void AddDisc(DiscModel disc)
+        {
+            foreach (var track in disc.Tracks.OrderBy(trackRecord => trackRecord.TrackNum))
+            {
+                this.AddTrack(track);
+            }
+        }
+
+        private void AddTracks(IEnumerable<TrackModel> tracks)
+        {
+            foreach (var track in tracks)
+            {
+                this.AddTrack(track);
+            }
+        }
+
+        private void AddTrack(TrackModel track)
+        {
+            this.TrackQueue.Add(track);
         }
     }
 }

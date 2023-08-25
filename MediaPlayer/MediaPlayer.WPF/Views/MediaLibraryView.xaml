@@ -153,6 +153,13 @@
                       Grid.Row="0"
                       ItemsSource="{Binding DisplayArtists}"                      
                       SelectedItem="{Binding SelectedArtist, Mode=TwoWay}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add to Queue">
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Artist ID"
                                         Binding="{Binding ArtistID}"
@@ -167,6 +174,14 @@
                       Grid.Row="1"
                       ItemsSource="{Binding DisplayArtistsAlbums}"
                       SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add to Queue">
+                            <MenuItem Header="Album" mvx:Bi.nd="Command AddSelectedAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Artist ID"
                                         Binding="{Binding ArtistID}"
@@ -188,6 +203,15 @@
                       Grid.Row="2"
                       ItemsSource="{Binding DisplayAlbumsDiscs}"
                       SelectedItem="{Binding SelectedDisc, Mode=TwoWay}">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add to Queue">
+                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddSelectedDiscCommand" />
+                            <MenuItem Header="Album" mvx:Bi.nd="Command AddSelectedAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Album ID"
                                         Binding="{Binding AlbumID}"
@@ -212,7 +236,12 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play Song" mvx:Bi.nd="Command StartTrackCommand" />
-                        <MenuItem Header="Add Song to Queue" mvx:Bi.nd="Command AddTrackCommand" />
+                        <MenuItem Header="Add to Queue">
+                            <MenuItem Header="Song" mvx:Bi.nd="Command AddSelectedTrackCommand" />
+                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddSelectedDiscCommand" />
+                            <MenuItem Header="Album" mvx:Bi.nd="Command AddSelectedAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
