@@ -14,6 +14,7 @@
         
     </views:MvxWpfView.Resources>
     <DockPanel>
+        <MediaElement />
         <Menu x:Name="TopMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header=" = Open" />
@@ -119,9 +120,14 @@
         </Grid>
         
         <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="150">
-            <ListView>
-                <ListViewItem Content="The Root Of All Evil" />
-                <ListViewItem Content="Bridge Across Forever" />
+            <ListView ItemsSource="{Binding TrackQueue}"
+                      SelectedIndex="{Binding CurrentQueueIndex, Mode=TwoWay}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn DisplayMemberBinding="{Binding TrackName}" />
+                        <GridViewColumn DisplayMemberBinding="{Binding DisplayDuration}" Width="Auto" />
+                    </GridView>
+                </ListView.View>
             </ListView>
         </Grid>
         
@@ -206,6 +212,7 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play Song" mvx:Bi.nd="Command StartTrackCommand" />
+                        <MenuItem Header="Add Song to Queue" mvx:Bi.nd="Command AddTrackCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>

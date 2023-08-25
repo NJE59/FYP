@@ -31,8 +31,9 @@ namespace MediaPlayer.Core.ViewModels
         private readonly MediaDBContext mediaDB = new ();
 
         // Primitive Backing Fields
-        private bool isSongPlaying = false;
+        private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
+        private int currentQueueIndex;
         private int playerPosition = 0;
         private int playerVolume = 50;
 
@@ -43,7 +44,11 @@ namespace MediaPlayer.Core.ViewModels
         private TrackModel selectedTrack = null!;
         private TrackModel loadedTrack = null!;
 
+        private ObservableCollection<MenuItemModel> navItems = new ();
+        private ObservableCollection<TrackModel> trackQueue = new ();
+
         // Command Backing Fields
+        private IMvxCommand addTrackCommand;
         private IMvxCommand btnClickCommand;
         private IMvxCommand playPauseCommand;
         private IMvxCommand stopCommand;
@@ -53,7 +58,6 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand navigateCommand;
 
         // private TimeSpan _trackPosition = TimeSpan.Zero;
-        private ObservableCollection<MenuItemModel> navItems = new ();
 
         // Constructors
 
@@ -77,6 +81,7 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
             this.MediaDB.SaveChanges();*/
 
+            this.addTrackCommand = new MvxCommand(this.AddTrack);
             this.btnClickCommand = new MvxCommand(this.BtnClick);
             this.navigateCommand = new MvxCommand(this.Navigate);
             this.playPauseCommand = new MvxCommand(this.PlayPause);
@@ -116,10 +121,19 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets a value indicating whether PLACEHOLDER.
         /// </summary>
-        public bool IsSongPlaying
+        public bool IsTrackPlaying
         {
-            get => this.isSongPlaying;
-            set => this.SetProperty(ref this.isSongPlaying, value);
+            get => this.isTrackPlaying;
+            set => this.SetProperty(ref this.isTrackPlaying, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int CurrentQueueIndex
+        {
+            get => this.currentQueueIndex;
+            set => this.SetProperty(ref this.currentQueueIndex, value);
         }
 
         /// <summary>
@@ -238,6 +252,15 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.navItems, value);
         }
 
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<TrackModel> TrackQueue
+        {
+            get => this.trackQueue;
+            set => this.SetProperty(ref this.trackQueue, value);
+        }
+
         // Primitive Accessors
 
         /// <summary>
@@ -253,7 +276,7 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
-        public string DisplayProgression => this.IsSongPlaying ? $"{this.DisplayPosition} / {this.LoadedTrack.DisplayDuration}" : string.Empty;
+        public string DisplayProgression => this.IsTrackPlaying ? $"{this.DisplayPosition} / {this.LoadedTrack.DisplayDuration}" : string.Empty;
 
         // Non-Primitive Accessors
 
@@ -293,6 +316,15 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         // Command Backed Properties
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand AddTrackCommand
+        {
+            get => this.addTrackCommand ??= new MvxCommand(this.AddTrack);
+            set => this.SetProperty(ref this.addTrackCommand, value);
+        }
 
         /// <summary>
         /// Gets or sets PLACEHOLDER.
@@ -357,11 +389,13 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.slideCompletedCommand, value);
         }
 
+        private bool IsIndexEven => this.CurrentQueueIndex % 2 == 0;
+
         // Protected Methods
 
         /// <summary>
-/// PLACEHOLDER.
-/// </summary>
+        /// PLACEHOLDER.
+        /// </summary>
         protected void OnClosing()
         {
             this.MediaDB.Dispose();
@@ -370,6 +404,14 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         // Private Methods
+        private void AddTrack()
+        {
+            if (this.SelectedTrack != null)
+            {
+                this.TrackQueue.Add(this.SelectedTrack);
+            }
+        }
+
         private void BtnClick()
         {
             Debug.WriteLine("Testing");
@@ -582,17 +624,17 @@ namespace MediaPlayer.Core.ViewModels
         {
             if (this.IsTrackLoaded)
             {
-                if (this.isSongPlaying)
+                if (this.IsTrackPlaying)
                 {
                     Debug.WriteLine("Pause");
                     this.mediaController.Pause();
-                    this.IsSongPlaying = false;
+                    this.IsTrackPlaying = false;
                 }
                 else
                 {
                     Debug.WriteLine("Play");
                     this.mediaController.Play();
-                    this.IsSongPlaying = true;
+                    this.IsTrackPlaying = true;
                 }
             }
         }
@@ -603,7 +645,7 @@ namespace MediaPlayer.Core.ViewModels
             if (this.IsTrackLoaded)
             {
                 this.mediaController.Stop();
-                this.IsSongPlaying = false;
+                this.IsTrackPlaying = false;
             }
         }
 
