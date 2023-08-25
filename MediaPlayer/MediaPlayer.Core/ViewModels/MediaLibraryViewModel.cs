@@ -33,9 +33,10 @@ namespace MediaPlayer.Core.ViewModels
         // Primitive Backing Fields
         private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
-        private int currentQueueIndex;
+        private int currentlyPlayingQueueIndex;
         private int playerPosition = 0;
         private int playerVolume = 50;
+        private int selectedQueueIndex;
 
         // Non-Primitive Backing Fields
         private AlbumModel selectedAlbum = null!;
@@ -53,12 +54,14 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand addSelectedDiscCommand;
         private IMvxCommand addSelectedTrackCommand;
         private IMvxCommand btnClickCommand;
+        private IMvxCommand clearQueueCommand;
         private IMvxCommand playPauseCommand;
         private IMvxCommand stopCommand;
         private IMvxCommand slideStartedCommand;
         private IMvxCommand slideCompletedCommand;
         private IMvxCommand startTrackCommand;
         private IMvxCommand navigateCommand;
+        private IMvxCommand removeTrackCommand;
 
         // private TimeSpan _trackPosition = TimeSpan.Zero;
 
@@ -73,23 +76,16 @@ namespace MediaPlayer.Core.ViewModels
         {
             /////////////////////////////////////////////FIX TYPES IN EXTENSION
             this.NavItems.CreateNavItems();
-            /*this.MediaDB.RemoveRange(this.MediaDB.Albums);
-            this.MediaDB.RemoveRange(this.MediaDB.Artists);
-            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
-            this.MediaDB.RemoveRange(this.MediaDB.Discs);
-            this.MediaDB.RemoveRange(this.MediaDB.Genres);
-            this.MediaDB.RemoveRange(this.MediaDB.Listings);
-            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
-            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
-            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
-            this.MediaDB.SaveChanges();*/
 
+            // this.ResetDatabase();
             this.addSelectedArtistCommand = new MvxCommand(this.AddSelectedArtist);
             this.addSelectedAlbumCommand = new MvxCommand(this.AddSelectedAlbum);
             this.addSelectedDiscCommand = new MvxCommand(this.AddSelectedDisc);
             this.addSelectedTrackCommand = new MvxCommand(this.AddSelectedTrack);
             this.btnClickCommand = new MvxCommand(this.BtnClick);
+            this.clearQueueCommand = new MvxCommand(this.ClearQueue);
             this.navigateCommand = new MvxCommand(this.Navigate);
+            this.removeTrackCommand = new MvxCommand(this.RemoveTrack);
             this.playPauseCommand = new MvxCommand(this.PlayPause);
             this.stopCommand = new MvxCommand(this.Stop);
             this.slideStartedCommand = new MvxCommand(this.SlideStarted);
@@ -136,10 +132,23 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public int CurrentQueueIndex
+        public int SelectedQueueIndex
         {
-            get => this.currentQueueIndex;
-            set => this.SetProperty(ref this.currentQueueIndex, value);
+            get => this.selectedQueueIndex;
+            set => this.SetProperty(ref this.selectedQueueIndex, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int CurrentlyPlayingQueueIndex
+        {
+            get => this.currentlyPlayingQueueIndex;
+            set
+            {
+                this.SetProperty(ref this.currentlyPlayingQueueIndex, value);
+                this.SelectedQueueIndex = value;
+            }
         }
 
         /// <summary>
@@ -371,6 +380,15 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
+        public IMvxCommand ClearQueueCommand
+        {
+            get => this.clearQueueCommand ??= new MvxCommand(this.ClearQueue);
+            set => this.SetProperty(ref this.clearQueueCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
         public IMvxCommand NavigateCommand
         {
             get => this.navigateCommand ??= new MvxCommand(this.Navigate);
@@ -407,6 +425,15 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
+        public IMvxCommand RemoveTrackCommand
+        {
+            get => this.removeTrackCommand ??= new MvxCommand(this.RemoveTrack);
+            set => this.SetProperty(ref this.removeTrackCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
         public IMvxCommand SlideStartedCommand
         {
             get => this.slideStartedCommand;
@@ -422,7 +449,7 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.slideCompletedCommand, value);
         }
 
-        private bool IsIndexEven => this.CurrentQueueIndex % 2 == 0;
+        private bool IsIndexEven => this.CurrentlyPlayingQueueIndex % 2 == 0;
 
         // Protected Methods
 
@@ -440,6 +467,11 @@ namespace MediaPlayer.Core.ViewModels
         private void BtnClick()
         {
             Debug.WriteLine("Testing");
+        }
+
+        private void ClearQueue()
+        {
+            this.TrackQueue.Clear();
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -664,6 +696,20 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
+        private void ResetDatabase()
+        {
+            this.MediaDB.RemoveRange(this.MediaDB.Albums);
+            this.MediaDB.RemoveRange(this.MediaDB.Artists);
+            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
+            this.MediaDB.RemoveRange(this.MediaDB.Discs);
+            this.MediaDB.RemoveRange(this.MediaDB.Genres);
+            this.MediaDB.RemoveRange(this.MediaDB.Listings);
+            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
+            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
+            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
+            this.MediaDB.SaveChanges();
+        }
+
         private void Stop()
         {
             Debug.WriteLine("Stop");
@@ -701,6 +747,14 @@ namespace MediaPlayer.Core.ViewModels
             else
             {
                 this.PlayerPosition = 0;
+            }
+        }
+
+        private void RemoveTrack()
+        {
+            if (this.TrackQueue.Count > this.SelectedQueueIndex)
+            {
+                this.TrackQueue.RemoveAt(this.SelectedQueueIndex);
             }
         }
 
