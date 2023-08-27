@@ -5,6 +5,7 @@
 namespace MediaPlayer.WPF.Classes
 {
     using MediaPlayer.Core.Interfaces;
+    using MvvmCross.Commands;
 
     /// <summary>
     /// PLACEHOLDER.
@@ -14,7 +15,8 @@ namespace MediaPlayer.WPF.Classes
         /// <summary>
         /// PLACEHOLDER.
         /// </summary>
+        /// <inheritdoc cref="MediaController.MediaEndedCommand" path='/summary'/>
         /// <returns><inheritdoc cref="MediaController" path='/summary'/></returns>
-        public IMediaController CreateMediaController() => new MediaController();
+        public IMediaController CreateMediaController(IMvxCommand mediaEndedCommand) => new MediaController(mediaEndedCommand);
     }
 }

@@ -5,8 +5,11 @@
 namespace MediaPlayer.WPF.Classes
 {
     using System;
+    using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
     using MediaPlayer.Core.Interfaces;
+    using MvvmCross.Commands;
 
     /// <summary>
     /// PLACEHOLDER.
@@ -15,15 +18,22 @@ namespace MediaPlayer.WPF.Classes
     {
         private readonly MediaElement mediaElement;
 
+        private IMvxCommand mediaEndedCommand;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaController"/> class.
         /// </summary>
-        public MediaController()
+        /// <param name="mediaEndedCommand">PLACEHOLDER.</param>
+        public MediaController(IMvxCommand mediaEndedCommand)
         {
-            this.mediaElement = new ();
-            this.mediaElement.LoadedBehavior = MediaState.Play;
-            this.mediaElement.UnloadedBehavior = MediaState.Manual;
-            this.mediaElement.Volume = 0.5D;
+            this.mediaElement = new ()
+            {
+                LoadedBehavior = MediaState.Play,
+                UnloadedBehavior = MediaState.Manual,
+                Volume = 0.5D,
+            };
+            this.mediaEndedCommand = mediaEndedCommand;
+            this.mediaElement.MediaEnded += new RoutedEventHandler(this.MediaElement_MediaEnded);
         }
 
         /// <summary>
@@ -78,6 +88,15 @@ namespace MediaPlayer.WPF.Classes
         }
 
         /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand MediaEndedCommand
+        {
+            get => this.mediaEndedCommand;
+            set => this.mediaEndedCommand = value;
+        }
+
+        /// <summary>
         /// PLACEHOLDER.
         /// </summary>
         public void Pause() => this.mediaElement.Pause();
@@ -91,5 +110,10 @@ namespace MediaPlayer.WPF.Classes
         /// PLACEHOLDER.
         /// </summary>
         public void Stop() => this.mediaElement.Stop();
+
+        private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            this.MediaEndedCommand.Execute();
+        }
     }
 }

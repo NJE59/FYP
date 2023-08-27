@@ -4,6 +4,8 @@
 
 namespace MediaPlayer.Core.Interfaces
 {
+    using MvvmCross.Commands;
+
     /// <summary>
     /// PLACEHOLDER.
     /// </summary>
@@ -43,6 +45,11 @@ namespace MediaPlayer.Core.Interfaces
         /// Gets or sets PLACEHOLDER.
         /// </summary>
         public Uri Source { get; set; }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand MediaEndedCommand { get; set; }
 
         /// <summary>
         /// PLACEHOLDER.

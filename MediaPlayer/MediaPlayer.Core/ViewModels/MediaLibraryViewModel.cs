@@ -55,6 +55,7 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand addSelectedTrackCommand;
         private IMvxCommand btnClickCommand;
         private IMvxCommand clearQueueCommand;
+        private IMvxCommand mediaEndedCommand;
         private IMvxCommand playPauseCommand;
         private IMvxCommand stopCommand;
         private IMvxCommand slideStartedCommand;
@@ -84,6 +85,7 @@ namespace MediaPlayer.Core.ViewModels
             this.addSelectedTrackCommand = new MvxCommand(this.AddSelectedTrack);
             this.btnClickCommand = new MvxCommand(this.BtnClick);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
+            this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
             this.navigateCommand = new MvxCommand(this.Navigate);
             this.removeTrackCommand = new MvxCommand(this.RemoveTrack);
             this.playPauseCommand = new MvxCommand(this.PlayPause);
@@ -101,9 +103,8 @@ namespace MediaPlayer.Core.ViewModels
             this.SelectedDisc = this.SelectedAlbum.Discs.FirstOrDefault();
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-
             this.mediaControllerFactory = newMediaControllerFactory;
-            this.mediaController = this.mediaControllerFactory.CreateMediaController();
+            this.mediaController = this.mediaControllerFactory.CreateMediaController(this.MediaEndedCommand);
             this.timerFactory = newTimerFactory;
             this.timer = this.timerFactory.CreateTimer();
             this.timer.Interval = TimeSpan.FromSeconds(1);
@@ -389,6 +390,15 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
+        public IMvxCommand MediaEndedCommand
+        {
+            get => this.mediaEndedCommand ??= new MvxCommand(this.MediaEnded);
+            set => this.SetProperty(ref this.mediaEndedCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
         public IMvxCommand NavigateCommand
         {
             get => this.navigateCommand ??= new MvxCommand(this.Navigate);
@@ -665,6 +675,11 @@ namespace MediaPlayer.Core.ViewModels
                     }
                 }
             }
+        }
+
+        private void MediaEnded()
+        {
+            Debug.WriteLine("Song ended");
         }
 
         private void Navigate()

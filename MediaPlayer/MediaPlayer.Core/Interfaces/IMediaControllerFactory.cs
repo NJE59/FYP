@@ -4,6 +4,8 @@
 
 namespace MediaPlayer.Core.Interfaces
 {
+    using MvvmCross.Commands;
+
     /// <summary>
     /// PLACEHOLDER.
     /// </summary>
@@ -12,7 +14,8 @@ namespace MediaPlayer.Core.Interfaces
         /// <summary>
         /// PLACEHOLDER.
         /// </summary>
-        /// <returns>PLACEHOLDER1.</returns>
-        IMediaController CreateMediaController();
+        /// <param name="mediaEndedCommand">PLACEHOLDER1.</param>
+        /// <returns>PLACEHOLDER2.</returns>
+        IMediaController CreateMediaController(IMvxCommand mediaEndedCommand);
     }
 }
