@@ -6,15 +6,12 @@
                   xmlns:local="clr-namespace:MediaPlayer.WPF.Views"
                   xmlns:extensions="clr-namespace:MediaPlayer.WPF.Classes"
                   xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
-                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf" 
+                  xmlns:mvx="clr-namespace:MvvmCross.Platforms.Wpf.Binding;assembly=MvvmCross.Platforms.Wpf"
+                  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                   xmlns:viewmodels="clr-namespace:MediaPlayer.Core.ViewModels;assembly=MediaPlayer.Core"
                   d:DataContext="{d:DesignInstance Type=viewmodels:MediaLibraryViewModel}"
                   mc:Ignorable="d">
-    <views:MvxWpfView.Resources>
-        
-    </views:MvxWpfView.Resources>
     <DockPanel>
-        <MediaElement />
         <Menu x:Name="TopMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header=" = Open" />
