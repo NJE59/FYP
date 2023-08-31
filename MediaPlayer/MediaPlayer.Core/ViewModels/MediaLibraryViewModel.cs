@@ -334,5 +334,215 @@ namespace MediaPlayer.Core.ViewModels
                 }
             }
         }
+
+
+
+        private bool showingAlbums;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingAlbums
+        {
+            get => this.showingAlbums;
+            set => this.SetProperty(ref this.showingAlbums, value);
+        }
+        private bool showingAlbumTracks;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingAlbumTracks
+        {
+            get => this.showingAlbumTracks;
+            set => this.SetProperty(ref this.showingAlbumTracks, value);
+        }
+
+     
+
+
+
+        private bool showingArtists;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingArtists
+        {
+            get => this.showingArtists;
+            set => this.SetProperty(ref this.showingArtists, value);
+        }
+        private bool showingArtistTracks;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingArtistTracks
+        {
+            get => this.showingArtistTracks;
+            set => this.SetProperty(ref this.showingArtistTracks, value);
+        }
+        private bool showingGenres;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingGenres
+        {
+            get => this.showingGenres;
+            set => this.SetProperty(ref this.showingGenres, value);
+        }
+        private bool showingGenreTracks;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingGenreTracks
+        {
+            get => this.showingGenreTracks;
+            set => this.SetProperty(ref this.showingGenreTracks, value);
+        }
+
+        private bool showingTracks;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingTracks
+        {
+            get => this.showingTracks;
+            set => this.SetProperty(ref this.showingTracks, value);
+        }
+
+        private void HideAll()
+        {
+            ShowingAlbums = false;
+            ShowingAlbumTracks = false;
+            ShowingArtists = false;
+            ShowingArtistTracks = false;
+            ShowingGenres = false;
+            ShowingGenreTracks = false;
+            ShowingTracks = false;
+    }
+
+    private IMvxCommand showAlbumsCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowAlbumsCommand
+        {
+            get => this.showAlbumsCommand ??= new MvxCommand(this.ShowAlbums);
+            set => this.SetProperty(ref this.showAlbumsCommand, value);
+        }
+
+        private void ShowAlbums()
+        {
+            HideAll();
+            ShowingAlbums = true;
+        }
+
+        private IMvxCommand showAlbumTracksCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowAlbumTracksCommand
+        {
+            get => this.showAlbumTracksCommand ??= new MvxCommand(this.ShowAlbumTracks);
+            set => this.SetProperty(ref this.showAlbumTracksCommand, value);
+        }
+
+        private void ShowAlbumTracks()
+        {
+            HideAll();
+            ShowingAlbumTracks = true;
+        }
+
+        private IMvxCommand showArtistsCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowArtistsCommand
+        {
+            get => this.showArtistsCommand ??= new MvxCommand(this.ShowArtists);
+            set => this.SetProperty(ref this.showArtistsCommand, value);
+        }
+
+        private void ShowArtists()
+        {
+            HideAll();
+            ShowingArtists = true;
+        }
+
+        private IMvxCommand showArtistTracksCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowArtistTracksCommand
+        {
+            get => this.showArtistTracksCommand ??= new MvxCommand(this.ShowArtistTracks);
+            set => this.SetProperty(ref this.showArtistTracksCommand, value);
+        }
+
+        private void ShowArtistTracks()
+        {
+            HideAll();
+            ShowingArtistTracks = true;
+        }
+
+        private IMvxCommand showGenresCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowGenresCommand
+        {
+            get => this.showGenresCommand ??= new MvxCommand(this.ShowGenres);
+            set => this.SetProperty(ref this.showGenresCommand, value);
+        }
+
+        private void ShowGenres()
+        {
+            HideAll();
+            ShowingGenres = true;
+        }
+
+        private IMvxCommand showGenreTracksCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowGenreTracksCommand
+        {
+            get => this.showGenreTracksCommand ??= new MvxCommand(this.ShowGenreTracks);
+            set => this.SetProperty(ref this.showGenreTracksCommand, value);
+        }
+
+        private void ShowGenreTracks()
+        {
+            HideAll();
+            ShowingGenreTracks = true;
+        }
+
+        private IMvxCommand showTracksCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowTracksCommand
+        {
+            get => this.showTracksCommand ??= new MvxCommand(this.ShowTracks);
+            set => this.SetProperty(ref this.showTracksCommand, value);
+        }
+
+        private void ShowTracks()
+        {
+            HideAll();
+            ShowingTracks = true;
+        }
+
     }
 }
