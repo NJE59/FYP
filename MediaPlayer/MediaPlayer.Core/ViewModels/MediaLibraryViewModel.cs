@@ -304,7 +304,7 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets the <see cref="DisplayPosition"/> and <see cref="TrackModel.TrackDuration"/> formatted to display on the UI.
         /// </summary>
-        public string DisplayProgression => this.IsTrackPlaying ? $"{this.DisplayPosition} / {this.LoadedTrack?.DisplayDuration}" : string.Empty;
+        public string DisplayProgression => this.IsTrackLoaded ? $"{this.DisplayPosition} / {this.LoadedTrack?.DisplayDuration}" : string.Empty;
 
         // Non-Primitive Accessors
 
@@ -801,7 +801,7 @@ namespace MediaPlayer.Core.ViewModels
 
         private void TimerTick(object? sender, object e)
         {
-            if (this.IsTrackPlaying)
+            if (this.IsTrackLoaded)
             {
                 this.PlayerPosition = this.isUserDraggingPosition ? this.PlayerPosition : (int)this.mediaController.Position.TotalSeconds;
             }
