@@ -81,7 +81,7 @@ namespace MediaPlayer.WPF.Classes
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public Uri Source
+        public Uri? Source
         {
             get => this.mediaElement.Source;
             set => this.mediaElement.Source = value;
@@ -95,6 +95,11 @@ namespace MediaPlayer.WPF.Classes
             get => this.mediaEndedCommand;
             set => this.mediaEndedCommand = value;
         }
+
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        public void Close() => this.mediaElement.Close();
 
         /// <summary>
         /// PLACEHOLDER.

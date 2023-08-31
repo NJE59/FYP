@@ -44,12 +44,17 @@ namespace MediaPlayer.Core.Interfaces
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
-        public Uri Source { get; set; }
+        public Uri? Source { get; set; }
 
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
         public IMvxCommand MediaEndedCommand { get; set; }
+
+        /// <summary>
+        /// PLACEHOLDER.
+        /// </summary>
+        public void Close();
 
         /// <summary>
         /// PLACEHOLDER.

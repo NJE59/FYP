@@ -75,7 +75,7 @@
                     <ToggleButton Width="35"
                                   HorizontalAlignment="Center"
                                   mvx:Bi.nd="Command PlayPauseCommand"
-                                  IsChecked="{Binding IsSongPlaying, Mode=OneWay}">
+                                  IsChecked="{Binding IsTrackPlaying, Mode=OneWay}">
                         <ToggleButton.Style>
                             <Style TargetType="ToggleButton">
                                 <Style.Triggers>
@@ -97,7 +97,6 @@
                             Value="{Binding PlayerVolume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Width="50"
                             AutoToolTipPlacement="BottomRight" />
-                    <TextBlock Text="{Binding Test}" />
                 </WrapPanel>
             </StatusBarItem>
         </StatusBar>
@@ -161,9 +160,8 @@
                       SelectedItem="{Binding SelectedArtist, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Add to Queue">
-                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
-                        </MenuItem>
+                        <MenuItem Header="Play" mvx:Bi.nd="Command PlayArtistCommand" />
+                        <MenuItem Header="Add to Queue" mvx:Bi.nd="Command AddArtistCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
@@ -182,9 +180,13 @@
                       SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Add to Queue">
-                            <MenuItem Header="Album" mvx:Bi.nd="Command AddSelectedAlbumCommand" />
-                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        <MenuItem Header="Play" mvx:Bi.nd="Command PlayAlbumCommand">
+                            <MenuItem Header="Album" mvx:Bi.nd="Command PlayAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command PlayArtistCommand" />
+                        </MenuItem>
+                        <MenuItem Header="Add to Queue" mvx:Bi.nd="Command AddAlbumCommand">
+                            <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
@@ -211,10 +213,15 @@
                       SelectedItem="{Binding SelectedDisc, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Add to Queue">
-                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddSelectedDiscCommand" />
-                            <MenuItem Header="Album" mvx:Bi.nd="Command AddSelectedAlbumCommand" />
-                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        <MenuItem Header="Play" mvx:Bi.nd="Command PlayDiscCommand">
+                            <MenuItem Header="Disc" mvx:Bi.nd="Command PlayDiscCommand" />
+                            <MenuItem Header="Album" mvx:Bi.nd="Command PlayAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command PlayArtistCommand" />
+                        </MenuItem>
+                        <MenuItem Header="Add to Queue" mvx:Bi.nd="Command AddDiscCommand">
+                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddDiscCommand" />
+                            <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
@@ -241,12 +248,17 @@
                       SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Play Song" mvx:Bi.nd="Command StartTrackCommand" />
-                        <MenuItem Header="Add to Queue">
-                            <MenuItem Header="Song" mvx:Bi.nd="Command AddSelectedTrackCommand" />
-                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddSelectedDiscCommand" />
-                            <MenuItem Header="Album" mvx:Bi.nd="Command AddSelectedAlbumCommand" />
-                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddSelectedArtistCommand" />
+                        <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
+                            <MenuItem Header="Song" mvx:Bi.nd="Command PlayTrackCommand" />
+                            <MenuItem Header="Disc" mvx:Bi.nd="Command PlayDiscCommand" />
+                            <MenuItem Header="Album" mvx:Bi.nd="Command PlayAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command PlayArtistCommand" />
+                        </MenuItem>
+                        <MenuItem Header="Add to Queue" mvx:Bi.nd="Command AddTrackCommand">
+                            <MenuItem Header="Song" mvx:Bi.nd="Command AddTrackCommand" />
+                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddDiscCommand" />
+                            <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
+                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
