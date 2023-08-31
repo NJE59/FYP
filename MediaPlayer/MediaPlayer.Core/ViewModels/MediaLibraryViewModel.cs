@@ -67,6 +67,7 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand stopCommand;
         private IMvxCommand skipBackCommand;
         private IMvxCommand skipFowardCommand;
+        private IMvxCommand jumpQueueCommand;
 
         // private TimeSpan _trackPosition = TimeSpan.Zero;
 
@@ -102,6 +103,7 @@ namespace MediaPlayer.Core.ViewModels
             this.stopCommand = new MvxCommand(this.Stop);
             this.skipBackCommand = new MvxCommand(this.SkipBack);
             this.skipFowardCommand = new MvxCommand(this.SkipForward);
+            this.jumpQueueCommand = new MvxCommand(this.JumpQueue);
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -512,6 +514,15 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.skipFowardCommand ??= new MvxCommand(this.SkipForward);
             set => this.SetProperty(ref this.skipFowardCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand JumpQueueCommand
+        {
+            get => this.jumpQueueCommand ??= new MvxCommand(this.JumpQueue);
+            set => this.SetProperty(ref this.jumpQueueCommand, value);
         }
 
         // Protected Methods
@@ -1012,6 +1023,14 @@ namespace MediaPlayer.Core.ViewModels
                 {
                     this.mediaController.Position = TimeSpan.Zero;
                 }
+            }
+        }
+
+        private void JumpQueue()
+        {
+            if (this.SelectedQueueIndex >= 0 && this.SelectedQueueIndex < this.TrackQueue.Count)
+            {
+                this.ChangeTrack(this.SelectedQueueIndex);
             }
         }
     }

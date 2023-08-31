@@ -14,7 +14,6 @@
         
     </views:MvxWpfView.Resources>
     <DockPanel>
-        <MediaElement />
         <Menu x:Name="TopMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header=" = Open" />
@@ -124,8 +123,9 @@
                       SelectedIndex="{Binding SelectedQueueIndex, Mode=TwoWay}">
                 <ListView.ContextMenu>
                     <ContextMenu>
+                        <MenuItem Header="Play Track" mvx:Bi.nd="Command JumpQueueCommand" />
                         <MenuItem Header="Remove from Queue" mvx:Bi.nd="Command RemoveTrackCommand" />
-                        <MenuItem Header="Clear Queue" mvx:Bi.nd="Command  ClearQueueCommand" />
+                        <MenuItem Header="Clear Queue" mvx:Bi.nd="Command ClearQueueCommand" />
                     </ContextMenu>
                 </ListView.ContextMenu>
                 <ListView.View>
