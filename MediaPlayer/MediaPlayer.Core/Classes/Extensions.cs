@@ -1,5 +1,7 @@
 ﻿using MediaPlayer.Core.Models;
+using MvvmCross.Commands;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.FileProperties;
 using Windows.Storage.Search;
@@ -60,17 +62,14 @@ namespace MediaPlayer.Core.Classes
         /// <summary>
         /// Method for populating <see cref="NavItems"/>
         /// </summary>
-        public static ObservableCollection<MenuItemModel> CreateNavItems(this ObservableCollection<MenuItemModel> navItems)
+        public static ObservableCollection<MenuItemModel> CreateNavItems(this ObservableCollection<MenuItemModel> navItems, Dictionary<string, IMvxCommand> navCommands)
         {
-            //////////////////////////////////////////////////////////////////////////////////////////////FIX TYPES
-            MenuItemModel mniMusic = new MenuItemModel("Music", typeof(String));
-            mniMusic.Children.Add(new MenuItemModel("Album", typeof(String)));
-            mniMusic.Children.Add(new MenuItemModel("Artist", typeof(String)));
-            mniMusic.Children.Add(new MenuItemModel("Genre", typeof(String)));
-            mniMusic.Children.Add(new MenuItemModel("Year", typeof(String)));
-            MenuItemModel mniPlaylists = new MenuItemModel("Playlists", typeof(String));
-            mniPlaylists.Children.Add(new MenuItemModel("Playlist1", typeof(String)));
-            mniPlaylists.Children.Add(new MenuItemModel("New Playlist", typeof(String)));
+            MenuItemModel mniMusic = new MenuItemModel("Music", navCommands["ShowTracks"]);
+            mniMusic.Children.Add(new MenuItemModel("Album", navCommands["ShowAlbums"]));
+            mniMusic.Children.Add(new MenuItemModel("Artist", navCommands["ShowArtists"]));
+            mniMusic.Children.Add(new MenuItemModel("Genre", navCommands["ShowGenres"]));
+            mniMusic.Children.Add(new MenuItemModel("Year", navCommands["ShowYears"]));
+            MenuItemModel mniPlaylists = new MenuItemModel("Playlists", navCommands["ShowPlaylists"]);
             navItems.Add(mniMusic);
             navItems.Add(mniPlaylists);
             return navItems;

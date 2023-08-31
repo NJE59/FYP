@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using MvvmCross.Commands;
+using System.Collections.ObjectModel;
 
 namespace MediaPlayer.Core.Models
 {
@@ -15,7 +16,7 @@ namespace MediaPlayer.Core.Models
         /// <summary>
         /// Which <see cref="Page"/> to be opened by this <see cref="MenuItem">MenuItem</see> 
         /// </summary>
-        public Type PageType { get; set; }
+        public IMvxCommand NavCommand { get; set; }
 
         /// <summary>
         /// <see cref="ObservableCollection{T}"/> of this <see cref="MenuItem">MenuItem's</see> children
@@ -27,10 +28,10 @@ namespace MediaPlayer.Core.Models
         /// </summary>
         /// <param name="title">The <see cref="Title">Title</see> of this instance of <see cref="MenuItem"/></param>
         /// <param name="pageType">The <see cref="PageType">Title</see> of this instance of <see cref="MenuItem"/></param>
-        public MenuItemModel(string title, Type pageType)
+        public MenuItemModel(string title, IMvxCommand navCommand)
         {
             Title = title;
-            PageType = pageType;
+            NavCommand = navCommand;
             this.Children = new ObservableCollection<MenuItemModel>();
         }
     }

@@ -100,7 +100,6 @@ namespace MediaPlayer.Core.ViewModels
         public MediaLibraryViewModel()
 		{
 /////////////////////////////////////////////FIX TYPES IN EXTENSION
-            NavItems.CreateNavItems();
             /*MediaDB.RemoveRange(MediaDB.Albums);
             MediaDB.RemoveRange(MediaDB.Artists);
             MediaDB.RemoveRange(MediaDB.Contributions);
@@ -123,6 +122,24 @@ namespace MediaPlayer.Core.ViewModels
             SelectedDisc = SelectedAlbum.Discs.FirstOrDefault();
 
             var test = new ObservableCollection<ArtistModel>(MediaDB.Artists);
+
+
+
+            showAlbumsCommand = new MvxCommand(ShowAlbums);
+            showAlbumTracksCommand = new MvxCommand(ShowAlbumTracks);
+            showArtistsCommand = new MvxCommand(ShowArtists);
+            showArtistTracksCommand = new MvxCommand(ShowArtistTracks);
+            showGenresCommand = new MvxCommand(ShowGenres);
+            showGenreTracksCommand = new MvxCommand(ShowGenreTracks);
+            showTracksCommand = new MvxCommand(ShowTracks);
+            navCommands.Add("ShowAlbums", ShowAlbumsCommand);
+            navCommands.Add("ShowArtists", ShowArtistsCommand);
+            navCommands.Add("ShowGenres", ShowGenresCommand);
+            navCommands.Add("ShowPlaylists", ShowTracksCommand);/////////////////////////
+            navCommands.Add("ShowTracks", ShowTracksCommand);
+            navCommands.Add("ShowYears", ShowYearsCommand);
+            NavItems.CreateNavItems(navCommands);
+
         }
         private void Window_Loaded()
         {
@@ -345,7 +362,7 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingAlbums
         {
             get => this.showingAlbums;
-            set => this.SetProperty(ref this.showingAlbums, value);
+            private set => this.SetProperty(ref this.showingAlbums, value);
         }
         private bool showingAlbumTracks;
 
@@ -355,7 +372,7 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingAlbumTracks
         {
             get => this.showingAlbumTracks;
-            set => this.SetProperty(ref this.showingAlbumTracks, value);
+            private set => this.SetProperty(ref this.showingAlbumTracks, value);
         }
 
      
@@ -370,7 +387,7 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingArtists
         {
             get => this.showingArtists;
-            set => this.SetProperty(ref this.showingArtists, value);
+            private set => this.SetProperty(ref this.showingArtists, value);
         }
         private bool showingArtistTracks;
 
@@ -380,7 +397,7 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingArtistTracks
         {
             get => this.showingArtistTracks;
-            set => this.SetProperty(ref this.showingArtistTracks, value);
+            private set => this.SetProperty(ref this.showingArtistTracks, value);
         }
         private bool showingGenres;
 
@@ -390,7 +407,7 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingGenres
         {
             get => this.showingGenres;
-            set => this.SetProperty(ref this.showingGenres, value);
+            private set => this.SetProperty(ref this.showingGenres, value);
         }
         private bool showingGenreTracks;
 
@@ -400,7 +417,7 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingGenreTracks
         {
             get => this.showingGenreTracks;
-            set => this.SetProperty(ref this.showingGenreTracks, value);
+            private set => this.SetProperty(ref this.showingGenreTracks, value);
         }
 
         private bool showingTracks;
@@ -411,8 +428,31 @@ namespace MediaPlayer.Core.ViewModels
         public bool ShowingTracks
         {
             get => this.showingTracks;
-            set => this.SetProperty(ref this.showingTracks, value);
+            private set => this.SetProperty(ref this.showingTracks, value);
         }
+
+        private bool showingYears;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingYears
+        {
+            get => this.showingYears;
+            set => this.SetProperty(ref this.showingYears, value);
+        }
+
+        private bool showingYearTracks;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public bool ShowingYearTracks
+        {
+            get => this.showingYearTracks;
+            set => this.SetProperty(ref this.showingYearTracks, value);
+        }
+
 
         private void HideAll()
         {
@@ -544,5 +584,41 @@ namespace MediaPlayer.Core.ViewModels
             ShowingTracks = true;
         }
 
+        private IMvxCommand showYearsCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowYearsCommand
+        {
+            get => this.showYearsCommand ??= new MvxCommand(this.ShowYears);
+            set => this.SetProperty(ref this.showYearsCommand, value);
+        }
+
+        private void ShowYears()
+        {
+            HideAll();
+            ShowingYears = true;
+        }
+
+        private IMvxCommand showYearTracksCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowYearTracksCommand
+        {
+            get => this.showYearTracksCommand ??= new MvxCommand(this.ShowYearTracks);
+            set => this.SetProperty(ref this.showYearTracksCommand, value);
+        }
+
+        private void ShowYearTracks()
+        {
+            HideAll();
+            ShowingYearTracks = true;
+        }
+
+
+        private Dictionary<string, IMvxCommand> navCommands = new Dictionary<string, IMvxCommand>();
     }
 }
