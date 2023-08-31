@@ -16,7 +16,7 @@ namespace MediaPlayer.Core.ViewModels
     using Windows.Storage;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// The <see cref="MvxViewModel"/> for the MediaPlayer's library view.
     /// </summary>
     public class MediaLibraryViewModel : MvxViewModel
     {
@@ -76,8 +76,8 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaLibraryViewModel"/> class.
         /// </summary>
-        /// <param name="newTimerFactory">PLACEHOLDER.</param>
-        /// <param name="newMediaControllerFactory">PLACEHOLDER1.</param>
+        /// <param name="newTimerFactory"><inheritdoc cref="ITimerFactory" path='/summary'/></param>
+        /// <param name="newMediaControllerFactory"><inheritdoc cref="IMediaControllerFactory" path='/summary'/></param>
         public MediaLibraryViewModel(ITimerFactory newTimerFactory, IMediaControllerFactory newMediaControllerFactory)
         {
             /////////////////////////////////////////////FIX TYPES IN EXTENSION
@@ -125,14 +125,14 @@ namespace MediaPlayer.Core.ViewModels
         // Readonly Backed Properties
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the local instance of <see cref="MediaDBContext" />.
         /// </summary>
         public MediaDBContext MediaDB => this.mediaDB;
 
         // Primitive Backed Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// Gets or sets a value indicating whether a track is currently playing.
         /// </summary>
         public bool IsTrackPlaying
         {
@@ -150,7 +150,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the index in <see cref="TrackQueue"/> of the currently playing <see cref="TrackModel">track</see>.
         /// </summary>
         public int CurrentlyPlayingQueueIndex
         {
@@ -167,7 +167,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the position of the currently playing track in the <see cref="IMediaController"/>.
         /// </summary>
         public int PlayerPosition
         {
@@ -181,7 +181,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the volume of the currently playing track in the <see cref="IMediaController"/>.
         /// </summary>
         public int PlayerVolume
         {
@@ -194,7 +194,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the track currently selected in <see cref="TrackQueue"/>.
         /// </summary>
         public int SelectedQueueIndex
         {
@@ -205,7 +205,7 @@ namespace MediaPlayer.Core.ViewModels
         // Non-Primitive Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the artist currently selected in the Library.
         /// </summary>
         public ArtistModel SelectedArtist
         {
@@ -219,7 +219,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the album currently selected in the Library.
         /// </summary>
         public AlbumModel SelectedAlbum
         {
@@ -233,7 +233,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the disc currently selected in the Library.
         /// </summary>
         public DiscModel SelectedDisc
         {
@@ -247,7 +247,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the track currently selected in the Library.
         /// </summary>
         public TrackModel SelectedTrack
         {
@@ -256,7 +256,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the track currently loaded into the <see cref="IMediaController"/>.
         /// </summary>
         public TrackModel? LoadedTrack => (this.CurrentlyPlayingQueueIndex >= 0 && this.CurrentlyPlayingQueueIndex < this.TrackQueue.Count) ? this.TrackQueue[this.CurrentlyPlayingQueueIndex] : null;
 
@@ -267,12 +267,12 @@ namespace MediaPlayer.Core.ViewModels
        }*/
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the <see cref="TrackModel.LoadPath">path</see> of the <see cref="TrackModel">track</see> currently loaded into the <see cref="IMediaController"/>.
         /// </summary>
         public Uri? LoadedPath => this.LoadedTrack?.LoadPath;
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the items populating the navigation panel.
         /// </summary>
         public ObservableCollection<MenuItemModel> NavItems
         {
@@ -281,7 +281,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the queue of tracks to be played by the <see cref="IMediaController"/>.
         /// </summary>
         public ObservableCollection<TrackModel> TrackQueue
         {
@@ -292,48 +292,48 @@ namespace MediaPlayer.Core.ViewModels
         // Primitive Accessors
 
         /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
+        /// Gets a value indicating whether the <see cref="IMediaController"/> currnetly has a <see cref="TrackModel">track</see> loaded into it.
         /// </summary>
         public bool IsTrackLoaded => this.mediaController.Source != null;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the <see cref="PlayerPosition"/> as a string formatted according to the <see cref="LoadedTrack"/>'s <see cref="TrackModel.DisplayDurationFormat"/>.
         /// </summary>
         public string DisplayPosition => TimeSpan.FromSeconds(this.PlayerPosition).ToString(this.LoadedTrack?.DisplayDurationFormat);
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the <see cref="DisplayPosition"/> and <see cref="TrackModel.TrackDuration"/> formatted to display on the UI.
         /// </summary>
         public string DisplayProgression => this.IsTrackPlaying ? $"{this.DisplayPosition} / {this.LoadedTrack?.DisplayDuration}" : string.Empty;
 
         // Non-Primitive Accessors
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current list of artists ordered by <see cref="ArtistModel.ArtistName"/>.
         /// </summary>
         public ObservableCollection<ArtistModel> DisplayArtists => this.MediaDB.Artists.
                 OrderBy(artist => artist.ArtistName).ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current list of albums by the <see cref="SelectedArtist"/> ordered by <see cref="AlbumModel.AlbumName"/>.
         /// </summary>
         public ObservableCollection<AlbumModel> DisplayArtistsAlbums => this.SelectedArtist.Albums.
                 OrderBy(album => album.AlbumName).ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current list of discs in the <see cref="SelectedAlbum"/> ordered by <see cref="DiscModel.DiscNum"/>.
         /// </summary>
         public ObservableCollection<DiscModel> DisplayAlbumsDiscs => this.SelectedAlbum.Discs.
             OrderBy(disc => disc.DiscNum).ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current list of tracks in the <see cref="SelectedDisc"/> ordered by <see cref="TrackModel.TrackNum"/>.
         /// </summary>
         public ObservableCollection<TrackModel> DisplayDiscsTracks => this.SelectedDisc.Tracks.
                 OrderBy(track => track.TrackNum).ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current list of tracks.
         /// </summary>
         public ObservableCollection<TrackModel> TracksDisplay => this.MediaDB.Tracks.
             OrderBy(track => track.AlbumArtist.ArtistName).
@@ -346,7 +346,7 @@ namespace MediaPlayer.Core.ViewModels
         // Command Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="AlbumModel"/>'s tracks to the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand AddAlbumCommand
         {
@@ -355,7 +355,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="ArtistModel"/>'s tracks to the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand AddArtistCommand
         {
@@ -364,7 +364,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to add a <see cref="DiscModel"/>'s tracks to the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand AddDiscCommand
         {
@@ -373,7 +373,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to add a <see cref="TrackModel"/> to the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand AddTrackCommand
         {
@@ -391,7 +391,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to empty the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand ClearQueueCommand
         {
@@ -400,7 +400,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to run when the <see cref="LoadedTrack"/> ends.
         /// </summary>
         public IMvxCommand MediaEndedCommand
         {
@@ -418,7 +418,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="AlbumModel"/>'s tracks.
         /// </summary>
         public IMvxCommand PlayAlbumCommand
         {
@@ -427,7 +427,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="ArtistModel"/>'s tracks.
         /// </summary>
         public IMvxCommand PlayArtistCommand
         {
@@ -436,7 +436,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="DiscModel"/>'s tracks.
         /// </summary>
         public IMvxCommand PlayDiscCommand
         {
@@ -445,7 +445,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> for the play/pause ToggleButton.
         /// </summary>
         public IMvxCommand PlayPauseCommand
         {
@@ -454,7 +454,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="TrackModel"/>.
         /// </summary>
         public IMvxCommand PlayTrackCommand
         {
@@ -463,7 +463,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to remove a <see cref="TrackModel"/> from the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand RemoveTrackCommand
         {
@@ -472,7 +472,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to run when the user starts using the track position sldier on the UI.
         /// </summary>
         public IMvxCommand SlideStartedCommand
         {
@@ -481,7 +481,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to run when the user finsishes using the track position sldier on the UI.
         /// </summary>
         public IMvxCommand SlideCompletedCommand
         {
@@ -490,7 +490,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to stop the <see cref="LoadedTrack"/>.
         /// </summary>
         public IMvxCommand StopCommand
         {
@@ -499,7 +499,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play the previous track in the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand SkipBackCommand
         {
@@ -508,7 +508,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play the next track in the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand SkipForwardCommand
         {
@@ -517,7 +517,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to jump to playing the currently selected track in the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand JumpQueueCommand
         {
@@ -1005,7 +1005,7 @@ namespace MediaPlayer.Core.ViewModels
             if (this.IsTrackLoaded)
             {
                 var newIndex = this.CurrentlyPlayingQueueIndex + 1;
-                newIndex = (newIndex >= this.TrackQueue.Count()) ? 0 : newIndex;
+                newIndex = (newIndex >= this.TrackQueue.Count) ? 0 : newIndex;
                 this.ChangeTrack(newIndex);
             }
         }

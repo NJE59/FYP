@@ -9,7 +9,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a song contribution.
     /// </summary>
     public class ContributionModel
     {
@@ -23,7 +23,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this song contribution.
         /// </summary>
         [BackingField(nameof(this.contributionID))]
         [Key]
@@ -36,7 +36,7 @@ namespace MediaPlayer.Core.Models
         // Foreign Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the artist making this song contribution.
         /// </summary>
         [BackingField(nameof(this.artistID))]
         [ForeignKey(nameof(ArtistModel))]
@@ -47,7 +47,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the song being contributed to in this song contribution.
         /// </summary>
         [BackingField(nameof(this.trackID))]
         [ForeignKey(nameof(TrackModel))]
@@ -60,12 +60,12 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the artist making this song contribution.
         /// </summary>
         public virtual ArtistModel Contributor { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the song being contributed to in this song contribution.
         /// </summary>
         public virtual TrackModel Track { get; set; } = null!;
     }

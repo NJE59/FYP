@@ -9,7 +9,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a music artist.
     /// </summary>
     public class ArtistModel
     {
@@ -23,7 +23,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this artist.
         /// </summary>
         [BackingField(nameof(this.artistID))]
         [Key]
@@ -36,7 +36,7 @@ namespace MediaPlayer.Core.Models
         // Other Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the name of this artist.
         /// </summary>
         [BackingField(nameof(this.artistName))]
         public string ArtistName
@@ -46,7 +46,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the biography of this artist.
         /// </summary>
         [BackingField(nameof(this.biography))]
         public string? Biography
@@ -58,12 +58,12 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the albums made by this artist.
         /// </summary>
         public virtual ICollection<AlbumModel> Albums { get; private set; } = new ObservableCollection<AlbumModel>();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the individual song contributions made by this artist.
         /// </summary>
         public virtual ICollection<ContributionModel> Contributions { get; private set; } = new ObservableCollection<ContributionModel>();
     }

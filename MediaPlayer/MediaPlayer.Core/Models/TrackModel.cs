@@ -180,6 +180,6 @@ namespace MediaPlayer.Core.Models
         /// Gets PLACEHOLDER.
         /// </summary>
         [NotMapped]
-        public Uri LoadPath => new Uri(this.Path);
+        public Uri LoadPath => new (this.Path);
     }
 }

@@ -10,7 +10,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a music album.
     /// </summary>
     public class AlbumModel
     {
@@ -28,7 +28,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this album.
         /// </summary>
         [BackingField(nameof(this.albumID))]
         [Key]
@@ -41,7 +41,7 @@ namespace MediaPlayer.Core.Models
         // Foreign Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the <see cref="ArtistModel"/> who made this album.
         /// </summary>
         [BackingField(nameof(this.artistID))]
         [ForeignKey(nameof(ArtistModel))]
@@ -54,7 +54,7 @@ namespace MediaPlayer.Core.Models
         // Other Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets year this album released.
         /// </summary>
         [BackingField(nameof(this.releaseYear))]
         public int ReleaseYear
@@ -64,7 +64,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets name of this album.
         /// </summary>
         [BackingField(nameof(this.albumName))]
         public string AlbumName
@@ -74,7 +74,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets this album's description.
         /// </summary>
         [BackingField(nameof(this.description))]
         public string? Description
@@ -86,19 +86,19 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="ArtistModel"/> who made this album.
         /// </summary>
         public virtual ArtistModel Artist { get; set; } = null!;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the discs in this album.
         /// </summary>
         public virtual ICollection<DiscModel> Discs { get; private set; } = new ObservableCollection<DiscModel>();
 
         // NotMapped Properties
 
         /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
+        /// Gets a value indicating whether this album has more than one disc.
         /// </summary>
         [NotMapped]
         public bool IsMultiDisc => this.Discs.Count > 1;

@@ -10,7 +10,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a single disc in a music album.
     /// </summary>
     public class DiscModel
     {
