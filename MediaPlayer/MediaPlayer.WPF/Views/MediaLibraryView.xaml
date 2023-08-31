@@ -56,7 +56,8 @@
                         extensions:SliderExtension.DragCompletedCommand="{Binding SlideCompletedCommand}"
                         Value="{Binding PlayerPosition, Mode=TwoWay}"
                         HorizontalContentAlignment="Stretch"
-                        IsEnabled="{Binding IsTrackLoaded}" />
+                        IsEnabled="{Binding IsTrackLoaded}"
+                        Margin="5,0" />
             </StatusBarItem>
             <StatusBarItem Grid.Row="1" Grid.Column="1" HorizontalContentAlignment="Right">
                 <StackPanel Orientation="Horizontal">
@@ -71,7 +72,7 @@
                         </Style>
                     </WrapPanel.Resources>
                     <Button Content="Stop" mvx:Bi.nd="Command StopCommand" />
-                    <Button Content="Skip" />
+                    <Button Content="Back" mvx:Bi.nd="Command SkipBackCommand" />
                     <ToggleButton Width="35"
                                   HorizontalAlignment="Center"
                                   mvx:Bi.nd="Command PlayPauseCommand"
@@ -89,7 +90,7 @@
                             </Style>
                         </ToggleButton.Style>
                     </ToggleButton>
-                    <Button Content="Skip" />
+                    <Button Content="Fwrd" mvx:Bi.nd="Command SkipForwardCommand" />
                     <Slider x:Name="VolumeSlider"
                             Minimum="0"
                             Maximum="100"

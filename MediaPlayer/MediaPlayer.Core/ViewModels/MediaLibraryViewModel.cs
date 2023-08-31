@@ -65,6 +65,8 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand slideCompletedCommand;
         private IMvxCommand slideStartedCommand;
         private IMvxCommand stopCommand;
+        private IMvxCommand skipBackCommand;
+        private IMvxCommand skipFowardCommand;
 
         // private TimeSpan _trackPosition = TimeSpan.Zero;
 
@@ -98,7 +100,8 @@ namespace MediaPlayer.Core.ViewModels
             this.slideStartedCommand = new MvxCommand(this.SlideStarted);
             this.slideCompletedCommand = new MvxCommand(this.SlideCompleted);
             this.stopCommand = new MvxCommand(this.Stop);
-
+            this.skipBackCommand = new MvxCommand(this.SkipBack);
+            this.skipFowardCommand = new MvxCommand(this.SkipForward);
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -491,6 +494,24 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.stopCommand ??= new MvxCommand(this.Stop);
             set => this.SetProperty(ref this.stopCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand SkipBackCommand
+        {
+            get => this.skipBackCommand ??= new MvxCommand(this.SkipBack);
+            set => this.SetProperty(ref this.skipBackCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand SkipForwardCommand
+        {
+            get => this.skipFowardCommand ??= new MvxCommand(this.SkipForward);
+            set => this.SetProperty(ref this.skipFowardCommand, value);
         }
 
         // Protected Methods
@@ -966,6 +987,32 @@ namespace MediaPlayer.Core.ViewModels
         {
             this.ResetQueue();
             this.Play();
+        }
+
+        private void SkipForward()
+        {
+            if (this.IsTrackLoaded)
+            {
+                var newIndex = this.CurrentlyPlayingQueueIndex + 1;
+                newIndex = (newIndex >= this.TrackQueue.Count()) ? 0 : newIndex;
+                this.ChangeTrack(newIndex);
+            }
+        }
+
+        private void SkipBack()
+        {
+            if (this.IsTrackLoaded)
+            {
+                var newIndex = this.CurrentlyPlayingQueueIndex;
+                if (this.mediaController.Position <= TimeSpan.FromSeconds(5) && newIndex > 0)
+                {
+                    this.ChangeTrack(newIndex - 1);
+                }
+                else
+                {
+                    this.mediaController.Position = TimeSpan.Zero;
+                }
+            }
         }
     }
 }
