@@ -6,15 +6,10 @@ namespace MediaPlayer.WPF.Classes
 {
     using MediaPlayer.Core.Interfaces;
 
-    /// <summary>
-    /// PLACEHOLDER.
-    /// </summary>
+    /// <inheritdoc cref="ITimerFactory" path='/summary'/>
     public class TimerFactory : ITimerFactory
     {
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
-        /// <returns><inheritdoc cref="Timer" path='/summary'/></returns>
+        /// <inheritdoc cref="ITimerFactory.CreateTimer" path='/summary'/>
         public ITimer CreateTimer() => new Timer();
     }
 }

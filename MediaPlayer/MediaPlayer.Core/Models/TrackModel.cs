@@ -10,7 +10,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model descring a sing music track / song.
     /// </summary>
     public class TrackModel
     {
@@ -31,7 +31,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this song.
         /// </summary>
         [BackingField(nameof(this.trackID))]
         [Key]
@@ -42,7 +42,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the file path of this song.
         /// </summary>
         [BackingField(nameof(this.path))]
         public string Path
@@ -54,7 +54,7 @@ namespace MediaPlayer.Core.Models
         // Foreign Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the disc this song belongs to.
         /// </summary>
         [BackingField(nameof(this.discID))]
         [ForeignKey(nameof(DiscModel))]
@@ -67,7 +67,7 @@ namespace MediaPlayer.Core.Models
         // Other Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the number of this song in its disc.
         /// </summary>
         [BackingField(nameof(this.trackNum))]
         public int TrackNum
@@ -77,7 +77,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the name of this song.
         /// </summary>
         [BackingField(nameof(this.trackName))]
         public string TrackName
@@ -87,7 +87,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the description of this song.
         /// </summary>
         [BackingField(nameof(this.description))]
         public string? Description
@@ -97,7 +97,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the lyrics of this song.
         /// </summary>
         [BackingField(nameof(this.lyrics))]
         public string? Lyrics
@@ -107,7 +107,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the duration of this song.
         /// </summary>
         [BackingField(nameof(this.trackDuration))]
         public TimeSpan TrackDuration
@@ -119,65 +119,65 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the disc this song belongs to.
         /// </summary>
         public virtual DiscModel Disc { get; set; } = null!;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the artist contributions to this song.
         /// </summary>
         public virtual ICollection<ContributionModel> Contributions { get; private set; } = new ObservableCollection<ContributionModel>();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the genre contributions to this song.
         /// </summary>
         public virtual ICollection<SongStyleModel> SongStyles { get; private set; } = new ObservableCollection<SongStyleModel>();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets an <see cref="ObservableCollection{T}"/> of this song's listings in playlists.
         /// </summary>
         public virtual ICollection<ListingModel> Listings { get; private set; } = new ObservableCollection<ListingModel>();
 
         // NotMapped Properties
 
         /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
+        /// Gets a value indicating whether the song is longer than an hour, for the purpose of formatting the <see cref="DisplayDuration"/>.
         /// </summary>
         [NotMapped]
         public bool IsLongerThanHour => this.TrackDuration > TimeSpan.FromHours(1);
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the <see cref="TrackDuration"/> in integer form representing how many seconds long this song is.
         /// </summary>
         [NotMapped]
         public int ControlDuration => (int)this.TrackDuration.TotalSeconds;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the format for this song's <see cref="DisplayDuration"/> - ie whether or not to include the hour component.
         /// </summary>
         [NotMapped]
         public string DisplayDurationFormat => $"{((this.TrackDuration > TimeSpan.FromHours(1)) ? "hh\\:" : string.Empty)}mm\\:ss";
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets this song's <see cref="TrackDuration"/> as a string, formatted according to its <see cref="DisplayDurationFormat"/>.
         /// </summary>
         [NotMapped]
         public string DisplayDuration => this.TrackDuration.ToString(this.DisplayDurationFormat);
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the album this song belongs sto.
         /// </summary>
         [NotMapped]
         public AlbumModel Album => this.Disc.Album;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the artist who made the album this song belongs sto.
         /// </summary>
         [NotMapped]
         public ArtistModel AlbumArtist => this.Disc.Album.Artist;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the file path of this song in Uri format for loadign into the media controller.
         /// </summary>
         [NotMapped]
         public Uri LoadPath => new (this.Path);

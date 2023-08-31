@@ -9,7 +9,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a single song's entry in a <see cref="Playlist"/>.
     /// </summary>
     public class ListingModel
     {
@@ -26,7 +26,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this listing.
         /// </summary>
         [BackingField(nameof(this.listingID))]
         [Key]
@@ -39,7 +39,7 @@ namespace MediaPlayer.Core.Models
         // Foreign Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the playlist this listing belongs to.
         /// </summary>
         [BackingField(nameof(this.playlistID))]
         [ForeignKey(nameof(PlaylistModel))]
@@ -50,7 +50,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unqiue ID of the song this listing is add to the playist.
         /// </summary>
         [BackingField(nameof(this.trackID))]
         [ForeignKey(nameof(TrackModel))]
@@ -63,7 +63,7 @@ namespace MediaPlayer.Core.Models
         // Other Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the positon of this lisitng in the playlist.
         /// </summary>
         [BackingField(nameof(this.trackPos))]
         public int TrackPos
@@ -75,12 +75,12 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the song beign added to the playlist.
         /// </summary>
         public virtual TrackModel Track { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the playlist this listing belongs to.
         /// </summary>
         public virtual PlaylistModel Playlist { get; set; } = null!;
     }

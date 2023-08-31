@@ -8,13 +8,11 @@ namespace MediaPlayer.Core
     using MvvmCross.ViewModels;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Class describing an implementatino of the <see cref="MvxApplication"/> interface.
     /// </summary>
     public class Application : MvxApplication
     {
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="MvxApplication.Initialize" path='/summary'/>
         public override void Initialize()
         {
             this.RegisterAppStart<MediaLibraryViewModel>();

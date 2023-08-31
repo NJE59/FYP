@@ -8,9 +8,7 @@ namespace MediaPlayer.WPF.Classes
     using System.Windows.Threading;
     using MediaPlayer.Core.Interfaces;
 
-    /// <summary>
-    /// PLACEHOLDER.
-    /// </summary>
+    /// <inheritdoc cref="ITimer" path='/summary'/>
     public class Timer : ITimer
     {
         private readonly DispatcherTimer internalTimer;
@@ -23,41 +21,31 @@ namespace MediaPlayer.WPF.Classes
             this.internalTimer = new DispatcherTimer();
         }
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="ITimer.Tick" path='/summary'/>
         public event EventHandler Tick
         {
             add => this.internalTimer.Tick += value;
             remove => this.internalTimer.Tick -= value;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="ITimer.IsEnabled" path='/summary'/>
         public bool IsEnabled
         {
             get => this.internalTimer.IsEnabled;
             set => this.internalTimer.IsEnabled = value;
         }
 
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="ITimer.Interval" path='/summary'/>
         public TimeSpan Interval
         {
             get => this.internalTimer.Interval;
             set => this.internalTimer.Interval = value;
         }
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="ITimer.Start" path='/summary'/>
         public void Start() => this.internalTimer.Start();
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="ITimer.Stop" path='/summary'/>
         public void Stop() => this.internalTimer.Stop();
     }
 }

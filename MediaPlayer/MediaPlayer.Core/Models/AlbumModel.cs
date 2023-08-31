@@ -91,7 +91,7 @@ namespace MediaPlayer.Core.Models
         public virtual ArtistModel Artist { get; set; } = null!;
 
         /// <summary>
-        /// Gets the discs in this album.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the discs in this album.
         /// </summary>
         public virtual ICollection<DiscModel> Discs { get; private set; } = new ObservableCollection<DiscModel>();
 

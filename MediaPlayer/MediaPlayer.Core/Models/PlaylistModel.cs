@@ -10,7 +10,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a custom music playlist.
     /// </summary>
     public class PlaylistModel
     {
@@ -24,7 +24,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this playlist.
         /// </summary>
         [BackingField(nameof(this.playlistID))]
         [Key]
@@ -37,7 +37,7 @@ namespace MediaPlayer.Core.Models
         // Other Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the name of this playlist.
         /// </summary>
         [BackingField(nameof(this.playlistName))]
         public string PlaylistName
@@ -47,7 +47,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the description of this playlist.
         /// </summary>
         [BackingField(nameof(this.description))]
         public string? Description
@@ -59,14 +59,14 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the listings of songs in this playlist.
         /// </summary>
         public virtual ICollection<ListingModel> Listings { get; private set; } = new ObservableCollection<ListingModel>();
 
         // NotMapped Properties
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the songs in this playlist.
         /// </summary>
         [NotMapped]
         public ObservableCollection<TrackModel> Tracks => new (this.Listings.Select(listing => listing.Track));

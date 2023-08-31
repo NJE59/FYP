@@ -5,14 +5,14 @@
 namespace MediaPlayer.Core.Interfaces
 {
     /// <summary>
-    /// PLACEHOLDER.
+    /// Interface describing a class to enable the creation of multiple <see cref="ITimer">ITimers</see>.
     /// </summary>
     public interface ITimerFactory
     {
         /// <summary>
-        /// PLACEHOLDER.
+        /// function to create a new instance of a class implementing the <see cref="ITimer"/> inteface.
         /// </summary>
-        /// <returns>PLACEHOLDER1.</returns>
+        /// <returns>A new instance of a class implementing the <see cref="ITimer"/> interface.</returns>
         ITimer CreateTimer();
     }
 }

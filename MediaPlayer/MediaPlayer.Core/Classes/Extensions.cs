@@ -49,7 +49,7 @@ namespace MediaPlayer.Core.Classes
         /// <summary>
         /// <see cref="StorageItemContentProperties"/> extension method creating a synchronous version of <see cref="StorageItemContentProperties.RetrievePropertiesAsync(IEnumerable{string})"/>.
         /// </summary>
-        /// <param name="properties">PLACEHOLDER.</param>
+        /// <param name="properties"><inheritdoc cref="StorageItemContentProperties" path='/summary'/></param>
         /// <param name="propertyToRetrieve"><see cref="StorageItemContentProperties"/> instance being extended, doesn't need passing as an argument.</param>
         /// <returns>an <see cref="object"/> containing the given properties of the file.</returns>
         public static object RetrieveProperty(this StorageItemContentProperties properties, string propertyToRetrieve)
@@ -81,29 +81,29 @@ namespace MediaPlayer.Core.Classes
         /// Method for populating <see cref="MediaLibraryViewModel.NavItems"/>.
         /// </summary>
         /// <param name="navItems"><inheritdoc cref="MediaLibraryViewModel.NavItems" path='/summary'/></param>
-        /// <returns>1PLACEHOLDER.</returns>
+        /// <returns>A hierarchical collection of the menu items.</returns>
         public static ObservableCollection<MenuItemModel> CreateNavItems(this ObservableCollection<MenuItemModel> navItems)
         {
             //////////////////////////////////////////////////////////////////////////////////////////////FIX TYPES
-            MenuItemModel mniMusic = new MenuItemModel("Music", typeof(string));
-            mniMusic.Children.Add(new MenuItemModel("Album", typeof(string)));
-            mniMusic.Children.Add(new MenuItemModel("Artist", typeof(string)));
-            mniMusic.Children.Add(new MenuItemModel("Genre", typeof(string)));
-            mniMusic.Children.Add(new MenuItemModel("Year", typeof(string)));
-            MenuItemModel mniPlaylists = new MenuItemModel("Playlists", typeof(string));
-            mniPlaylists.Children.Add(new MenuItemModel("Playlist1", typeof(string)));
-            mniPlaylists.Children.Add(new MenuItemModel("New Playlist", typeof(string)));
+            MenuItemModel mniMusic = new ("Music", typeof(string));
+            mniMusic.Children.Add(new ("Album", typeof(string)));
+            mniMusic.Children.Add(new ("Artist", typeof(string)));
+            mniMusic.Children.Add(new ("Genre", typeof(string)));
+            mniMusic.Children.Add(new ("Year", typeof(string)));
+            MenuItemModel mniPlaylists = new ("Playlists", typeof(string));
+            mniPlaylists.Children.Add(new ("Playlist1", typeof(string)));
+            mniPlaylists.Children.Add(new ("New Playlist", typeof(string)));
             navItems.Add(mniMusic);
             navItems.Add(mniPlaylists);
             return navItems;
         }
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Method for converting an <see cref="IEnumerable{T}"/> to an <see cref="ObservableCollection{T}"/>.
         /// </summary>
         /// <typeparam name="T">.</typeparam>
         /// <param name="input"><inheritdoc cref="IEnumerable{T}" path='/summary'/></param>
-        /// <returns>new PLACEHOLDER.</returns>
+        /// <returns>new <see cref="ObservableCollection{T}"/> of the inputted <see cref="IEnumerable{T}"/>.</returns>
         public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> input) => new (input);
     }
 }

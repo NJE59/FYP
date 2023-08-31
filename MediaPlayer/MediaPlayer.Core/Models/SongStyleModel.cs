@@ -9,7 +9,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describing a genre's contribution to a song.
     /// </summary>
     public class SongStyleModel
     {
@@ -23,7 +23,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this SongStyle.
         /// </summary>
         [BackingField(nameof(this.songStyleID))]
         [Key]
@@ -36,7 +36,7 @@ namespace MediaPlayer.Core.Models
         // Foreign Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the song this SongStyle is contributing to.
         /// </summary>
         [BackingField(nameof(this.trackID))]
         [ForeignKey(nameof(TrackModel))]
@@ -47,7 +47,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of the contributing genre to this SongStyle.
         /// </summary>
         [BackingField(nameof(this.genreID))]
         [ForeignKey(nameof(GenreModel))]
@@ -60,12 +60,12 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the song this SongStyle is contributing to.
         /// </summary>
         public virtual TrackModel Track { get; set; } = null!;
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the contributing genre to this SongStyle.
         /// </summary>
         public virtual GenreModel TrackGenre { get; set; } = null!;
     }

@@ -11,9 +11,7 @@ namespace MediaPlayer.WPF.Classes
     using MediaPlayer.Core.Interfaces;
     using MvvmCross.Commands;
 
-    /// <summary>
-    /// PLACEHOLDER.
-    /// </summary>
+    /// <inheritdoc cref="IMediaController" path='/summary'/>
     public class MediaController : IMediaController
     {
         private readonly MediaElement mediaElement;
@@ -23,7 +21,7 @@ namespace MediaPlayer.WPF.Classes
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaController"/> class.
         /// </summary>
-        /// <param name="mediaEndedCommand">PLACEHOLDER.</param>
+        /// <param name="mediaEndedCommand"><inheritdoc cref="IMediaController.MediaEndedCommand" path='/summary'/></param>
         public MediaController(IMvxCommand mediaEndedCommand)
         {
             this.mediaElement = new ()
@@ -36,84 +34,60 @@ namespace MediaPlayer.WPF.Classes
             this.mediaElement.MediaEnded += new RoutedEventHandler(this.MediaElement_MediaEnded);
         }
 
-        /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.HasAudio" path='/summary'/>
         public bool HasAudio => this.mediaElement.HasAudio;
 
-        /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.HasVideo" path='/summary'/>
         public bool HasVideo => this.mediaElement.HasVideo;
 
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.SpeedRatio" path='/summary'/>
         public double SpeedRatio
         {
             get => this.mediaElement.SpeedRatio;
             set => this.mediaElement.SpeedRatio = value;
         }
 
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Volume" path='/summary'/>
         public double Volume
         {
             get => this.mediaElement.Volume;
             set => this.mediaElement.Volume = value;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.HasTimeSpan" path='/summary'/>
         public bool HasTimeSpan => this.mediaElement.NaturalDuration.HasTimeSpan;
 
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Position" path='/summary'/>
         public TimeSpan Position
         {
             get => this.mediaElement.Position;
             set => this.mediaElement.Position = value;
         }
 
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Source" path='/summary'/>
         public Uri? Source
         {
             get => this.mediaElement.Source;
             set => this.mediaElement.Source = value;
         }
 
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.MediaEndedCommand" path='/summary'/>
         public IMvxCommand MediaEndedCommand
         {
             get => this.mediaEndedCommand;
             set => this.mediaEndedCommand = value;
         }
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Close" path='/summary'/>
         public void Close() => this.mediaElement.Close();
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Pause" path='/summary'/>
         public void Pause() => this.mediaElement.Pause();
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Play" path='/summary'/>
         public void Play() => this.mediaElement.Play();
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
+        /// <inheritdoc cref="IMediaController.Stop" path='/summary'/>
         public void Stop() => this.mediaElement.Stop();
 
         private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)

@@ -9,59 +9,56 @@ namespace MediaPlayer.Core.Data
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Class describing the media database.
     /// </summary>
     public class MediaDBContext : DbContext
     {
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the tracks table.
         /// </summary>
         public DbSet<TrackModel> Tracks { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the discs table.
         /// </summary>
         public DbSet<DiscModel> Discs { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the albums table.
         /// </summary>
         public DbSet<AlbumModel> Albums { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the artists table.
         /// </summary>
         public DbSet<ArtistModel> Artists { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the contributions table.
         /// </summary>
         public DbSet<ContributionModel> Contributions { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the genres table.
         /// </summary>
         public DbSet<GenreModel> Genres { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the song styles table.
         /// </summary>
         public DbSet<SongStyleModel> SongStyles { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the playlists table.
         /// </summary>
         public DbSet<PlaylistModel> Playlists { get; set; }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the lsitings table.
         /// </summary>
         public DbSet<ListingModel> Listings { get; set; }
 
-        /// <summary>
-        /// PLACEHOLDER.
-        /// </summary>
-        /// <param name="optionsBuilder"><inheritdoc cref="DbContextOptionsBuilder" path='/summary'/></param>
+        /// <inheritdoc cref="DbContext.OnConfiguring(DbContextOptionsBuilder)" path='/summary'/>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(

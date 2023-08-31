@@ -58,12 +58,12 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets the albums made by this artist.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the albums made by this artist.
         /// </summary>
         public virtual ICollection<AlbumModel> Albums { get; private set; } = new ObservableCollection<AlbumModel>();
 
         /// <summary>
-        /// Gets the individual song contributions made by this artist.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the the individual song contributions made by this artist.
         /// </summary>
         public virtual ICollection<ContributionModel> Contributions { get; private set; } = new ObservableCollection<ContributionModel>();
     }

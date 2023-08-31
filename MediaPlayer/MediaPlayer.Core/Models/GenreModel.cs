@@ -9,7 +9,7 @@ namespace MediaPlayer.Core.Models
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Model describnig a music genre.
     /// </summary>
     public class GenreModel
     {
@@ -23,7 +23,7 @@ namespace MediaPlayer.Core.Models
         // Primary Key Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the unique ID of this genre.
         /// </summary>
         [BackingField(nameof(this.genreID))]
         [Key]
@@ -36,7 +36,7 @@ namespace MediaPlayer.Core.Models
         // Other Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the name of this genre.
         /// </summary>
         [BackingField(nameof(this.genreName))]
         public string GenreName
@@ -46,7 +46,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the description of this genre.
         /// </summary>
         [BackingField(nameof(this.description))]
         public string? Description
@@ -58,7 +58,7 @@ namespace MediaPlayer.Core.Models
         // Navigation Properties
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets an <see cref="ObservableCollection{T}"/> of the usages of this genre.
         /// </summary>
         public virtual ICollection<SongStyleModel> TrackGenres { get; private set; } = new ObservableCollection<SongStyleModel>();
     }
