@@ -20,17 +20,24 @@ namespace MediaPlayer.Core.ViewModels
     /// </summary>
     public class MediaLibraryViewModel : MvxViewModel
     {
-        // Readonly Primitive Backing Fields
+        #region Readonly Primitive Backing Fields
+
         private readonly int defaultDiscNum = 0;
 
-        // Readonly Non-Primitive Backing Fields
+        #endregion
+
+        #region Readonly Non-Primitive Backing Fields
+
         private readonly IMediaControllerFactory mediaControllerFactory;
         private readonly IMediaController mediaController;
         private readonly ITimerFactory timerFactory;
         private readonly ITimer timer;
         private readonly MediaDBContext mediaDB = new ();
 
-        // Primitive Backing Fields
+        #endregion
+
+        #region Primitive Backing Fields
+
         private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
         private int currentlyPlayingQueueIndex;
@@ -38,16 +45,23 @@ namespace MediaPlayer.Core.ViewModels
         private int playerVolume = 50;
         private int selectedQueueIndex;
 
-        // Non-Primitive Backing Fields
+        #endregion
+
+        #region Non-Primitive Backing Fields
+
         private AlbumModel selectedAlbum = null!;
         private ArtistModel selectedArtist = null!;
         private DiscModel selectedDisc = null!;
         private TrackModel selectedTrack = null!;
 
+        // private TimeSpan trackPosition = TimeSpan.Zero;
         private ObservableCollection<MenuItemModel> navItems = new ();
         private ObservableCollection<TrackModel> trackQueue = new ();
 
-        // Command Backing Fields
+        #endregion
+
+        #region Command Backing Fields
+
         private IMvxCommand addAlbumCommand;
         private IMvxCommand addArtistCommand;
         private IMvxCommand addDiscCommand;
@@ -69,9 +83,9 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand skipFowardCommand;
         private IMvxCommand jumpQueueCommand;
 
-        // private TimeSpan _trackPosition = TimeSpan.Zero;
+        #endregion
 
-        // Constructors
+        #region Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaLibraryViewModel"/> class.
@@ -122,14 +136,18 @@ namespace MediaPlayer.Core.ViewModels
             this.timer.Start();
         }
 
-        // Readonly Backed Properties
+        #endregion
+
+        #region Readonly Backed Properties
 
         /// <summary>
         /// Gets the local instance of <see cref="MediaDBContext" />.
         /// </summary>
         public MediaDBContext MediaDB => this.mediaDB;
 
-        // Primitive Backed Properties
+        #endregion
+
+        #region Primitive Backed Properties
 
         /// <summary>
         /// Gets or sets a value indicating whether a track is currently playing.
@@ -202,7 +220,9 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.selectedQueueIndex, value);
         }
 
-        // Non-Primitive Backed Properties
+        #endregion
+
+        #region Non-Primitive Backed Properties
 
         /// <summary>
         /// Gets or sets the artist currently selected in the Library.
@@ -289,7 +309,9 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.trackQueue, value);
         }
 
-        // Primitive Accessors
+        #endregion
+
+        #region Primitive Accessors
 
         /// <summary>
         /// Gets a value indicating whether the <see cref="IMediaController"/> currnetly has a <see cref="TrackModel">track</see> loaded into it.
@@ -306,7 +328,9 @@ namespace MediaPlayer.Core.ViewModels
         /// </summary>
         public string DisplayProgression => this.IsTrackLoaded ? $"{this.DisplayPosition} / {this.LoadedTrack?.DisplayDuration}" : string.Empty;
 
-        // Non-Primitive Accessors
+        #endregion
+
+        #region Non-Primitive Accessors
 
         /// <summary>
         /// Gets the current list of artists ordered by <see cref="ArtistModel.ArtistName"/>.
@@ -343,7 +367,9 @@ namespace MediaPlayer.Core.ViewModels
                 ThenBy(track => track.TrackID).
             ToObservableCollection();
 
-        // Command Backed Properties
+        #endregion
+
+        #region Command Backed Properties
 
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="AlbumModel"/>'s tracks to the <see cref="TrackQueue"/>.
@@ -525,7 +551,9 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.jumpQueueCommand, value);
         }
 
-        // Protected Methods
+        #endregion
+
+        #region Protected Methods
 
         /// <summary>
         /// PLACEHOLDER.
@@ -537,11 +565,195 @@ namespace MediaPlayer.Core.ViewModels
             // base.OnClosing(e);
         }
 
-        // Private Methods
+        #endregion
+
+        #region Command Methods
+
         private void BtnClick()
         {
             Debug.WriteLine("Testing");
         }
+
+        private void Navigate()
+        {
+            Debug.WriteLine("Navigating");
+            /*if (tvNav.SelectedItem != null)
+            {
+                Type pageType = ((MenuItem)tvNav.SelectedItem).PageType;
+                MainView.Content = (Page)Activator.CreateInstance(pageType);
+            }*/
+        }
+
+        private void RemoveTrack()
+        {
+            var indexToRemove = this.SelectedQueueIndex;
+            if (this.TrackQueue.Count > indexToRemove)
+            {
+                if (this.TrackQueue.Count > 1)
+                {
+                    if (indexToRemove == this.CurrentlyPlayingQueueIndex)
+                    {
+                        this.ResetQueue();
+                    }
+
+                    this.TrackQueue.RemoveAt(indexToRemove);
+
+                    if (indexToRemove < this.CurrentlyPlayingQueueIndex)
+                    {
+                        this.CurrentlyPlayingQueueIndex--;
+                    }
+                }
+                else
+                {
+                    this.ClearQueue();
+                }
+            }
+        }
+
+        private void SlideStarted()
+        {
+            Debug.WriteLine("Slide Started");
+            this.isUserDraggingPosition = true;
+        }
+
+        private void SlideCompleted()
+        {
+            Debug.WriteLine("Slide Completed");
+            this.isUserDraggingPosition = false;
+            this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
+        }
+
+        private void AddTrack()
+        {
+            this.AddTrack(this.SelectedTrack);
+        }
+
+        private void AddDisc()
+        {
+            this.AddDisc(this.SelectedDisc);
+        }
+
+        private void AddAlbum()
+        {
+            this.AddAlbum(this.SelectedAlbum);
+        }
+
+        private void AddArtist()
+        {
+            this.AddArtist(this.SelectedArtist);
+        }
+
+        private void PlayTrack()
+        {
+            this.PlayTrack(this.SelectedTrack);
+        }
+
+        private void PlayDisc()
+        {
+            this.PlayDisc(this.SelectedDisc);
+        }
+
+        private void PlayAlbum()
+        {
+            this.PlayAlbum(this.SelectedAlbum);
+        }
+
+        private void PlayArtist()
+        {
+            this.PlayArtist(this.SelectedArtist);
+        }
+
+        private void ClearQueue()
+        {
+            this.Close();
+            this.TrackQueue.Clear();
+            this.ChangeTrack(-1);
+        }
+
+        private void MediaEnded()
+        {
+            var newIndex = this.CurrentlyPlayingQueueIndex + 1;
+            if (newIndex == this.TrackQueue.Count)
+            {
+                this.ResetQueue();
+            }
+            else
+            {
+                this.ChangeTrack(newIndex);
+                this.Play();
+            }
+        }
+
+        private void Stop()
+        {
+            this.mediaController.Stop();
+            this.IsTrackPlaying = false;
+        }
+
+        private void PlayPause()
+        {
+            if (this.IsTrackLoaded == true)
+            {
+                if (this.IsTrackPlaying == true)
+                {
+                    this.Pause();
+                }
+                else
+                {
+                    this.Play();
+                }
+            }
+            else
+            {
+                if (this.TrackQueue.Count > 0)
+                {
+                    this.PlayQueue();
+                }
+                else
+                {
+                    this.IsTrackPlaying = false;
+                }
+            }
+
+            this.RaisePropertyChanged(() => this.IsTrackPlaying);
+        }
+
+        private void SkipForward()
+        {
+            if (this.IsTrackLoaded)
+            {
+                var newIndex = this.CurrentlyPlayingQueueIndex + 1;
+                newIndex = (newIndex >= this.TrackQueue.Count) ? 0 : newIndex;
+                this.ChangeTrack(newIndex);
+            }
+        }
+
+        private void SkipBack()
+        {
+            if (this.IsTrackLoaded)
+            {
+                var newIndex = this.CurrentlyPlayingQueueIndex;
+                if (this.mediaController.Position <= TimeSpan.FromSeconds(5) && newIndex > 0)
+                {
+                    this.ChangeTrack(newIndex - 1);
+                }
+                else
+                {
+                    this.mediaController.Position = TimeSpan.Zero;
+                }
+            }
+        }
+
+        private void JumpQueue()
+        {
+            if (this.SelectedQueueIndex >= 0 && this.SelectedQueueIndex < this.TrackQueue.Count)
+            {
+                this.ChangeTrack(this.SelectedQueueIndex);
+            }
+        }
+        #endregion
+
+        #region Private Methods
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
         {
@@ -736,42 +948,6 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
-        private void Navigate()
-        {
-            Debug.WriteLine("Navigating");
-            /*if (tvNav.SelectedItem != null)
-            {
-                Type pageType = ((MenuItem)tvNav.SelectedItem).PageType;
-                MainView.Content = (Page)Activator.CreateInstance(pageType);
-            }*/
-        }
-
-        private void RemoveTrack()
-        {
-            var indexToRemove = this.SelectedQueueIndex;
-            if (this.TrackQueue.Count > indexToRemove)
-            {
-                if (this.TrackQueue.Count > 1)
-                {
-                    if (indexToRemove == this.CurrentlyPlayingQueueIndex)
-                    {
-                        this.ResetQueue();
-                    }
-
-                    this.TrackQueue.RemoveAt(indexToRemove);
-
-                    if (indexToRemove < this.CurrentlyPlayingQueueIndex)
-                    {
-                        this.CurrentlyPlayingQueueIndex--;
-                    }
-                }
-                else
-                {
-                    this.ClearQueue();
-                }
-            }
-        }
-
         private void ResetDatabase()
         {
             this.MediaDB.RemoveRange(this.MediaDB.Albums);
@@ -784,19 +960,6 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
             this.MediaDB.SaveChanges();
-        }
-
-        private void SlideStarted()
-        {
-            Debug.WriteLine("Slide Started");
-            this.isUserDraggingPosition = true;
-        }
-
-        private void SlideCompleted()
-        {
-            Debug.WriteLine("Slide Completed");
-            this.isUserDraggingPosition = false;
-            this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
         }
 
         private void TimerTick(object? sender, object e)
@@ -816,22 +979,12 @@ namespace MediaPlayer.Core.ViewModels
             this.TrackQueue.Add(track);
         }
 
-        private void AddTrack()
-        {
-            this.AddTrack(this.SelectedTrack);
-        }
-
         private void AddDisc(DiscModel disc)
         {
             foreach (TrackModel track in disc.Tracks)
             {
                 this.AddTrack(track);
             }
-        }
-
-        private void AddDisc()
-        {
-            this.AddDisc(this.SelectedDisc);
         }
 
         private void AddAlbum(AlbumModel album)
@@ -842,22 +995,12 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
-        private void AddAlbum()
-        {
-            this.AddAlbum(this.SelectedAlbum);
-        }
-
         private void AddArtist(ArtistModel artist)
         {
             foreach (AlbumModel album in artist.Albums)
             {
                 this.AddAlbum(album);
             }
-        }
-
-        private void AddArtist()
-        {
-            this.AddArtist(this.SelectedArtist);
         }
 
         private void PlayTrack(TrackModel track)
@@ -867,21 +1010,11 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayQueue();
         }
 
-        private void PlayTrack()
-        {
-            this.PlayTrack(this.SelectedTrack);
-        }
-
         private void PlayDisc(DiscModel disc)
         {
             this.ClearQueue();
             this.AddDisc(disc);
             this.PlayQueue();
-        }
-
-        private void PlayDisc()
-        {
-            this.PlayDisc(this.SelectedDisc);
         }
 
         private void PlayAlbum(AlbumModel album)
@@ -891,21 +1024,11 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayQueue();
         }
 
-        private void PlayAlbum()
-        {
-            this.PlayAlbum(this.SelectedAlbum);
-        }
-
         private void PlayArtist(ArtistModel artist)
         {
             this.ClearQueue();
             this.AddArtist(artist);
             this.PlayQueue();
-        }
-
-        private void PlayArtist()
-        {
-            this.PlayArtist(this.SelectedArtist);
         }
 
         private void Play()
@@ -917,12 +1040,6 @@ namespace MediaPlayer.Core.ViewModels
         private void Pause()
         {
             this.mediaController.Pause();
-            this.IsTrackPlaying = false;
-        }
-
-        private void Stop()
-        {
-            this.mediaController.Stop();
             this.IsTrackPlaying = false;
         }
 
@@ -939,55 +1056,6 @@ namespace MediaPlayer.Core.ViewModels
             this.RaisePropertyChanged(() => this.IsTrackLoaded);
         }
 
-        private void PlayPause()
-        {
-            if (this.IsTrackLoaded == true)
-            {
-                if (this.IsTrackPlaying == true)
-                {
-                    this.Pause();
-                }
-                else
-                {
-                   this.Play();
-                }
-            }
-            else
-            {
-                if (this.TrackQueue.Count > 0)
-                {
-                    this.PlayQueue();
-                }
-                else
-                {
-                    this.IsTrackPlaying = false;
-                }
-            }
-
-            this.RaisePropertyChanged(() => this.IsTrackPlaying);
-        }
-
-        private void MediaEnded()
-        {
-            var newIndex = this.CurrentlyPlayingQueueIndex + 1;
-            if (newIndex == this.TrackQueue.Count)
-            {
-                this.ResetQueue();
-            }
-            else
-            {
-                this.ChangeTrack(newIndex);
-                this.Play();
-            }
-        }
-
-        private void ClearQueue()
-        {
-            this.Close();
-            this.TrackQueue.Clear();
-            this.ChangeTrack(-1);
-        }
-
         private void ResetQueue()
         {
             this.Close();
@@ -1000,38 +1068,7 @@ namespace MediaPlayer.Core.ViewModels
             this.Play();
         }
 
-        private void SkipForward()
-        {
-            if (this.IsTrackLoaded)
-            {
-                var newIndex = this.CurrentlyPlayingQueueIndex + 1;
-                newIndex = (newIndex >= this.TrackQueue.Count) ? 0 : newIndex;
-                this.ChangeTrack(newIndex);
-            }
-        }
+        #endregion
 
-        private void SkipBack()
-        {
-            if (this.IsTrackLoaded)
-            {
-                var newIndex = this.CurrentlyPlayingQueueIndex;
-                if (this.mediaController.Position <= TimeSpan.FromSeconds(5) && newIndex > 0)
-                {
-                    this.ChangeTrack(newIndex - 1);
-                }
-                else
-                {
-                    this.mediaController.Position = TimeSpan.Zero;
-                }
-            }
-        }
-
-        private void JumpQueue()
-        {
-            if (this.SelectedQueueIndex >= 0 && this.SelectedQueueIndex < this.TrackQueue.Count)
-            {
-                this.ChangeTrack(this.SelectedQueueIndex);
-            }
-        }
     }
 }

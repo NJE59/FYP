@@ -5,7 +5,12 @@ VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaPlayer.Core", "MediaPlayer.Core\MediaPlayer.Core.csproj", "{009D70F1-8395-4A58-A24D-FB1C1CD70324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaPlayer.WPF", "MediaPlayer.WPF\MediaPlayer.WPF.csproj", "{B5C4D042-D871-413D-A05E-CC53B7E851D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediaPlayer.WPF", "MediaPlayer.WPF\MediaPlayer.WPF.csproj", "{B5C4D042-D871-413D-A05E-CC53B7E851D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F9F207FA-FCAE-4205-A42A-28156DCEAE72}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
