@@ -101,22 +101,17 @@
             </StatusBarItem>
         </StatusBar>
 
-        <Grid x:Name="NavigationPanel" DockPanel.Dock="Left" Width="150">
-            <TreeView ItemsSource="{Binding NavItems}" 
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                      mvx:Bi.nd="Command NavigateCommand">
-                <TreeView.Resources>
-                    <Style TargetType="TreeViewItem">
-                        <Setter Property="IsExpanded" Value="True" />
-                    </Style>
-                </TreeView.Resources>
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Title}" />
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>                    
-            </TreeView>
-        </Grid>
+        <StackPanel x:Name="NavigationPanel" DockPanel.Dock="Left" Width="150">
+            <StackPanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Margin" Value="0,10" />
+                </Style>
+            </StackPanel.Resources>
+            <Button Content="Songs" />
+            <Button Content="Albums" />
+            <Button Content="Artists" />
+            <Button Content="Genres" />
+        </StackPanel>
         
         <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="150">
             <ListView ItemsSource="{Binding TrackQueue}"

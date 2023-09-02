@@ -78,27 +78,6 @@ namespace MediaPlayer.Core.Classes
         }
 
         /// <summary>
-        /// Method for populating <see cref="MediaLibraryViewModel.NavItems"/>.
-        /// </summary>
-        /// <param name="navItems"><inheritdoc cref="MediaLibraryViewModel.NavItems" path='/summary'/></param>
-        /// <returns>A hierarchical collection of the menu items.</returns>
-        public static ObservableCollection<MenuItemModel> CreateNavItems(this ObservableCollection<MenuItemModel> navItems)
-        {
-            //////////////////////////////////////////////////////////////////////////////////////////////FIX TYPES
-            MenuItemModel mniMusic = new ("Music", typeof(string));
-            mniMusic.Children.Add(new ("Album", typeof(string)));
-            mniMusic.Children.Add(new ("Artist", typeof(string)));
-            mniMusic.Children.Add(new ("Genre", typeof(string)));
-            mniMusic.Children.Add(new ("Year", typeof(string)));
-            MenuItemModel mniPlaylists = new ("Playlists", typeof(string));
-            mniPlaylists.Children.Add(new ("Playlist1", typeof(string)));
-            mniPlaylists.Children.Add(new ("New Playlist", typeof(string)));
-            navItems.Add(mniMusic);
-            navItems.Add(mniPlaylists);
-            return navItems;
-        }
-
-        /// <summary>
         /// Method for converting an <see cref="IEnumerable{T}"/> to an <see cref="ObservableCollection{T}"/>.
         /// </summary>
         /// <typeparam name="T">.</typeparam>

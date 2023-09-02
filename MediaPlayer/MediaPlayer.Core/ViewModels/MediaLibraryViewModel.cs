@@ -55,7 +55,6 @@ namespace MediaPlayer.Core.ViewModels
         private TrackModel selectedTrack = null!;
 
         // private TimeSpan trackPosition = TimeSpan.Zero;
-        private ObservableCollection<MenuItemModel> navItems = new ();
         private ObservableCollection<TrackModel> trackQueue = new ();
 
         #endregion
@@ -94,9 +93,6 @@ namespace MediaPlayer.Core.ViewModels
         /// <param name="newMediaControllerFactory"><inheritdoc cref="IMediaControllerFactory" path='/summary'/></param>
         public MediaLibraryViewModel(ITimerFactory newTimerFactory, IMediaControllerFactory newMediaControllerFactory)
         {
-            /////////////////////////////////////////////FIX TYPES IN EXTENSION
-            this.NavItems.CreateNavItems();
-
             // this.ResetDatabase();
             this.addAlbumCommand = new MvxCommand(this.AddAlbum);
             this.addArtistCommand = new MvxCommand(this.AddArtist);
@@ -290,15 +286,6 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets the <see cref="TrackModel.LoadPath">path</see> of the <see cref="TrackModel">track</see> currently loaded into the <see cref="IMediaController"/>.
         /// </summary>
         public Uri? LoadedPath => this.LoadedTrack?.LoadPath;
-
-        /// <summary>
-        /// Gets or sets the items populating the navigation panel.
-        /// </summary>
-        public ObservableCollection<MenuItemModel> NavItems
-        {
-            get => this.navItems;
-            set => this.SetProperty(ref this.navItems, value);
-        }
 
         /// <summary>
         /// Gets or sets the queue of tracks to be played by the <see cref="IMediaController"/>.
