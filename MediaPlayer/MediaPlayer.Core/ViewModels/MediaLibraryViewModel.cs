@@ -13,6 +13,7 @@ namespace MediaPlayer.Core.ViewModels
     using MediaPlayer.Core.Models;
     using MvvmCross.Commands;
     using MvvmCross.ViewModels;
+    using Windows.ApplicationModel.UserDataTasks;
     using Windows.Storage;
 
     /// <summary>
@@ -44,6 +45,11 @@ namespace MediaPlayer.Core.ViewModels
         private int playerPosition = 0;
         private int playerVolume = 50;
         private int selectedQueueIndex;
+        private bool showingAlbums = false;
+        private bool showingArtists = false;
+        private bool showingDiscs = false;
+        private bool showingGenres = false;
+        private bool showingTracks = true;
 
         #endregion
 
@@ -81,6 +87,10 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand skipBackCommand;
         private IMvxCommand skipFowardCommand;
         private IMvxCommand jumpQueueCommand;
+        private IMvxCommand showAlbumsCommand;
+        private IMvxCommand showArtistsCommand;
+        private IMvxCommand showDiscsCommand;
+        private IMvxCommand showTracksCommand;
 
         #endregion
 
@@ -114,6 +124,16 @@ namespace MediaPlayer.Core.ViewModels
             this.skipBackCommand = new MvxCommand(this.SkipBack);
             this.skipFowardCommand = new MvxCommand(this.SkipForward);
             this.jumpQueueCommand = new MvxCommand(this.JumpQueue);
+            this.showAlbumsCommand = new MvxCommand(this.ShowAlbums);
+            this.showArtistsCommand = new MvxCommand(this.ShowArtists);
+            this.showDiscsCommand = new MvxCommand(this.ShowDiscs);
+            this.showTracksCommand = new MvxCommand(this.ShowTracks);
+
+            this.RaisePropertyChanged(() => this.ShowingAlbums);
+            this.RaisePropertyChanged(() => this.ShowingArtists);
+            this.RaisePropertyChanged(() => this.ShowingDiscs);
+            this.RaisePropertyChanged(() => this.ShowingTracks);
+
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
 
 #pragma warning disable CS8601 // Possible null reference assignment.
@@ -144,6 +164,51 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Primitive Backed Properties
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the Tracks DataGrid.
+        /// </summary>
+        public bool ShowingTracks
+        {
+            get => this.showingTracks;
+            set => this.SetProperty(ref this.showingTracks, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the Albums DataGrid.
+        /// </summary>
+        public bool ShowingAlbums
+        {
+            get => this.showingAlbums;
+            set => this.SetProperty(ref this.showingAlbums, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the Artists DataGrid.
+        /// </summary>
+        public bool ShowingArtists
+        {
+            get => this.showingArtists;
+            set => this.SetProperty(ref this.showingArtists, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the Genres DataGrid.
+        /// </summary>
+        public bool ShowingGenres
+        {
+            get => this.showingGenres;
+            set => this.SetProperty(ref this.showingGenres, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the Discs DataGrid.
+        /// </summary>
+        public bool ShowingDiscs
+        {
+            get => this.showingDiscs;
+            set => this.SetProperty(ref this.showingDiscs, value);
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether a track is currently playing.
@@ -538,6 +603,42 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.jumpQueueCommand, value);
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowAlbumsCommand
+        {
+            get => this.showAlbumsCommand ??= new MvxCommand(this.ShowAlbums);
+            set => this.SetProperty(ref this.showAlbumsCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowArtistsCommand
+        {
+            get => this.showArtistsCommand ??= new MvxCommand(this.ShowArtists);
+            set => this.SetProperty(ref this.showArtistsCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowDiscsCommand
+        {
+            get => this.showDiscsCommand ??= new MvxCommand(this.ShowDiscs);
+            set => this.SetProperty(ref this.showDiscsCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowTracksCommand
+        {
+            get => this.showTracksCommand ??= new MvxCommand(this.ShowTracks);
+            set => this.SetProperty(ref this.showTracksCommand, value);
+        }
+
         #endregion
 
         #region Protected Methods
@@ -554,11 +655,12 @@ namespace MediaPlayer.Core.ViewModels
 
         #endregion
 
-        #region Command Methods
+        #region Private Command Methods
 
         private void BtnClick()
         {
             Debug.WriteLine("Testing");
+            this.ShowingTracks = !this.ShowingTracks;
         }
 
         private void Navigate()
@@ -738,9 +840,41 @@ namespace MediaPlayer.Core.ViewModels
                 this.ChangeTrack(this.SelectedQueueIndex);
             }
         }
+
+        private void ShowAlbums()
+        {
+            this.HideAll();
+            this.ShowingAlbums = true;
+        }
+
+        private void ShowArtists()
+        {
+            this.HideAll();
+            this.ShowingArtists = true;
+        }
+
+        private void ShowDiscs()
+        {
+            this.HideAll();
+            this.ShowingDiscs = true;
+        }
+
+        private void ShowTracks()
+        {
+            this.HideAll();
+            this.ShowingTracks = true;
+        }
+
         #endregion
 
         #region Private Methods
+        private void HideAll()
+        {
+            this.ShowingAlbums = false;
+            this.ShowingArtists = false;
+            this.ShowingDiscs = false;
+            this.ShowingTracks = false;
+        }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
         {

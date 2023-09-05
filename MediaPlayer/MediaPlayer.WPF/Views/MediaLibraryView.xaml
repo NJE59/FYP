@@ -107,10 +107,10 @@
                     <Setter Property="Margin" Value="0,10" />
                 </Style>
             </StackPanel.Resources>
-            <Button Content="Songs" />
-            <Button Content="Albums" />
-            <Button Content="Artists" />
-            <Button Content="Genres" />
+            <Button Content="Artists" mvx:Bi.nd="Command ShowArtistsCommand" />
+            <Button Content="Albums" mvx:Bi.nd="Command ShowAlbumsCommand" />
+            <Button Content="Discs" mvx:Bi.nd="Command ShowDiscsCommand" />
+            <Button Content="Songs" mvx:Bi.nd="Command ShowTracksCommand" />
         </StackPanel>
         
         <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="150">
@@ -135,7 +135,7 @@
         <Frame x:Name="MainView" />
         <Grid x:Name="MainViewPanel">
             <Grid.Resources>
-                <Style TargetType="DataGrid">
+                <Style TargetType="extensions:CustomDataGrid">
                     <Setter Property="AutoGenerateColumns" Value="False" />
                     <Setter Property="EnableRowVirtualization" Value="True" />
                     <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
@@ -143,17 +143,11 @@
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
                 </Style>
             </Grid.Resources>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <DataGrid x:Name="dgArtists"
-                      Grid.Row="0"
-                      ItemsSource="{Binding DisplayArtists}"                      
-                      SelectedItem="{Binding SelectedArtist, Mode=TwoWay}">
+            <extensions:CustomDataGrid x:Name="dgArtists"
+                                       Visibility="Collapsed"
+                                       IsShowing="{Binding ShowingArtists}"
+                                       ItemsSource="{Binding DisplayArtists}"
+                                       SelectedItem="{Binding SelectedArtist, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayArtistCommand" />
@@ -169,11 +163,12 @@
                                         Binding="{Binding ArtistName}"
                                         Width="*" />
                 </DataGrid.Columns>
-            </DataGrid>
-            <DataGrid x:Name="dgAlbums"
-                      Grid.Row="1"
-                      ItemsSource="{Binding DisplayArtistsAlbums}"
-                      SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
+            </extensions:CustomDataGrid>
+            <extensions:CustomDataGrid x:Name="dgAlbums"
+                                       Visibility="Collapsed"
+                                       IsShowing="{Binding ShowingAlbums}"
+                                       ItemsSource="{Binding DisplayArtistsAlbums}"
+                                       SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayAlbumCommand">
@@ -202,11 +197,12 @@
                                         Binding="{Binding ReleaseYear}"
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
-            </DataGrid>
-            <DataGrid x:Name="dgDiscs"
-                      Grid.Row="2"
-                      ItemsSource="{Binding DisplayAlbumsDiscs}"
-                      SelectedItem="{Binding SelectedDisc, Mode=TwoWay}">
+            </extensions:CustomDataGrid>
+            <extensions:CustomDataGrid x:Name="dgDiscs"
+                                       IsShowing="{Binding ShowingDiscs}"
+                                       Visibility="Collapsed"
+                                       ItemsSource="{Binding DisplayAlbumsDiscs}"
+                                       SelectedItem="{Binding SelectedDisc, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayDiscCommand">
@@ -237,11 +233,12 @@
                                         Binding="{Binding DiscName}"
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
-            </DataGrid>
-            <DataGrid x:Name="dgTracks"                      
-                      Grid.Row="3"
-                      ItemsSource="{Binding DisplayDiscsTracks}"
-                      SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+            </extensions:CustomDataGrid>
+            <extensions:CustomDataGrid x:Name="dgTracks"
+                                       Visibility="Visible"
+                                       IsShowing="{Binding ShowingTracks}"
+                                       ItemsSource="{Binding DisplayDiscsTracks}"
+                                       SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -275,13 +272,7 @@
                                         Binding="{Binding TrackName}"
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
-            </DataGrid>
-            <Button Content="Save"
-                    Grid.Row="4"
-                    mvx:Bi.nd="Command BtnClickCommand"
-                    HorizontalAlignment="Center">
-                <!--Click="Button_Click"-->
-            </Button>
+            </extensions:CustomDataGrid>
         </Grid>
     </DockPanel>
 </views:MvxWpfView>
