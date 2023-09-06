@@ -6,6 +6,8 @@ namespace MediaPlayer.Core.Models
 {
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using MediaPlayer.Core.Classes;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -61,5 +63,13 @@ namespace MediaPlayer.Core.Models
         /// Gets an <see cref="ObservableCollection{T}"/> of the usages of this genre.
         /// </summary>
         public virtual ICollection<SongStyleModel> TrackGenres { get; private set; } = new ObservableCollection<SongStyleModel>();
+
+        // NotMapped Accessors
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<TrackModel> Tracks => this.TrackGenres.Select(songStyle => songStyle.Track).ToObservableCollection();
     }
 }

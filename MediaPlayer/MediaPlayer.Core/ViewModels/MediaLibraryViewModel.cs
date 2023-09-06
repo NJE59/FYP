@@ -47,7 +47,6 @@ namespace MediaPlayer.Core.ViewModels
         private int selectedQueueIndex;
         private bool showingAlbums = false;
         private bool showingArtists = false;
-        private bool showingDiscs = false;
         private bool showingGenres = false;
         private bool showingTracks = true;
 
@@ -57,7 +56,7 @@ namespace MediaPlayer.Core.ViewModels
 
         private AlbumModel selectedAlbum = null!;
         private ArtistModel selectedArtist = null!;
-        private DiscModel selectedDisc = null!;
+        private GenreModel selectedGenre = null!;
         private TrackModel selectedTrack = null!;
 
         // private TimeSpan trackPosition = TimeSpan.Zero;
@@ -69,7 +68,7 @@ namespace MediaPlayer.Core.ViewModels
 
         private IMvxCommand addAlbumCommand;
         private IMvxCommand addArtistCommand;
-        private IMvxCommand addDiscCommand;
+        private IMvxCommand addGenreCommand;
         private IMvxCommand addTrackCommand;
         private IMvxCommand btnClickCommand;
         private IMvxCommand clearQueueCommand;
@@ -77,7 +76,7 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand mediaEndedCommand;
         private IMvxCommand playAlbumCommand;
         private IMvxCommand playArtistCommand;
-        private IMvxCommand playDiscCommand;
+        private IMvxCommand playGenreCommand;
         private IMvxCommand playPauseCommand;
         private IMvxCommand playTrackCommand;
         private IMvxCommand removeTrackCommand;
@@ -89,7 +88,7 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand jumpQueueCommand;
         private IMvxCommand showAlbumsCommand;
         private IMvxCommand showArtistsCommand;
-        private IMvxCommand showDiscsCommand;
+        private IMvxCommand showGenresCommand;
         private IMvxCommand showTracksCommand;
 
         #endregion
@@ -106,7 +105,7 @@ namespace MediaPlayer.Core.ViewModels
             // this.ResetDatabase();
             this.addAlbumCommand = new MvxCommand(this.AddAlbum);
             this.addArtistCommand = new MvxCommand(this.AddArtist);
-            this.addDiscCommand = new MvxCommand(this.AddDisc);
+            this.addGenreCommand = new MvxCommand(this.AddGenre);
             this.addTrackCommand = new MvxCommand(this.AddTrack);
             this.btnClickCommand = new MvxCommand(this.BtnClick);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
@@ -115,7 +114,7 @@ namespace MediaPlayer.Core.ViewModels
             this.playAlbumCommand = new MvxCommand(this.PlayAlbum);
             this.playArtistCommand = new MvxCommand(this.PlayArtist);
             this.playPauseCommand = new MvxCommand(this.PlayPause);
-            this.playDiscCommand = new MvxCommand(this.PlayDisc);
+            this.playGenreCommand = new MvxCommand(this.PlayGenre);
             this.playTrackCommand = new MvxCommand(this.PlayTrack);
             this.removeTrackCommand = new MvxCommand(this.RemoveTrack);
             this.slideStartedCommand = new MvxCommand(this.SlideStarted);
@@ -126,12 +125,12 @@ namespace MediaPlayer.Core.ViewModels
             this.jumpQueueCommand = new MvxCommand(this.JumpQueue);
             this.showAlbumsCommand = new MvxCommand(this.ShowAlbums);
             this.showArtistsCommand = new MvxCommand(this.ShowArtists);
-            this.showDiscsCommand = new MvxCommand(this.ShowDiscs);
+            this.showGenresCommand = new MvxCommand(this.ShowGenres);
             this.showTracksCommand = new MvxCommand(this.ShowTracks);
 
             this.RaisePropertyChanged(() => this.ShowingAlbums);
             this.RaisePropertyChanged(() => this.ShowingArtists);
-            this.RaisePropertyChanged(() => this.ShowingDiscs);
+            this.RaisePropertyChanged(() => this.ShowingGenres);
             this.RaisePropertyChanged(() => this.ShowingTracks);
 
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
@@ -140,7 +139,7 @@ namespace MediaPlayer.Core.ViewModels
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
             this.SelectedAlbum = this.SelectedArtist.Albums.FirstOrDefault();
-            this.SelectedDisc = this.SelectedAlbum.Discs.FirstOrDefault();
+            this.SelectedGenre = this.SelectedAlbum.Tracks.FirstOrDefault().Genres.FirstOrDefault();
 #pragma warning restore CS8601 // Possible null reference assignment.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
             this.mediaControllerFactory = newMediaControllerFactory;
@@ -199,15 +198,6 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.showingGenres;
             set => this.SetProperty(ref this.showingGenres, value);
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the UI should be showing the Discs DataGrid.
-        /// </summary>
-        public bool ShowingDiscs
-        {
-            get => this.showingDiscs;
-            set => this.SetProperty(ref this.showingDiscs, value);
         }
 
         /// <summary>
@@ -294,8 +284,8 @@ namespace MediaPlayer.Core.ViewModels
             set
             {
                 this.SetProperty(ref this.selectedArtist, value);
-                this.SelectedAlbum = this.DisplayArtistsAlbums.First();
-                this.RaisePropertyChanged(() => this.DisplayArtistsAlbums);
+                this.SelectedAlbum = this.SelectedArtist.Albums.First();
+                this.RaisePropertyChanged(() => this.DisplayArtistTracks);
             }
         }
 
@@ -308,22 +298,22 @@ namespace MediaPlayer.Core.ViewModels
             set
             {
                 this.SetProperty(ref this.selectedAlbum, value);
-                this.SelectedDisc = this.DisplayAlbumsDiscs.First();
-                this.RaisePropertyChanged(() => this.DisplayAlbumsDiscs);
+                this.SelectedTrack = this.DisplayAlbumTracks.First();
+                this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
             }
         }
 
         /// <summary>
-        /// Gets or sets the disc currently selected in the Library.
+        /// Gets or sets the genre currently selected in the Library.
         /// </summary>
-        public DiscModel SelectedDisc
+        public GenreModel SelectedGenre
         {
-            get => this.selectedDisc;
+            get => this.selectedGenre;
             set
             {
-                this.SetProperty(ref this.selectedDisc, value);
-                this.SelectedTrack = this.DisplayDiscsTracks.First();
-                this.RaisePropertyChanged(() => this.DisplayDiscsTracks);
+                this.SetProperty(ref this.selectedGenre, value);
+                this.SelectedTrack = this.DisplayGenreTracks.First();
+                this.RaisePropertyChanged(() => this.DisplayGenreTracks);
             }
         }
 
@@ -385,38 +375,73 @@ namespace MediaPlayer.Core.ViewModels
         #region Non-Primitive Accessors
 
         /// <summary>
-        /// Gets the current list of artists ordered by <see cref="ArtistModel.ArtistName"/>.
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<AlbumModel> DisplayAlbums => this.MediaDB.Albums.
+            OrderBy(album => album.AlbumName).
+            ThenBy(album => album.Artist.ArtistName).
+            ThenBy(album => album.AlbumID).
+            ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<ArtistModel> DisplayArtists => this.MediaDB.Artists.
-                OrderBy(artist => artist.ArtistName).ToObservableCollection();
+            OrderBy(artist => artist.ArtistName).
+            ThenBy(artist => artist.ArtistID).
+            ToObservableCollection();
 
         /// <summary>
-        /// Gets the current list of albums by the <see cref="SelectedArtist"/> ordered by <see cref="AlbumModel.AlbumName"/>.
+        /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<AlbumModel> DisplayArtistsAlbums => this.SelectedArtist.Albums.
-                OrderBy(album => album.AlbumName).ToObservableCollection();
+        public ObservableCollection<GenreModel> DisplayGenres => this.MediaDB.Genres.
+            OrderBy(genre => genre.GenreName).
+            ThenBy(genre => genre.GenreID).
+            ToObservableCollection();
 
         /// <summary>
-        /// Gets the current list of discs in the <see cref="SelectedAlbum"/> ordered by <see cref="DiscModel.DiscNum"/>.
+        /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<DiscModel> DisplayAlbumsDiscs => this.SelectedAlbum.Discs.
-            OrderBy(disc => disc.DiscNum).ToObservableCollection();
+        public ObservableCollection<TrackModel> DisplayTracks => this.MediaDB.Tracks.
+            OrderBy(track => track.Disc.Album.Artist.ArtistName).
+            ThenBy(track => track.Disc.Album.AlbumName).
+            ThenBy(track => track.Disc.DiscNum).
+            ThenBy(track => track.TrackNum).
+            ThenBy(track => track.TrackName).
+            ThenBy(track => track.TrackID).
+            ToObservableCollection();
 
         /// <summary>
-        /// Gets the current list of tracks in the <see cref="SelectedDisc"/> ordered by <see cref="TrackModel.TrackNum"/>.
+        /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<TrackModel> DisplayDiscsTracks => this.SelectedDisc.Tracks.
-                OrderBy(track => track.TrackNum).ToObservableCollection();
+        public ObservableCollection<TrackModel> DisplayAlbumTracks => this.SelectedAlbum.Tracks.
+            OrderBy(track => track.Disc.DiscNum).
+            ThenBy(track => track.TrackNum).
+            ThenBy(track => track.TrackName).
+            ThenBy(track => track.TrackID).
+            ToObservableCollection();
 
         /// <summary>
-        /// Gets the current list of tracks.
+        /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<TrackModel> TracksDisplay => this.MediaDB.Tracks.
+        public ObservableCollection<TrackModel> DisplayArtistTracks => this.SelectedArtist.Albums.SelectMany(album => album.Tracks).
+            OrderBy(track => track.Album.AlbumName).
+            ThenBy(track => track.Disc.DiscNum).
+            ThenBy(track => track.TrackNum).
+            ThenBy(track => track.TrackName).
+            ThenBy(track => track.TrackID).
+            ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<TrackModel> DisplayGenreTracks => this.SelectedGenre.Tracks.
             OrderBy(track => track.AlbumArtist.ArtistName).
-                ThenBy(track => track.Album.AlbumName).
-                ThenBy(track => track.Disc.DiscNum).
-                ThenBy(track => track.TrackNum).
-                ThenBy(track => track.TrackID).
+            ThenBy(track => track.Album.AlbumName).
+            ThenBy(track => track.Disc.DiscNum).
+            ThenBy(track => track.TrackNum).
+            ThenBy(track => track.TrackName).
+            ThenBy(track => track.TrackID).
             ToObservableCollection();
 
         #endregion
@@ -442,12 +467,12 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to add a <see cref="DiscModel"/>'s tracks to the <see cref="TrackQueue"/>.
+        /// Gets or sets the <see cref="MvxCommand"/> to add a <see cref="GenreModel"/>'s tracks to the <see cref="TrackQueue"/>.
         /// </summary>
-        public IMvxCommand AddDiscCommand
+        public IMvxCommand AddGenreCommand
         {
-            get => this.addDiscCommand ??= new MvxCommand(this.AddDisc);
-            set => this.SetProperty(ref this.addDiscCommand, value);
+            get => this.addGenreCommand ??= new MvxCommand(this.AddGenre);
+            set => this.SetProperty(ref this.addGenreCommand, value);
         }
 
         /// <summary>
@@ -514,12 +539,12 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="DiscModel"/>'s tracks.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="GenreModel"/>'s tracks.
         /// </summary>
-        public IMvxCommand PlayDiscCommand
+        public IMvxCommand PlayGenreCommand
         {
-            get => this.playDiscCommand ??= new MvxCommand(this.PlayDisc);
-            set => this.SetProperty(ref this.playDiscCommand, value);
+            get => this.playGenreCommand ??= new MvxCommand(this.PlayGenre);
+            set => this.SetProperty(ref this.playGenreCommand, value);
         }
 
         /// <summary>
@@ -624,10 +649,10 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
-        public IMvxCommand ShowDiscsCommand
+        public IMvxCommand ShowGenresCommand
         {
-            get => this.showDiscsCommand ??= new MvxCommand(this.ShowDiscs);
-            set => this.SetProperty(ref this.showDiscsCommand, value);
+            get => this.showGenresCommand ??= new MvxCommand(this.ShowGenres);
+            set => this.SetProperty(ref this.showGenresCommand, value);
         }
 
         /// <summary>
@@ -717,9 +742,9 @@ namespace MediaPlayer.Core.ViewModels
             this.AddTrack(this.SelectedTrack);
         }
 
-        private void AddDisc()
+        private void AddGenre()
         {
-            this.AddDisc(this.SelectedDisc);
+            this.AddGenre(this.SelectedGenre);
         }
 
         private void AddAlbum()
@@ -737,9 +762,9 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayTrack(this.SelectedTrack);
         }
 
-        private void PlayDisc()
+        private void PlayGenre()
         {
-            this.PlayDisc(this.SelectedDisc);
+            this.PlayGenre(this.SelectedGenre);
         }
 
         private void PlayAlbum()
@@ -853,10 +878,10 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingArtists = true;
         }
 
-        private void ShowDiscs()
+        private void ShowGenres()
         {
             this.HideAll();
-            this.ShowingDiscs = true;
+            this.ShowingGenres = true;
         }
 
         private void ShowTracks()
@@ -872,7 +897,7 @@ namespace MediaPlayer.Core.ViewModels
         {
             this.ShowingAlbums = false;
             this.ShowingArtists = false;
-            this.ShowingDiscs = false;
+            this.ShowingGenres = false;
             this.ShowingTracks = false;
         }
 
@@ -1100,9 +1125,9 @@ namespace MediaPlayer.Core.ViewModels
             this.TrackQueue.Add(track);
         }
 
-        private void AddDisc(DiscModel disc)
+        private void AddGenre(GenreModel genre)
         {
-            foreach (TrackModel track in disc.Tracks)
+            foreach (TrackModel track in genre.Tracks)
             {
                 this.AddTrack(track);
             }
@@ -1110,9 +1135,9 @@ namespace MediaPlayer.Core.ViewModels
 
         private void AddAlbum(AlbumModel album)
         {
-            foreach (DiscModel disc in album.Discs)
+            foreach (TrackModel track in album.Tracks)
             {
-                this.AddDisc(disc);
+                this.AddTrack(track);
             }
         }
 
@@ -1131,10 +1156,10 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayQueue();
         }
 
-        private void PlayDisc(DiscModel disc)
+        private void PlayGenre(GenreModel genre)
         {
             this.ClearQueue();
-            this.AddDisc(disc);
+            this.AddGenre(genre);
             this.PlayQueue();
         }
 

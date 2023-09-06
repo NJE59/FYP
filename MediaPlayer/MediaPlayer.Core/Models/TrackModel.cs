@@ -7,6 +7,7 @@ namespace MediaPlayer.Core.Models
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using MediaPlayer.Core.Classes;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -171,6 +172,12 @@ namespace MediaPlayer.Core.Models
         public AlbumModel Album => this.Disc.Album;
 
         /// <summary>
+        /// Gets the name of the album this song belongs sto.
+        /// </summary>
+        [NotMapped]
+        public string AlbumName => this.Album.AlbumName;
+
+        /// <summary>
         /// Gets the artist who made the album this song belongs sto.
         /// </summary>
         [NotMapped]
@@ -181,5 +188,17 @@ namespace MediaPlayer.Core.Models
         /// </summary>
         [NotMapped]
         public Uri LoadPath => new (this.Path);
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public int DiscNum => this.Disc.DiscNum;
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<GenreModel> Genres => this.SongStyles.Select(songStyle => songStyle.TrackGenre).ToObservableCollection();
     }
 }

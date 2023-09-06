@@ -109,7 +109,7 @@
             </StackPanel.Resources>
             <Button Content="Artists" mvx:Bi.nd="Command ShowArtistsCommand" />
             <Button Content="Albums" mvx:Bi.nd="Command ShowAlbumsCommand" />
-            <Button Content="Discs" mvx:Bi.nd="Command ShowDiscsCommand" />
+            <Button Content="Genres" mvx:Bi.nd="Command ShowGenresCommand" />
             <Button Content="Songs" mvx:Bi.nd="Command ShowTracksCommand" />
         </StackPanel>
         
@@ -155,10 +155,6 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Artist ID"
-                                        Binding="{Binding ArtistID}"
-                                        Width="SizeToHeader"
-                                        IsReadOnly="True" />
                     <DataGridTextColumn Header="Name" 
                                         Binding="{Binding ArtistName}"
                                         Width="*" />
@@ -167,7 +163,7 @@
             <extensions:CustomDataGrid x:Name="dgAlbums"
                                        Visibility="Collapsed"
                                        IsShowing="{Binding ShowingAlbums}"
-                                       ItemsSource="{Binding DisplayArtistsAlbums}"
+                                       ItemsSource="{Binding DisplayAlbums}"
                                        SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
@@ -182,86 +178,58 @@
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Artist ID"
-                                        Binding="{Binding ArtistID}"
-                                        Width="SizeToHeader"
-                                        IsReadOnly="True" />
-                    <DataGridTextColumn Header="Album ID" 
-                                        Binding="{Binding AlbumID}"
-                                        Width="SizeToHeader"
-                                        IsReadOnly="True" />
                     <DataGridTextColumn Header="Album Name"
                                         Binding="{Binding AlbumName}"
+                                        IsReadOnly="True" />
+                    <DataGridTextColumn Header="Artist Name"
+                                        Binding="{Binding AlbumArtistName}"
                                         IsReadOnly="True" />
                     <DataGridTextColumn Header="Year"
                                         Binding="{Binding ReleaseYear}"
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
             </extensions:CustomDataGrid>
-            <extensions:CustomDataGrid x:Name="dgDiscs"
-                                       IsShowing="{Binding ShowingDiscs}"
+            <extensions:CustomDataGrid x:Name="dgGenres"
                                        Visibility="Collapsed"
-                                       ItemsSource="{Binding DisplayAlbumsDiscs}"
-                                       SelectedItem="{Binding SelectedDisc, Mode=TwoWay}">
+                                       IsShowing="{Binding ShowingGenres}"
+                                       ItemsSource="{Binding DisplayGenres}"
+                                       SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem Header="Play" mvx:Bi.nd="Command PlayDiscCommand">
-                            <MenuItem Header="Disc" mvx:Bi.nd="Command PlayDiscCommand" />
-                            <MenuItem Header="Album" mvx:Bi.nd="Command PlayAlbumCommand" />
-                            <MenuItem Header="Artist" mvx:Bi.nd="Command PlayArtistCommand" />
-                        </MenuItem>
-                        <MenuItem Header="Add to Queue" mvx:Bi.nd="Command AddDiscCommand">
-                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddDiscCommand" />
-                            <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
-                            <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
-                        </MenuItem>
+                        <MenuItem Header="Play Genre" mvx:Bi.nd="Command PlayGenreCommand" />
+                        <MenuItem Header="Add Genre to Queue" mvx:Bi.nd="Command AddGenreCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Album ID"
-                                        Binding="{Binding AlbumID}"
+                    <DataGridTextColumn Header="Gerne Name"
+                                        Binding="{Binding GenreName}"
                                         Width="SizeToHeader"
-                                        IsReadOnly="True" />
-                    <DataGridTextColumn Header="Disc ID"
-                                        Binding="{Binding DiscID}"
-                                        Width="SizeToHeader"
-                                        IsReadOnly="True" />
-                    <DataGridTextColumn Header="Disc Number"
-                                        Binding="{Binding DiscNum}"
-                                        IsReadOnly="True" />
-                    <DataGridTextColumn Header="Disc Name"
-                                        Binding="{Binding DiscName}"
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
+
             </extensions:CustomDataGrid>
             <extensions:CustomDataGrid x:Name="dgTracks"
                                        Visibility="Visible"
                                        IsShowing="{Binding ShowingTracks}"
-                                       ItemsSource="{Binding DisplayDiscsTracks}"
+                                       ItemsSource="{Binding DisplayTracks}"
                                        SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
                             <MenuItem Header="Song" mvx:Bi.nd="Command PlayTrackCommand" />
-                            <MenuItem Header="Disc" mvx:Bi.nd="Command PlayDiscCommand" />
                             <MenuItem Header="Album" mvx:Bi.nd="Command PlayAlbumCommand" />
                             <MenuItem Header="Artist" mvx:Bi.nd="Command PlayArtistCommand" />
                         </MenuItem>
                         <MenuItem Header="Add to Queue" mvx:Bi.nd="Command AddTrackCommand">
                             <MenuItem Header="Song" mvx:Bi.nd="Command AddTrackCommand" />
-                            <MenuItem Header="Disc" mvx:Bi.nd="Command AddDiscCommand" />
                             <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
                             <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Disc ID"
-                                        Binding="{Binding DiscID}"
-                                        Width="SizeToHeader"
-                                        IsReadOnly="True" />
-                    <DataGridTextColumn Header="Track ID"
-                                        Binding="{Binding TrackID}"
+                    <DataGridTextColumn Header="Album Name"
+                                        Binding="{Binding AlbumName}"
                                         Width="SizeToHeader"
                                         IsReadOnly="True" />
                     <DataGridTextColumn Header="Track Number"
@@ -273,6 +241,10 @@
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
             </extensions:CustomDataGrid>
+
+            <extensions:CustomDataGrid x:Name="dgArtistTracks" Visibility="Collapsed" />
+            <extensions:CustomDataGrid x:Name="dgAlbumTracks" Visibility="Collapsed" />
+            <extensions:CustomDataGrid x:Name="dgGenreTracks" Visibility="Collapsed" />
         </Grid>
     </DockPanel>
 </views:MvxWpfView>

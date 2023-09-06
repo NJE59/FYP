@@ -7,6 +7,7 @@ namespace MediaPlayer.Core.Models
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using MediaPlayer.Core.Classes;
     using Microsoft.EntityFrameworkCore;
 
     /// <summary>
@@ -102,5 +103,16 @@ namespace MediaPlayer.Core.Models
         /// </summary>
         [NotMapped]
         public bool IsMultiDisc => this.Discs.Count > 1;
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<TrackModel> Tracks => this.Discs.SelectMany(disc => disc.Tracks).
+            OrderBy(track => track.DiscNum).
+            ThenBy(track => track.TrackNum).
+            ThenBy(track => track.TrackName).
+            ThenBy(track => track.TrackID).
+            ToObservableCollection();
     }
 }

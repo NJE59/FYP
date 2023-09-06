@@ -5,8 +5,6 @@
 namespace MediaPlayer.Core.Classes
 {
     using System.Collections.ObjectModel;
-    using MediaPlayer.Core.Models;
-    using MediaPlayer.Core.ViewModels;
     using Windows.Storage;
     using Windows.Storage.FileProperties;
     using Windows.Storage.Search;
