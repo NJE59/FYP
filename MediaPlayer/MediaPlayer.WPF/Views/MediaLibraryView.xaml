@@ -22,9 +22,12 @@
             </MenuItem>
             <MenuItem Header="Playlists">
                 <MenuItem Header="Create Playlist" />
-                <MenuItem Header="Playlists">
-                    <MenuItem Header="Playlist1" />
-                    <MenuItem Header="New Playlist" />
+                <MenuItem Header="Playlists" ItemsSource="{Binding DisplayPlaylists}">
+                    <MenuItem.ItemTemplate>
+                        <DataTemplate>
+                            <MenuItem Header="{Binding PlaylistName}" />
+                        </DataTemplate>
+                    </MenuItem.ItemTemplate>
                 </MenuItem>
             </MenuItem>
         </Menu>
@@ -110,6 +113,7 @@
             <Button Content="Artists" mvx:Bi.nd="Command ShowArtistsCommand" />
             <Button Content="Albums" mvx:Bi.nd="Command ShowAlbumsCommand" />
             <Button Content="Genres" mvx:Bi.nd="Command ShowGenresCommand" />
+            <Button Content="Playlists" mvx:Bi.nd="Command ShowPlaylistsCommand" />
             <Button Content="Songs" mvx:Bi.nd="Command ShowTracksCommand" />
         </StackPanel>
         
@@ -131,8 +135,7 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        
-        <Frame x:Name="MainView" />
+                
         <Grid x:Name="MainViewPanel">
             <Grid.Resources>
                 <Style TargetType="extensions:CustomDataGrid">
@@ -170,6 +173,11 @@
                                        IsShowing="{Binding ShowingAlbums}"
                                        ItemsSource="{Binding DisplayAlbums}"
                                        SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding ShowAlbumTracksCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayAlbumCommand">
@@ -199,6 +207,11 @@
                                        IsShowing="{Binding ShowingGenres}"
                                        ItemsSource="{Binding DisplayGenres}"
                                        SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding ShowGenreTracksCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play Genre" mvx:Bi.nd="Command PlayGenreCommand" />
@@ -212,6 +225,17 @@
                                         IsReadOnly="True" />
                 </DataGrid.Columns>
 
+            </extensions:CustomDataGrid>
+            <extensions:CustomDataGrid x:Name="dgPlaylists"
+                                       Visibility="Collapsed"
+                                       IsShowing="{Binding ShowingPlaylists}"
+                                       ItemsSource="{Binding DisplayPlaylists}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Playlist Name"
+                                        Binding="{Binding PlaylistName}"
+                                        Width="SizeToHeader"
+                                        IsReadOnly="True" />
+                </DataGrid.Columns>
             </extensions:CustomDataGrid>
             <extensions:CustomDataGrid x:Name="dgTracks"
                                        Visibility="Visible"
