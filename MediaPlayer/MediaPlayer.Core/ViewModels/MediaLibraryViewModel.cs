@@ -49,6 +49,9 @@ namespace MediaPlayer.Core.ViewModels
         private bool showingArtists = false;
         private bool showingGenres = false;
         private bool showingTracks = true;
+        private bool showingArtistTracks = false;
+        private bool showingAlbumTracks = false;
+        private bool showingGenreTracks = false;
 
         #endregion
 
@@ -70,7 +73,6 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand addArtistCommand;
         private IMvxCommand addGenreCommand;
         private IMvxCommand addTrackCommand;
-        private IMvxCommand btnClickCommand;
         private IMvxCommand clearQueueCommand;
         private IMvxCommand navigateCommand;
         private IMvxCommand mediaEndedCommand;
@@ -90,7 +92,9 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand showArtistsCommand;
         private IMvxCommand showGenresCommand;
         private IMvxCommand showTracksCommand;
-
+        private IMvxCommand showArtistTracksCommand;
+        private IMvxCommand showAlbumTracksCommand;
+        private IMvxCommand showGenreTracksCommand;
         #endregion
 
         #region Constructors
@@ -107,7 +111,6 @@ namespace MediaPlayer.Core.ViewModels
             this.addArtistCommand = new MvxCommand(this.AddArtist);
             this.addGenreCommand = new MvxCommand(this.AddGenre);
             this.addTrackCommand = new MvxCommand(this.AddTrack);
-            this.btnClickCommand = new MvxCommand(this.BtnClick);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
             this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
             this.navigateCommand = new MvxCommand(this.Navigate);
@@ -127,11 +130,17 @@ namespace MediaPlayer.Core.ViewModels
             this.showArtistsCommand = new MvxCommand(this.ShowArtists);
             this.showGenresCommand = new MvxCommand(this.ShowGenres);
             this.showTracksCommand = new MvxCommand(this.ShowTracks);
+            this.showArtistTracksCommand = new MvxCommand(this.ShowArtistTracks);
+            this.showAlbumTracksCommand = new MvxCommand(this.ShowAlbumTracks);
+            this.showGenreTracksCommand = new MvxCommand(this.ShowGenreTracks);
 
             this.RaisePropertyChanged(() => this.ShowingAlbums);
             this.RaisePropertyChanged(() => this.ShowingArtists);
             this.RaisePropertyChanged(() => this.ShowingGenres);
             this.RaisePropertyChanged(() => this.ShowingTracks);
+            this.RaisePropertyChanged(() => this.ShowingArtistTracks);
+            this.RaisePropertyChanged(() => this.ShowingAlbumTracks);
+            this.RaisePropertyChanged(() => this.ShowingGenreTracks);
 
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
 
@@ -198,6 +207,33 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.showingGenres;
             set => this.SetProperty(ref this.showingGenres, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the <see cref="SelectedArtist"/>'s tracks DataGrid.
+        /// </summary>
+        public bool ShowingArtistTracks
+        {
+            get => this.showingArtistTracks;
+            set => this.SetProperty(ref this.showingArtistTracks, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the <see cref="SelectedAlbum"/>'s tracks DataGrid.
+        /// </summary>
+        public bool ShowingAlbumTracks
+        {
+            get => this.showingAlbumTracks;
+            set => this.SetProperty(ref this.showingAlbumTracks, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the <see cref="SelectedGenre"/>'s tracks DataGrid.
+        /// </summary>
+        public bool ShowingGenreTracks
+        {
+            get => this.showingGenreTracks;
+            set => this.SetProperty(ref this.showingGenreTracks, value);
         }
 
         /// <summary>
@@ -485,15 +521,6 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand BtnClickCommand
-        {
-            get => this.btnClickCommand ??= new MvxCommand(this.BtnClick);
-            set => this.SetProperty(ref this.btnClickCommand, value);
-        }
-
-        /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to empty the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand ClearQueueCommand
@@ -664,6 +691,32 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.showTracksCommand, value);
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowArtistTracksCommand
+        {
+            get => this.showArtistTracksCommand ??= new MvxCommand(this.ShowArtistTracks);
+            set => this.SetProperty(ref this.showArtistTracksCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowAlbumTracksCommand
+        {
+            get => this.showAlbumTracksCommand ??= new MvxCommand(this.ShowAlbumTracks);
+            set => this.SetProperty(ref this.showAlbumTracksCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowGenreTracksCommand
+        {
+            get => this.showGenreTracksCommand ??= new MvxCommand(this.ShowGenreTracks);
+            set => this.SetProperty(ref this.showGenreTracksCommand, value);
+        }
         #endregion
 
         #region Protected Methods
@@ -681,12 +734,6 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Private Command Methods
-
-        private void BtnClick()
-        {
-            Debug.WriteLine("Testing");
-            this.ShowingTracks = !this.ShowingTracks;
-        }
 
         private void Navigate()
         {
@@ -890,6 +937,24 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingTracks = true;
         }
 
+        private void ShowArtistTracks()
+        {
+            this.HideAll();
+            this.ShowingArtistTracks = true;
+        }
+
+        private void ShowAlbumTracks()
+        {
+            this.HideAll();
+            this.ShowingAlbumTracks = true;
+        }
+
+        private void ShowGenreTracks()
+        {
+            this.HideAll();
+            this.ShowingGenreTracks = true;
+        }
+
         #endregion
 
         #region Private Methods
@@ -899,6 +964,9 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingArtists = false;
             this.ShowingGenres = false;
             this.ShowingTracks = false;
+            this.ShowingArtistTracks = false;
+            this.ShowingAlbumTracks = false;
+            this.ShowingGenreTracks = false;
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
