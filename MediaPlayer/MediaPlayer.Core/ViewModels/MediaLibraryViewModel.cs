@@ -81,6 +81,7 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand addTrackCommand;
         private IMvxCommand clearQueueCommand;
         private IMvxCommand createNewPlaylistCommand;
+        private IMvxCommand deletePlaylistCommand;
         private IMvxCommand navigateCommand;
         private IMvxCommand mediaEndedCommand;
         private IMvxCommand playArtistCommand;
@@ -124,6 +125,7 @@ namespace MediaPlayer.Core.ViewModels
             this.addTrackCommand = new MvxCommand(this.AddTrack);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
             this.createNewPlaylistCommand = new MvxCommand(this.CreateNewPlaylist);
+            this.deletePlaylistCommand = new MvxCommand(this.DeletePlaylist);
             this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
             this.navigateCommand = new MvxCommand(this.Navigate);
             this.playArtistCommand = new MvxCommand(this.PlayArtist);
@@ -669,6 +671,15 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand DeletePlaylistCommand
+        {
+            get => this.deletePlaylistCommand ??= new MvxCommand(this.DeletePlaylist);
+            set => this.SetProperty(ref this.deletePlaylistCommand, value);
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to run when the <see cref="LoadedTrack"/> ends.
         /// </summary>
         public IMvxCommand MediaEndedCommand
@@ -1015,6 +1026,17 @@ namespace MediaPlayer.Core.ViewModels
             this.Close();
             this.TrackQueue.Clear();
             this.ChangeTrack(-1);
+        }
+
+        private void DeletePlaylist()
+        {
+            if (this.SelectedPlaylist != null)
+            {
+                this.MediaDB.Playlists.Remove(this.SelectedPlaylist);
+                this.MediaDB.SaveChanges();
+                this.RaisePropertyChanged(() => this.DisplayPlaylists);
+                this.SelectedPlaylist = null;
+            }
         }
 
         private void MediaEnded()
