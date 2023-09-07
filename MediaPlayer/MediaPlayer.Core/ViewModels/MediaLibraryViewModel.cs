@@ -42,10 +42,6 @@ namespace MediaPlayer.Core.ViewModels
 
         private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
-        private int currentlyPlayingQueueIndex;
-        private int playerPosition = 0;
-        private int playerVolume = 50;
-        private int selectedQueueIndex;
         private bool showingAlbums = false;
         private bool showingArtists = false;
         private bool showingGenres = false;
@@ -55,6 +51,11 @@ namespace MediaPlayer.Core.ViewModels
         private bool showingAlbumTracks = false;
         private bool showingGenreTracks = false;
         private bool showingPlaylistTracks = false;
+        private int currentlyPlayingQueueIndex;
+        private int playerPosition = 0;
+        private int playerVolume = 50;
+        private int selectedQueueIndex;
+        private string newPlaylistName = string.Empty;
 
         #endregion
 
@@ -79,6 +80,7 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand addPlaylistCommand;
         private IMvxCommand addTrackCommand;
         private IMvxCommand clearQueueCommand;
+        private IMvxCommand createNewPlaylistCommand;
         private IMvxCommand navigateCommand;
         private IMvxCommand mediaEndedCommand;
         private IMvxCommand playArtistCommand;
@@ -121,6 +123,7 @@ namespace MediaPlayer.Core.ViewModels
             this.addPlaylistCommand = new MvxCommand(this.AddPlaylist);
             this.addTrackCommand = new MvxCommand(this.AddTrack);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
+            this.createNewPlaylistCommand = new MvxCommand(this.CreateNewPlaylist);
             this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
             this.navigateCommand = new MvxCommand(this.Navigate);
             this.playArtistCommand = new MvxCommand(this.PlayArtist);
@@ -209,6 +212,12 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Primitive Backed Properties
+
+        /// <summary>
+        /// Gets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        public bool CanCreatePlaylist => this.newPlaylistName != string.Empty &&
+            !this.MediaDB.Playlists.Select(playlist => playlist.PlaylistName).Where(name => name == this.newPlaylistName).Any();
 
         /// <summary>
         /// Gets or sets a value indicating whether the UI should be showing the Albums DataGrid.
@@ -360,6 +369,19 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.selectedQueueIndex;
             set => this.SetProperty(ref this.selectedQueueIndex, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string NewPlaylistName
+        {
+            get => this.newPlaylistName;
+            set
+            {
+                this.SetProperty(ref this.newPlaylistName, value);
+                this.RaisePropertyChanged(() => this.CanCreatePlaylist);
+            }
         }
 
         #endregion
@@ -582,6 +604,15 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Command Backed Properties
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand CreateNewPlaylistCommand
+        {
+            get => this.createNewPlaylistCommand ??= new MvxCommand(this.CreateNewPlaylist);
+            set => this.SetProperty(ref this.createNewPlaylistCommand, value);
+        }
 
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="ArtistModel"/>'s tracks to the <see cref="TrackQueue"/>.
@@ -870,6 +901,15 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Private Command Methods
+
+        private void CreateNewPlaylist()
+        {
+            var newPlaylist = new PlaylistModel() { PlaylistName = this.NewPlaylistName };
+            this.MediaDB.Playlists.Add(newPlaylist);
+            this.MediaDB.SaveChanges();
+            this.NewPlaylistName = string.Empty;
+            this.RaisePropertyChanged(() => this.DisplayPlaylists);
+        }
 
         private void Navigate()
         {

@@ -104,19 +104,29 @@
             </StatusBarItem>
         </StatusBar>
 
-        <StackPanel x:Name="NavigationPanel" DockPanel.Dock="Left" Width="150">
-            <StackPanel.Resources>
-                <Style TargetType="Button">
-                    <Setter Property="Margin" Value="0,10" />
-                </Style>
-            </StackPanel.Resources>
-            <Button Content="Artists" mvx:Bi.nd="Command ShowArtistsCommand" />
-            <Button Content="Albums" mvx:Bi.nd="Command ShowAlbumsCommand" />
-            <Button Content="Genres" mvx:Bi.nd="Command ShowGenresCommand" />
-            <Button Content="Playlists" mvx:Bi.nd="Command ShowPlaylistsCommand" />
-            <Button Content="Songs" mvx:Bi.nd="Command ShowTracksCommand" />
-        </StackPanel>
-        
+        <DockPanel x:Name="NavigationPanel" DockPanel.Dock="Left" Width="150">
+            <TextBox DockPanel.Dock="Bottom"
+                     BorderBrush="Black"
+                     Text="{Binding NewPlaylistName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Button DockPanel.Dock="Bottom"
+                    Content="Create New Playlist"
+                    Margin="2"
+                    IsEnabled="{Binding CanCreatePlaylist}"
+                    mvx:Bi.nd="Command CreateNewPlaylistCommand" />
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="0,10" />
+                    </Style>
+                </StackPanel.Resources>
+                <Button Content="Artists" mvx:Bi.nd="Command ShowArtistsCommand" />
+                <Button Content="Albums" mvx:Bi.nd="Command ShowAlbumsCommand" />
+                <Button Content="Genres" mvx:Bi.nd="Command ShowGenresCommand" />
+                <Button Content="Playlists" mvx:Bi.nd="Command ShowPlaylistsCommand" />
+                <Button Content="Songs" mvx:Bi.nd="Command ShowTracksCommand" />
+            </StackPanel>
+        </DockPanel>
+
         <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="150">
             <ListView ItemsSource="{Binding TrackQueue}"
                       SelectedIndex="{Binding SelectedQueueIndex, Mode=TwoWay}">
