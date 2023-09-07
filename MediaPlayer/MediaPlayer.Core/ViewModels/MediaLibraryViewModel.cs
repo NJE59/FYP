@@ -54,6 +54,7 @@ namespace MediaPlayer.Core.ViewModels
         private bool showingArtistTracks = false;
         private bool showingAlbumTracks = false;
         private bool showingGenreTracks = false;
+        private bool showingPlaylistTracks = false;
 
         #endregion
 
@@ -62,6 +63,7 @@ namespace MediaPlayer.Core.ViewModels
         private AlbumModel? selectedAlbum = null!;
         private ArtistModel? selectedArtist = null!;
         private GenreModel? selectedGenre = null!;
+        private PlaylistModel? selectedPlaylist;
         private TrackModel? selectedTrack = null!;
 
         // private TimeSpan trackPosition = TimeSpan.Zero;
@@ -71,18 +73,20 @@ namespace MediaPlayer.Core.ViewModels
 
         #region Command Backing Fields
 
-        private IMvxCommand addAlbumCommand;
         private IMvxCommand addArtistCommand;
+        private IMvxCommand addAlbumCommand;
         private IMvxCommand addGenreCommand;
+        private IMvxCommand addPlaylistCommand;
         private IMvxCommand addTrackCommand;
         private IMvxCommand clearQueueCommand;
         private IMvxCommand navigateCommand;
         private IMvxCommand mediaEndedCommand;
-        private IMvxCommand playAlbumCommand;
         private IMvxCommand playArtistCommand;
+        private IMvxCommand playAlbumCommand;
         private IMvxCommand playGenreCommand;
-        private IMvxCommand playPauseCommand;
+        private IMvxCommand playPlaylistCommand;
         private IMvxCommand playTrackCommand;
+        private IMvxCommand playPauseCommand;
         private IMvxCommand removeTrackCommand;
         private IMvxCommand slideCompletedCommand;
         private IMvxCommand slideStartedCommand;
@@ -93,10 +97,12 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand showAlbumsCommand;
         private IMvxCommand showArtistsCommand;
         private IMvxCommand showGenresCommand;
+        private IMvxCommand showPlaylistsCommand;
         private IMvxCommand showTracksCommand;
         private IMvxCommand showArtistTracksCommand;
         private IMvxCommand showAlbumTracksCommand;
         private IMvxCommand showGenreTracksCommand;
+        private IMvxCommand showPlaylistTracksCommand;
         #endregion
 
         #region Constructors
@@ -109,18 +115,20 @@ namespace MediaPlayer.Core.ViewModels
         public MediaLibraryViewModel(ITimerFactory newTimerFactory, IMediaControllerFactory newMediaControllerFactory)
         {
             // this.ResetDatabase();
-            this.addAlbumCommand = new MvxCommand(this.AddAlbum);
             this.addArtistCommand = new MvxCommand(this.AddArtist);
+            this.addAlbumCommand = new MvxCommand(this.AddAlbum);
             this.addGenreCommand = new MvxCommand(this.AddGenre);
+            this.addPlaylistCommand = new MvxCommand(this.AddPlaylist);
             this.addTrackCommand = new MvxCommand(this.AddTrack);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
             this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
             this.navigateCommand = new MvxCommand(this.Navigate);
-            this.playAlbumCommand = new MvxCommand(this.PlayAlbum);
             this.playArtistCommand = new MvxCommand(this.PlayArtist);
-            this.playPauseCommand = new MvxCommand(this.PlayPause);
+            this.playAlbumCommand = new MvxCommand(this.PlayAlbum);
             this.playGenreCommand = new MvxCommand(this.PlayGenre);
+            this.playPlaylistCommand = new MvxCommand(this.PlayPlaylist);
             this.playTrackCommand = new MvxCommand(this.PlayTrack);
+            this.playPauseCommand = new MvxCommand(this.PlayPause);
             this.removeTrackCommand = new MvxCommand(this.RemoveTrack);
             this.slideStartedCommand = new MvxCommand(this.SlideStarted);
             this.slideCompletedCommand = new MvxCommand(this.SlideCompleted);
@@ -136,6 +144,7 @@ namespace MediaPlayer.Core.ViewModels
             this.showArtistTracksCommand = new MvxCommand(this.ShowArtistTracks);
             this.showAlbumTracksCommand = new MvxCommand(this.ShowAlbumTracks);
             this.showGenreTracksCommand = new MvxCommand(this.ShowGenreTracks);
+            this.showPlaylistTracksCommand = new MvxCommand(this.ShowPlaylistTracks);
 
             this.RaisePropertyChanged(() => this.ShowingAlbums);
             this.RaisePropertyChanged(() => this.ShowingArtists);
@@ -148,18 +157,32 @@ namespace MediaPlayer.Core.ViewModels
 
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
 
-            if (this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").Any())
+            if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").Any())
             {
-                this.MediaDB.Playlists.Add(new PlaylistModel() { PlaylistName = "Playlist1" });
+                var playlist1 = new PlaylistModel() { PlaylistName = "Playlist1" };
+                var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).First().Albums.First().Tracks;
+                var track1 = tracks1.First();
+                var track2 = tracks1.Last();
+                var listing1 = new ListingModel() { Playlist = playlist1, Track = track1, TrackPos = playlist1.Listings.Count + 1 };
+                var listing2 = new ListingModel() { Playlist = playlist1, Track = track2, TrackPos = playlist1.Listings.Count + 1 };
+                this.MediaDB.Playlists.Add(playlist1);
+                this.MediaDB.Listings.Add(listing1);
+                this.MediaDB.Listings.Add(listing2);
                 this.MediaDB.SaveChanges();
-                this.RaisePropertyChanged(() => this.DisplayPlaylists);
             }
 
-            if (this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").Any())
+            if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").Any())
             {
-                this.MediaDB.Playlists.Add(new PlaylistModel() { PlaylistName = "New Playlist" });
+                var newPlaylist = new PlaylistModel() { PlaylistName = "New Playlist" };
+                var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).Last().Albums.First().Tracks;
+                var track1 = tracks1.First();
+                var track2 = tracks1.Last();
+                var listing1 = new ListingModel() { Playlist = newPlaylist, Track = track1, TrackPos = newPlaylist.Listings.Count + 1 };
+                var listing2 = new ListingModel() { Playlist = newPlaylist, Track = track2, TrackPos = newPlaylist.Listings.Count + 1 };
+                this.MediaDB.Playlists.Add(newPlaylist);
+                this.MediaDB.Listings.Add(listing1);
+                this.MediaDB.Listings.Add(listing2);
                 this.MediaDB.SaveChanges();
-                this.RaisePropertyChanged(() => this.DisplayPlaylists);
             }
 
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
@@ -186,15 +209,6 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Primitive Backed Properties
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the UI should be showing the Tracks DataGrid.
-        /// </summary>
-        public bool ShowingTracks
-        {
-            get => this.showingTracks;
-            set => this.SetProperty(ref this.showingTracks, value);
-        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the UI should be showing the Albums DataGrid.
@@ -224,6 +238,24 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        public bool ShowingPlaylists
+        {
+            get => this.showingPlaylists;
+            set => this.SetProperty(ref this.showingPlaylists, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the UI should be showing the Tracks DataGrid.
+        /// </summary>
+        public bool ShowingTracks
+        {
+            get => this.showingTracks;
+            set => this.SetProperty(ref this.showingTracks, value);
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the UI should be showing the <see cref="SelectedArtist"/>'s tracks DataGrid.
         /// </summary>
         public bool ShowingArtistTracks
@@ -248,6 +280,15 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.showingGenreTracks;
             set => this.SetProperty(ref this.showingGenreTracks, value);
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// </summary>
+        public bool ShowingPlaylistTracks
+        {
+            get => this.showingPlaylistTracks;
+            set => this.SetProperty(ref this.showingPlaylistTracks, value);
         }
 
         /// <summary>
@@ -375,6 +416,19 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.selectedGenre, value);
                 this.SelectedTrack = this.DisplayGenreTracks?.First();
                 this.RaisePropertyChanged(() => this.DisplayGenreTracks);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public PlaylistModel? SelectedPlaylist
+        {
+            get => this.selectedPlaylist;
+            set
+            {
+                this.SetProperty(ref this.selectedPlaylist, value);
+                this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
             }
         }
 
@@ -516,18 +570,18 @@ namespace MediaPlayer.Core.ViewModels
             ThenBy(track => track.TrackID).
             ToObservableCollection();
 
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        public ObservableCollection<TrackModel>? DisplayPlaylistTracks => this.SelectedPlaylist?.
+            Listings.
+            OrderBy(listing => listing.TrackPos).
+            Select(listing => listing.Track).
+            ToObservableCollection();
+
         #endregion
 
         #region Command Backed Properties
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="AlbumModel"/>'s tracks to the <see cref="TrackQueue"/>.
-        /// </summary>
-        public IMvxCommand AddAlbumCommand
-        {
-            get => this.addAlbumCommand ??= new MvxCommand(this.AddAlbum);
-            set => this.SetProperty(ref this.addAlbumCommand, value);
-        }
 
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="ArtistModel"/>'s tracks to the <see cref="TrackQueue"/>.
@@ -539,12 +593,30 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="AlbumModel"/>'s tracks to the <see cref="TrackQueue"/>.
+        /// </summary>
+        public IMvxCommand AddAlbumCommand
+        {
+            get => this.addAlbumCommand ??= new MvxCommand(this.AddAlbum);
+            set => this.SetProperty(ref this.addAlbumCommand, value);
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to add a <see cref="GenreModel"/>'s tracks to the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand AddGenreCommand
         {
             get => this.addGenreCommand ??= new MvxCommand(this.AddGenre);
             set => this.SetProperty(ref this.addGenreCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand AddPlaylistCommand
+        {
+            get => this.addPlaylistCommand ??= new MvxCommand(this.AddPlaylist);
+            set => this.SetProperty(ref this.addPlaylistCommand, value);
         }
 
         /// <summary>
@@ -584,21 +656,21 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="AlbumModel"/>'s tracks.
-        /// </summary>
-        public IMvxCommand PlayAlbumCommand
-        {
-            get => this.playAlbumCommand ??= new MvxCommand(this.PlayAlbum);
-            set => this.SetProperty(ref this.playAlbumCommand, value);
-        }
-
-        /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="ArtistModel"/>'s tracks.
         /// </summary>
         public IMvxCommand PlayArtistCommand
         {
             get => this.playArtistCommand ??= new MvxCommand(this.PlayArtist);
             set => this.SetProperty(ref this.playArtistCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="AlbumModel"/>'s tracks.
+        /// </summary>
+        public IMvxCommand PlayAlbumCommand
+        {
+            get => this.playAlbumCommand ??= new MvxCommand(this.PlayAlbum);
+            set => this.SetProperty(ref this.playAlbumCommand, value);
         }
 
         /// <summary>
@@ -611,12 +683,12 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> for the play/pause ToggleButton.
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
-        public IMvxCommand PlayPauseCommand
+        public IMvxCommand PlayPlaylistCommand
         {
-            get => this.playPauseCommand ??= new MvxCommand(this.PlayPause);
-            set => this.SetProperty(ref this.playPauseCommand, value);
+            get => this.playPlaylistCommand ??= new MvxCommand(this.PlayPlaylist);
+            set => this.SetProperty(ref this.playPlaylistCommand, value);
         }
 
         /// <summary>
@@ -626,6 +698,15 @@ namespace MediaPlayer.Core.ViewModels
         {
             get => this.playTrackCommand ??= new MvxCommand(this.PlayTrack);
             set => this.SetProperty(ref this.playTrackCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> for the play/pause ToggleButton.
+        /// </summary>
+        public IMvxCommand PlayPauseCommand
+        {
+            get => this.playPauseCommand ??= new MvxCommand(this.PlayPause);
+            set => this.SetProperty(ref this.playPauseCommand, value);
         }
 
         /// <summary>
@@ -721,6 +802,15 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
+        public IMvxCommand ShowPlaylistsCommand
+        {
+            get => this.showPlaylistsCommand ??= new MvxCommand(this.ShowPlaylists);
+            set => this.SetProperty(ref this.showPlaylistsCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
         public IMvxCommand ShowTracksCommand
         {
             get => this.showTracksCommand ??= new MvxCommand(this.ShowTracks);
@@ -753,6 +843,16 @@ namespace MediaPlayer.Core.ViewModels
             get => this.showGenreTracksCommand ??= new MvxCommand(this.ShowGenreTracks);
             set => this.SetProperty(ref this.showGenreTracksCommand, value);
         }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand ShowPlaylistTracksCommand
+        {
+            get => this.showPlaylistTracksCommand ??= new MvxCommand(this.ShowPlaylistTracks);
+            set => this.SetProperty(ref this.showPlaylistTracksCommand, value);
+        }
+
         #endregion
 
         #region Protected Methods
@@ -820,14 +920,9 @@ namespace MediaPlayer.Core.ViewModels
             this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
         }
 
-        private void AddTrack()
+        private void AddArtist()
         {
-            this.AddTrack(this.SelectedTrack);
-        }
-
-        private void AddGenre()
-        {
-            this.AddGenre(this.SelectedGenre);
+            this.AddArtist(this.SelectedArtist);
         }
 
         private void AddAlbum()
@@ -835,19 +930,24 @@ namespace MediaPlayer.Core.ViewModels
             this.AddAlbum(this.SelectedAlbum);
         }
 
-        private void AddArtist()
+        private void AddGenre()
         {
-            this.AddArtist(this.SelectedArtist);
+            this.AddGenre(this.SelectedGenre);
         }
 
-        private void PlayTrack()
+        private void AddPlaylist()
         {
-            this.PlayTrack(this.SelectedTrack);
+            this.AddPlaylist(this.SelectedPlaylist);
         }
 
-        private void PlayGenre()
+        private void AddTrack()
         {
-            this.PlayGenre(this.SelectedGenre);
+            this.AddTrack(this.SelectedTrack);
+        }
+
+        private void PlayArtist()
+        {
+            this.PlayArtist(this.SelectedArtist);
         }
 
         private void PlayAlbum()
@@ -855,9 +955,19 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayAlbum(this.SelectedAlbum);
         }
 
-        private void PlayArtist()
+        private void PlayGenre()
         {
-            this.PlayArtist(this.SelectedArtist);
+            this.PlayGenre(this.SelectedGenre);
+        }
+
+        private void PlayPlaylist()
+        {
+            this.PlayPlaylist(this.SelectedPlaylist);
+        }
+
+        private void PlayTrack()
+        {
+            this.PlayTrack(this.SelectedTrack);
         }
 
         private void ClearQueue()
@@ -967,6 +1077,12 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingGenres = true;
         }
 
+        private void ShowPlaylists()
+        {
+            this.HideAll();
+            this.ShowingPlaylists = true;
+        }
+
         private void ShowTracks()
         {
             this.HideAll();
@@ -991,6 +1107,12 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingGenreTracks = true;
         }
 
+        private void ShowPlaylistTracks()
+        {
+            this.HideAll();
+            this.ShowingPlaylistTracks = true;
+        }
+
         #endregion
 
         #region Private Methods
@@ -999,11 +1121,12 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingAlbums = false;
             this.ShowingArtists = false;
             this.ShowingGenres = false;
+            this.ShowingPlaylists = false;
             this.ShowingTracks = false;
             this.ShowingArtistTracks = false;
             this.ShowingAlbumTracks = false;
             this.ShowingGenreTracks = false;
-            this.ShowingPlaylists = false;
+            this.ShowingPlaylistTracks = false;
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -1225,21 +1348,13 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
-        private void AddTrack(TrackModel? track)
+        private void AddArtist(ArtistModel? artist)
         {
-            if (track != null)
+            if (artist != null)
             {
-                this.TrackQueue.Add(track);
-            }
-        }
-
-        private void AddGenre(GenreModel? genre)
-        {
-            if (genre != null)
-            {
-                foreach (TrackModel track in genre.Tracks)
+                foreach (AlbumModel album in artist.Albums)
                 {
-                    this.AddTrack(track);
+                    this.AddAlbum(album);
                 }
             }
         }
@@ -1255,28 +1370,40 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
-        private void AddArtist(ArtistModel? artist)
+        private void AddGenre(GenreModel? genre)
         {
-            if (artist != null)
+            if (genre != null)
             {
-                foreach (AlbumModel album in artist.Albums)
+                foreach (TrackModel track in genre.Tracks)
                 {
-                    this.AddAlbum(album);
+                    this.AddTrack(track);
                 }
             }
         }
 
-        private void PlayTrack(TrackModel? track)
+        private void AddPlaylist(PlaylistModel? playlist)
         {
-            this.ClearQueue();
-            this.AddTrack(track);
-            this.PlayQueue();
+            if (playlist != null)
+            {
+                foreach (TrackModel track in playlist.Tracks)
+                {
+                    this.AddTrack(track);
+                }
+            }
         }
 
-        private void PlayGenre(GenreModel? genre)
+        private void AddTrack(TrackModel? track)
+        {
+            if (track != null)
+            {
+                this.TrackQueue.Add(track);
+            }
+        }
+
+        private void PlayArtist(ArtistModel? artist)
         {
             this.ClearQueue();
-            this.AddGenre(genre);
+            this.AddArtist(artist);
             this.PlayQueue();
         }
 
@@ -1287,10 +1414,24 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayQueue();
         }
 
-        private void PlayArtist(ArtistModel? artist)
+        private void PlayGenre(GenreModel? genre)
         {
             this.ClearQueue();
-            this.AddArtist(artist);
+            this.AddGenre(genre);
+            this.PlayQueue();
+        }
+
+        private void PlayPlaylist(PlaylistModel? playlist)
+        {
+            this.ClearQueue();
+            this.AddPlaylist(playlist);
+            this.PlayQueue();
+        }
+
+        private void PlayTrack(TrackModel? track)
+        {
+            this.ClearQueue();
+            this.AddTrack(track);
             this.PlayQueue();
         }
 
@@ -1333,30 +1474,5 @@ namespace MediaPlayer.Core.ViewModels
 
         #endregion
 
-        /// <summary>
-        /// Gets or sets a value indicating whether PLACEHOLDER.
-        /// </summary>
-        public bool ShowingPlaylists
-        {
-            get => this.showingPlaylists;
-            set => this.SetProperty(ref this.showingPlaylists, value);
-        }
-
-        private IMvxCommand showPlaylistsCommand;
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand ShowPlaylistsCommand
-        {
-            get => this.showPlaylistsCommand ??= new MvxCommand(this.ShowPlaylists);
-            set => this.SetProperty(ref this.showPlaylistsCommand, value);
-        }
-
-        private void ShowPlaylists()
-        {
-            this.HideAll();
-            this.ShowingPlaylists = true;
-        }
     }
 }
