@@ -281,6 +281,13 @@
                             <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
                             <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
+                        <MenuItem Header="Add to playlist" ItemsSource="{Binding DisplayPlaylists}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding PlaylistName}" Command="{Binding CreateListingCommand}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
@@ -313,6 +320,13 @@
                             <MenuItem Header="Song" mvx:Bi.nd="Command AddTrackCommand" />
                             <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
                             <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
+                        </MenuItem>
+                        <MenuItem Header="Add to playlist" ItemsSource="{Binding DisplayPlaylists}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding PlaylistName}" Command="{Binding CreateListingCommand}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
                         </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
@@ -347,6 +361,13 @@
                             <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
                             <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
+                        <MenuItem Header="Add to playlist" ItemsSource="{Binding DisplayPlaylists}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding PlaylistName}" Command="{Binding CreateListingCommand}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
@@ -380,6 +401,13 @@
                             <MenuItem Header="Album" mvx:Bi.nd="Command AddAlbumCommand" />
                             <MenuItem Header="Artist" mvx:Bi.nd="Command AddArtistCommand" />
                         </MenuItem>
+                        <MenuItem Header="Add to playlist" ItemsSource="{Binding DisplayPlaylists}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding PlaylistName}" Command="{Binding CreateListingCommand}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
@@ -400,7 +428,8 @@
                                        Visibility="Collapsed"
                                        IsShowing="{Binding ShowingPlaylistTracks}"
                                        ItemsSource="{Binding DisplayPlaylistTracks}"
-                                       SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+                                       SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                                       SelectedIndex="{Binding SelectedPlaylistTrackIndex}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -412,6 +441,14 @@
                             <MenuItem Header="Playlist" mvx:Bi.nd="Command AddPlaylistCommand" />
                         </MenuItem>
                         <MenuItem Header="Delete Playlist" mvx:Bi.nd="Command DeletePlaylistCommand" />
+                        <MenuItem Header="Add to playlist" ItemsSource="{Binding DisplayPlaylists}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding PlaylistName}" Command="{Binding CreateListingCommand}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
+                        <MenuItem Header="Remove from Playlist" mvx:Bi.nd="Command RemoveListingCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>

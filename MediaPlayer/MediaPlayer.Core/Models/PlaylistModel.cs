@@ -8,6 +8,7 @@ namespace MediaPlayer.Core.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using Microsoft.EntityFrameworkCore;
+    using MvvmCross.Commands;
 
     /// <summary>
     /// Model describing a custom music playlist.
@@ -20,6 +21,8 @@ namespace MediaPlayer.Core.Models
         // Other Backing Fields
         private string playlistName = null!;
         private string? description;
+        private IMvxCommand? createListingCommand;
+        private Action<PlaylistModel>? createListingAction;
 
         // Primary Key Backed Properties
 
@@ -56,6 +59,26 @@ namespace MediaPlayer.Core.Models
             set => this.description = value;
         }
 
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public IMvxCommand CreateListingCommand
+        {
+            get => this.createListingCommand ??= new MvxCommand(this.CreateListing);
+            set => this.createListingCommand = value;
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public Action<PlaylistModel>? CreateListingAction
+        {
+            get => this.createListingAction;
+            set => this.createListingAction = value;
+        }
+
         // Navigation Properties
 
         /// <summary>
@@ -70,5 +93,10 @@ namespace MediaPlayer.Core.Models
         /// </summary>
         [NotMapped]
         public ObservableCollection<TrackModel> Tracks => new (this.Listings.Select(listing => listing.Track));
+
+        private void CreateListing()
+        {
+            this.CreateListingAction?.Invoke(this);
+        }
     }
 }

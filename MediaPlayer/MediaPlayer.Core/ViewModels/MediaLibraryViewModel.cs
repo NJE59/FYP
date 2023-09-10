@@ -54,7 +54,9 @@ namespace MediaPlayer.Core.ViewModels
         private int currentlyPlayingQueueIndex;
         private int playerPosition = 0;
         private int playerVolume = 50;
+        private int selectedPlaylistTrackIndex;
         private int selectedQueueIndex;
+
         private string newPlaylistName = string.Empty;
 
         #endregion
@@ -106,6 +108,8 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand showAlbumTracksCommand;
         private IMvxCommand showGenreTracksCommand;
         private IMvxCommand showPlaylistTracksCommand;
+        private IMvxCommand removeListingCommand;
+
         #endregion
 
         #region Constructors
@@ -150,7 +154,7 @@ namespace MediaPlayer.Core.ViewModels
             this.showAlbumTracksCommand = new MvxCommand(this.ShowAlbumTracks);
             this.showGenreTracksCommand = new MvxCommand(this.ShowGenreTracks);
             this.showPlaylistTracksCommand = new MvxCommand(this.ShowPlaylistTracks);
-
+            this.removeListingCommand = new MvxCommand(this.RemoveListing);
             this.RaisePropertyChanged(() => this.ShowingAlbums);
             this.RaisePropertyChanged(() => this.ShowingArtists);
             this.RaisePropertyChanged(() => this.ShowingGenres);
@@ -162,9 +166,22 @@ namespace MediaPlayer.Core.ViewModels
 
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
 
+            var list = this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").FirstOrDefault();
+            if (list != null)
+            {
+                this.MediaDB.Playlists.Remove(list);
+            }
+
+            list = this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").FirstOrDefault();
+            if (list != null)
+            {
+                this.MediaDB.Playlists.Remove(list);
+            }
+
+            this.MediaDB.SaveChanges();
             if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").Any())
             {
-                var playlist1 = new PlaylistModel() { PlaylistName = "Playlist1" };
+                var playlist1 = new PlaylistModel() { PlaylistName = "Playlist1", CreateListingAction = this.CreateListing };
                 var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).First().Albums.First().Tracks;
                 var track1 = tracks1.First();
                 var track2 = tracks1.Last();
@@ -178,7 +195,7 @@ namespace MediaPlayer.Core.ViewModels
 
             if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").Any())
             {
-                var newPlaylist = new PlaylistModel() { PlaylistName = "New Playlist" };
+                var newPlaylist = new PlaylistModel() { PlaylistName = "New Playlist", CreateListingAction = this.CreateListing };
                 var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).Last().Albums.First().Tracks;
                 var track1 = tracks1.First();
                 var track2 = tracks1.Last();
@@ -214,6 +231,15 @@ namespace MediaPlayer.Core.ViewModels
         #endregion
 
         #region Primitive Backed Properties
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedPlaylistTrackIndex
+        {
+            get => this.selectedPlaylistTrackIndex;
+            set => this.SetProperty(ref this.selectedPlaylistTrackIndex, value);
+        }
 
         /// <summary>
         /// Gets a value indicating whether PLACEHOLDER.
@@ -610,6 +636,15 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
+        public IMvxCommand RemoveListingCommand
+        {
+            get => this.removeListingCommand ??= new MvxCommand(this.RemoveListing);
+            set => this.SetProperty(ref this.removeListingCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
         public IMvxCommand CreateNewPlaylistCommand
         {
             get => this.createNewPlaylistCommand ??= new MvxCommand(this.CreateNewPlaylist);
@@ -915,11 +950,29 @@ namespace MediaPlayer.Core.ViewModels
 
         private void CreateNewPlaylist()
         {
-            var newPlaylist = new PlaylistModel() { PlaylistName = this.NewPlaylistName };
+            var newPlaylist = new PlaylistModel() { PlaylistName = this.NewPlaylistName, CreateListingAction = this.CreateListing };
             this.MediaDB.Playlists.Add(newPlaylist);
             this.MediaDB.SaveChanges();
             this.NewPlaylistName = string.Empty;
             this.RaisePropertyChanged(() => this.DisplayPlaylists);
+        }
+
+        private void RemoveListing()
+        {
+            var listing = this.SelectedPlaylist?.Listings.OrderBy(listing => listing.TrackPos).ToList()[this.SelectedPlaylistTrackIndex];
+            if (listing != null)
+            {
+                this.MediaDB.Listings.Remove(listing);
+            }
+
+            for (int i = 0; i < this.SelectedPlaylist?.Listings.Count; i++)
+            {
+                listing = this.SelectedPlaylist.Listings.ToList()[i];
+                listing.TrackPos = (listing.TrackPos == i + 1) ? listing.TrackPos : i + 1;
+            }
+
+            this.MediaDB.SaveChanges();
+            this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
         }
 
         private void Navigate()
@@ -1032,6 +1085,11 @@ namespace MediaPlayer.Core.ViewModels
         {
             if (this.SelectedPlaylist != null)
             {
+                foreach (ListingModel listng in this.SelectedPlaylist.Listings)
+                {
+                    this.MediaDB.Listings.Remove(listng);
+                }
+
                 this.MediaDB.Playlists.Remove(this.SelectedPlaylist);
                 this.MediaDB.SaveChanges();
                 this.RaisePropertyChanged(() => this.DisplayPlaylists);
@@ -1395,6 +1453,18 @@ namespace MediaPlayer.Core.ViewModels
             this.MediaDB.RemoveRange(this.MediaDB.Playlists);
             this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
             this.MediaDB.RemoveRange(this.MediaDB.Tracks);
+            this.MediaDB.SaveChanges();
+        }
+
+        private void CreateListing(PlaylistModel playlist)
+        {
+            var track = this.SelectedTrack;
+            if (track != null && playlist != null)
+            {
+                var trackPos = playlist.Listings.Count + 1;
+                this.MediaDB.Listings.Add(new ListingModel() { Track = track, Playlist = playlist, TrackPos = trackPos });
+            }
+
             this.MediaDB.SaveChanges();
         }
 
