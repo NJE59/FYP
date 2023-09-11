@@ -7,6 +7,7 @@ namespace MediaPlayer.Core.Models
     using System.Collections.ObjectModel;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using MediaPlayer.Core.Classes;
     using Microsoft.EntityFrameworkCore;
     using MvvmCross.Commands;
 
@@ -89,10 +90,16 @@ namespace MediaPlayer.Core.Models
         // NotMapped Properties
 
         /// <summary>
+        /// Gets an <see cref="ObservableCollection{T}"/> of the listings in this playlist.
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<ListingModel> OrderedListings => this.Listings.OrderBy(lisitng => lisitng.TrackPos).ToObservableCollection();
+
+        /// <summary>
         /// Gets an <see cref="ObservableCollection{T}"/> of the songs in this playlist.
         /// </summary>
         [NotMapped]
-        public ObservableCollection<TrackModel> Tracks => new (this.Listings.Select(listing => listing.Track));
+        public ObservableCollection<TrackModel> Tracks => new (this.OrderedListings.Select(listing => listing.Track));
 
         private void CreateListing()
         {

@@ -15,6 +15,7 @@ namespace MediaPlayer.Core.ViewModels
     using MvvmCross.Presenters.Hints;
     using MvvmCross.ViewModels;
     using Windows.ApplicationModel.UserDataTasks;
+    using Windows.Media.Playlists;
     using Windows.Storage;
 
     /// <summary>
@@ -82,25 +83,22 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand addPlaylistCommand;
         private IMvxCommand addTrackCommand;
         private IMvxCommand clearQueueCommand;
-        private IMvxCommand createNewPlaylistCommand;
+        private IMvxCommand createPlaylistCommand;
         private IMvxCommand deletePlaylistCommand;
-        private IMvxCommand navigateCommand;
+        private IMvxCommand jumpQueueCommand;
         private IMvxCommand mediaEndedCommand;
+        private IMvxCommand moveDownCommand;
+        private IMvxCommand moveUpCommand;
         private IMvxCommand playArtistCommand;
         private IMvxCommand playAlbumCommand;
         private IMvxCommand playGenreCommand;
         private IMvxCommand playPlaylistCommand;
         private IMvxCommand playTrackCommand;
         private IMvxCommand playPauseCommand;
+        private IMvxCommand removeListingCommand;
         private IMvxCommand removeTrackCommand;
-        private IMvxCommand slideCompletedCommand;
-        private IMvxCommand slideStartedCommand;
-        private IMvxCommand stopCommand;
-        private IMvxCommand skipBackCommand;
-        private IMvxCommand skipFowardCommand;
-        private IMvxCommand jumpQueueCommand;
-        private IMvxCommand showAlbumsCommand;
         private IMvxCommand showArtistsCommand;
+        private IMvxCommand showAlbumsCommand;
         private IMvxCommand showGenresCommand;
         private IMvxCommand showPlaylistsCommand;
         private IMvxCommand showTracksCommand;
@@ -108,7 +106,11 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand showAlbumTracksCommand;
         private IMvxCommand showGenreTracksCommand;
         private IMvxCommand showPlaylistTracksCommand;
-        private IMvxCommand removeListingCommand;
+        private IMvxCommand slideCompletedCommand;
+        private IMvxCommand slideStartedCommand;
+        private IMvxCommand skipBackCommand;
+        private IMvxCommand skipFowardCommand;
+        private IMvxCommand stopCommand;
 
         #endregion
 
@@ -128,25 +130,22 @@ namespace MediaPlayer.Core.ViewModels
             this.addPlaylistCommand = new MvxCommand(this.AddPlaylist);
             this.addTrackCommand = new MvxCommand(this.AddTrack);
             this.clearQueueCommand = new MvxCommand(this.ClearQueue);
-            this.createNewPlaylistCommand = new MvxCommand(this.CreateNewPlaylist);
+            this.createPlaylistCommand = new MvxCommand(this.CreatePlaylist);
             this.deletePlaylistCommand = new MvxCommand(this.DeletePlaylist);
+            this.jumpQueueCommand = new MvxCommand(this.JumpQueue);
             this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
-            this.navigateCommand = new MvxCommand(this.Navigate);
+            this.moveDownCommand = new MvxCommand(this.MoveDown);
+            this.moveUpCommand = new MvxCommand(this.MoveUp);
             this.playArtistCommand = new MvxCommand(this.PlayArtist);
             this.playAlbumCommand = new MvxCommand(this.PlayAlbum);
             this.playGenreCommand = new MvxCommand(this.PlayGenre);
             this.playPlaylistCommand = new MvxCommand(this.PlayPlaylist);
             this.playTrackCommand = new MvxCommand(this.PlayTrack);
             this.playPauseCommand = new MvxCommand(this.PlayPause);
+            this.removeListingCommand = new MvxCommand(this.RemoveListing);
             this.removeTrackCommand = new MvxCommand(this.RemoveTrack);
-            this.slideStartedCommand = new MvxCommand(this.SlideStarted);
-            this.slideCompletedCommand = new MvxCommand(this.SlideCompleted);
-            this.stopCommand = new MvxCommand(this.Stop);
-            this.skipBackCommand = new MvxCommand(this.SkipBack);
-            this.skipFowardCommand = new MvxCommand(this.SkipForward);
-            this.jumpQueueCommand = new MvxCommand(this.JumpQueue);
-            this.showAlbumsCommand = new MvxCommand(this.ShowAlbums);
             this.showArtistsCommand = new MvxCommand(this.ShowArtists);
+            this.showAlbumsCommand = new MvxCommand(this.ShowAlbums);
             this.showGenresCommand = new MvxCommand(this.ShowGenres);
             this.showPlaylistsCommand = new MvxCommand(this.ShowPlaylists);
             this.showTracksCommand = new MvxCommand(this.ShowTracks);
@@ -154,7 +153,12 @@ namespace MediaPlayer.Core.ViewModels
             this.showAlbumTracksCommand = new MvxCommand(this.ShowAlbumTracks);
             this.showGenreTracksCommand = new MvxCommand(this.ShowGenreTracks);
             this.showPlaylistTracksCommand = new MvxCommand(this.ShowPlaylistTracks);
-            this.removeListingCommand = new MvxCommand(this.RemoveListing);
+            this.skipBackCommand = new MvxCommand(this.SkipBack);
+            this.skipFowardCommand = new MvxCommand(this.SkipForward);
+            this.slideStartedCommand = new MvxCommand(this.SlideStarted);
+            this.slideCompletedCommand = new MvxCommand(this.SlideCompleted);
+            this.stopCommand = new MvxCommand(this.Stop);
+
             this.RaisePropertyChanged(() => this.ShowingAlbums);
             this.RaisePropertyChanged(() => this.ShowingArtists);
             this.RaisePropertyChanged(() => this.ShowingGenres);
@@ -182,29 +186,25 @@ namespace MediaPlayer.Core.ViewModels
             if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").Any())
             {
                 var playlist1 = new PlaylistModel() { PlaylistName = "Playlist1", CreateListingAction = this.CreateListing };
+                this.MediaDB.Playlists.Add(playlist1);
+                this.MediaDB.SaveChanges();
                 var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).First().Albums.First().Tracks;
                 var track1 = tracks1.First();
                 var track2 = tracks1.Last();
-                var listing1 = new ListingModel() { Playlist = playlist1, Track = track1, TrackPos = playlist1.Listings.Count + 1 };
-                var listing2 = new ListingModel() { Playlist = playlist1, Track = track2, TrackPos = playlist1.Listings.Count + 1 };
-                this.MediaDB.Playlists.Add(playlist1);
-                this.MediaDB.Listings.Add(listing1);
-                this.MediaDB.Listings.Add(listing2);
-                this.MediaDB.SaveChanges();
+                this.CreateListing(playlist1, track1);
+                this.CreateListing(playlist1, track2);
             }
 
             if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").Any())
             {
                 var newPlaylist = new PlaylistModel() { PlaylistName = "New Playlist", CreateListingAction = this.CreateListing };
+                this.MediaDB.Playlists.Add(newPlaylist);
+                this.MediaDB.SaveChanges();
                 var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).Last().Albums.First().Tracks;
                 var track1 = tracks1.First();
                 var track2 = tracks1.Last();
-                var listing1 = new ListingModel() { Playlist = newPlaylist, Track = track1, TrackPos = newPlaylist.Listings.Count + 1 };
-                var listing2 = new ListingModel() { Playlist = newPlaylist, Track = track2, TrackPos = newPlaylist.Listings.Count + 1 };
-                this.MediaDB.Playlists.Add(newPlaylist);
-                this.MediaDB.Listings.Add(listing1);
-                this.MediaDB.Listings.Add(listing2);
-                this.MediaDB.SaveChanges();
+                this.CreateListing(newPlaylist, track1);
+                this.CreateListing(newPlaylist, track2);
             }
 
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
@@ -233,19 +233,28 @@ namespace MediaPlayer.Core.ViewModels
         #region Primitive Backed Properties
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public int SelectedPlaylistTrackIndex
-        {
-            get => this.selectedPlaylistTrackIndex;
-            set => this.SetProperty(ref this.selectedPlaylistTrackIndex, value);
-        }
-
-        /// <summary>
         /// Gets a value indicating whether PLACEHOLDER.
         /// </summary>
         public bool CanCreatePlaylist => this.newPlaylistName != string.Empty &&
             !this.MediaDB.Playlists.Select(playlist => playlist.PlaylistName).Where(name => name == this.newPlaylistName).Any();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a track is currently playing.
+        /// </summary>
+        public bool IsTrackPlaying
+        {
+            get => this.isTrackPlaying;
+            set
+            {
+                this.SetProperty(ref this.isTrackPlaying, value);
+                if (this.IsTrackPlaying == true && this.LoadedTrack == null)
+                {
+                    this.SetProperty(ref this.isTrackPlaying, false);
+                }
+
+                this.RaisePropertyChanged(() => this.DisplayProgression);
+            }
+        }
 
         /// <summary>
         /// Gets or sets a value indicating whether the UI should be showing the Albums DataGrid.
@@ -329,24 +338,6 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether a track is currently playing.
-        /// </summary>
-        public bool IsTrackPlaying
-        {
-            get => this.isTrackPlaying;
-            set
-            {
-                this.SetProperty(ref this.isTrackPlaying, value);
-                if (this.IsTrackPlaying == true && this.LoadedTrack == null)
-                {
-                    this.SetProperty(ref this.isTrackPlaying, false);
-                }
-
-                this.RaisePropertyChanged(() => this.DisplayProgression);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the index in <see cref="TrackQueue"/> of the currently playing <see cref="TrackModel">track</see>.
         /// </summary>
         public int CurrentlyPlayingQueueIndex
@@ -388,6 +379,15 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.playerVolume, value);
                 this.mediaController.Volume = (double)this.PlayerVolume / 100D;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedPlaylistTrackIndex
+        {
+            get => this.selectedPlaylistTrackIndex;
+            set => this.SetProperty(ref this.selectedPlaylistTrackIndex, value);
         }
 
         /// <summary>
@@ -500,12 +500,6 @@ namespace MediaPlayer.Core.ViewModels
         /// </summary>
         public TrackModel? LoadedTrack => (this.CurrentlyPlayingQueueIndex >= 0 && this.CurrentlyPlayingQueueIndex < this.TrackQueue.Count) ? this.TrackQueue[this.CurrentlyPlayingQueueIndex] : null;
 
-        /*public TimeSpan TrackPosition
-       {
-           get { return _trackPosition; }
-           set { SetProperty(ref _trackPosition, value); }
-       }*/
-
         /// <summary>
         /// Gets the <see cref="TrackModel.LoadPath">path</see> of the <see cref="TrackModel">track</see> currently loaded into the <see cref="IMediaController"/>.
         /// </summary>
@@ -546,18 +540,18 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<AlbumModel>? DisplayAlbums => this.MediaDB.Albums.
-            OrderBy(album => album.AlbumName).
-            ThenBy(album => album.Artist.ArtistName).
-            ThenBy(album => album.AlbumID).
+        public ObservableCollection<ArtistModel>? DisplayArtists => this.MediaDB.Artists.
+            OrderBy(artist => artist.ArtistName).
+            ThenBy(artist => artist.ArtistID).
             ToObservableCollection();
 
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<ArtistModel>? DisplayArtists => this.MediaDB.Artists.
-            OrderBy(artist => artist.ArtistName).
-            ThenBy(artist => artist.ArtistID).
+        public ObservableCollection<AlbumModel>? DisplayAlbums => this.MediaDB.Albums.
+            OrderBy(album => album.AlbumName).
+            ThenBy(album => album.Artist.ArtistName).
+            ThenBy(album => album.AlbumID).
             ToObservableCollection();
 
         /// <summary>
@@ -590,8 +584,9 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<TrackModel>? DisplayAlbumTracks => this.SelectedAlbum?.Tracks.
-            OrderBy(track => track.Disc.DiscNum).
+        public ObservableCollection<TrackModel>? DisplayArtistTracks => this.SelectedArtist?.Albums.SelectMany(album => album.Tracks).
+            OrderBy(track => track.Album.AlbumName).
+            ThenBy(track => track.Disc.DiscNum).
             ThenBy(track => track.TrackNum).
             ThenBy(track => track.TrackName).
             ThenBy(track => track.TrackID).
@@ -600,9 +595,8 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets PLACEHOLDER.
         /// </summary>
-        public ObservableCollection<TrackModel>? DisplayArtistTracks => this.SelectedArtist?.Albums.SelectMany(album => album.Tracks).
-            OrderBy(track => track.Album.AlbumName).
-            ThenBy(track => track.Disc.DiscNum).
+        public ObservableCollection<TrackModel>? DisplayAlbumTracks => this.SelectedAlbum?.Tracks.
+            OrderBy(track => track.Disc.DiscNum).
             ThenBy(track => track.TrackNum).
             ThenBy(track => track.TrackName).
             ThenBy(track => track.TrackID).
@@ -624,32 +618,13 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayPlaylistTracks => this.SelectedPlaylist?.
-            Listings.
-            OrderBy(listing => listing.TrackPos).
+            OrderedListings.
             Select(listing => listing.Track).
             ToObservableCollection();
 
         #endregion
 
         #region Command Backed Properties
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand RemoveListingCommand
-        {
-            get => this.removeListingCommand ??= new MvxCommand(this.RemoveListing);
-            set => this.SetProperty(ref this.removeListingCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand CreateNewPlaylistCommand
-        {
-            get => this.createNewPlaylistCommand ??= new MvxCommand(this.CreateNewPlaylist);
-            set => this.SetProperty(ref this.createNewPlaylistCommand, value);
-        }
 
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to add an <see cref="ArtistModel"/>'s tracks to the <see cref="TrackQueue"/>.
@@ -708,10 +683,28 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
+        public IMvxCommand CreatePlaylistCommand
+        {
+            get => this.createPlaylistCommand ??= new MvxCommand(this.CreatePlaylist);
+            set => this.SetProperty(ref this.createPlaylistCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
         public IMvxCommand DeletePlaylistCommand
         {
             get => this.deletePlaylistCommand ??= new MvxCommand(this.DeletePlaylist);
             set => this.SetProperty(ref this.deletePlaylistCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to jump to playing the currently selected track in the <see cref="TrackQueue"/>.
+        /// </summary>
+        public IMvxCommand JumpQueueCommand
+        {
+            get => this.jumpQueueCommand ??= new MvxCommand(this.JumpQueue);
+            set => this.SetProperty(ref this.jumpQueueCommand, value);
         }
 
         /// <summary>
@@ -724,12 +717,21 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
-        public IMvxCommand NavigateCommand
+        public IMvxCommand MoveDownCommand
         {
-            get => this.navigateCommand ??= new MvxCommand(this.Navigate);
-            set => this.SetProperty(ref this.navigateCommand, value);
+            get => this.moveDownCommand ??= new MvxCommand(this.MoveDown);
+            set => this.SetProperty(ref this.moveDownCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand MoveUpCommand
+        {
+            get => this.moveUpCommand ??= new MvxCommand(this.MoveUp);
+            set => this.SetProperty(ref this.moveUpCommand, value);
         }
 
         /// <summary>
@@ -787,66 +789,24 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand RemoveListingCommand
+        {
+            get => this.removeListingCommand ??= new MvxCommand(this.RemoveListing);
+            set => this.SetProperty(ref this.removeListingCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="ArtistModel"/>'s tracks.
+        /// </summary>
+        /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to remove a <see cref="TrackModel"/> from the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand RemoveTrackCommand
         {
             get => this.removeTrackCommand ??= new MvxCommand(this.RemoveTrack);
             set => this.SetProperty(ref this.removeTrackCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to run when the user starts using the track position sldier on the UI.
-        /// </summary>
-        public IMvxCommand SlideStartedCommand
-        {
-            get => this.slideStartedCommand;
-            set => this.SetProperty(ref this.slideStartedCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to run when the user finsishes using the track position sldier on the UI.
-        /// </summary>
-        public IMvxCommand SlideCompletedCommand
-        {
-            get => this.slideCompletedCommand ??= new MvxCommand(this.SlideCompleted);
-            set => this.SetProperty(ref this.slideCompletedCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to stop the <see cref="LoadedTrack"/>.
-        /// </summary>
-        public IMvxCommand StopCommand
-        {
-            get => this.stopCommand ??= new MvxCommand(this.Stop);
-            set => this.SetProperty(ref this.stopCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to play the previous track in the <see cref="TrackQueue"/>.
-        /// </summary>
-        public IMvxCommand SkipBackCommand
-        {
-            get => this.skipBackCommand ??= new MvxCommand(this.SkipBack);
-            set => this.SetProperty(ref this.skipBackCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to play the next track in the <see cref="TrackQueue"/>.
-        /// </summary>
-        public IMvxCommand SkipForwardCommand
-        {
-            get => this.skipFowardCommand ??= new MvxCommand(this.SkipForward);
-            set => this.SetProperty(ref this.skipFowardCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to jump to playing the currently selected track in the <see cref="TrackQueue"/>.
-        /// </summary>
-        public IMvxCommand JumpQueueCommand
-        {
-            get => this.jumpQueueCommand ??= new MvxCommand(this.JumpQueue);
-            set => this.SetProperty(ref this.jumpQueueCommand, value);
         }
 
         /// <summary>
@@ -930,99 +890,54 @@ namespace MediaPlayer.Core.ViewModels
             set => this.SetProperty(ref this.showPlaylistTracksCommand, value);
         }
 
-        #endregion
-
-        #region Protected Methods
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to play the previous track in the <see cref="TrackQueue"/>.
+        /// </summary>
+        public IMvxCommand SkipBackCommand
+        {
+            get => this.skipBackCommand ??= new MvxCommand(this.SkipBack);
+            set => this.SetProperty(ref this.skipBackCommand, value);
+        }
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play the next track in the <see cref="TrackQueue"/>.
         /// </summary>
-        protected void OnClosing()
+        public IMvxCommand SkipForwardCommand
         {
-            this.MediaDB.Dispose();
+            get => this.skipFowardCommand ??= new MvxCommand(this.SkipForward);
+            set => this.SetProperty(ref this.skipFowardCommand, value);
+        }
 
-            // base.OnClosing(e);
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to run when the user starts using the track position sldier on the UI.
+        /// </summary>
+        public IMvxCommand SlideStartedCommand
+        {
+            get => this.slideStartedCommand;
+            set => this.SetProperty(ref this.slideStartedCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to run when the user finsishes using the track position sldier on the UI.
+        /// </summary>
+        public IMvxCommand SlideCompletedCommand
+        {
+            get => this.slideCompletedCommand ??= new MvxCommand(this.SlideCompleted);
+            set => this.SetProperty(ref this.slideCompletedCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to stop the <see cref="LoadedTrack"/>.
+        /// </summary>
+        public IMvxCommand StopCommand
+        {
+            get => this.stopCommand ??= new MvxCommand(this.Stop);
+            set => this.SetProperty(ref this.stopCommand, value);
         }
 
         #endregion
 
         #region Private Command Methods
-
-        private void CreateNewPlaylist()
-        {
-            var newPlaylist = new PlaylistModel() { PlaylistName = this.NewPlaylistName, CreateListingAction = this.CreateListing };
-            this.MediaDB.Playlists.Add(newPlaylist);
-            this.MediaDB.SaveChanges();
-            this.NewPlaylistName = string.Empty;
-            this.RaisePropertyChanged(() => this.DisplayPlaylists);
-        }
-
-        private void RemoveListing()
-        {
-            var listing = this.SelectedPlaylist?.Listings.OrderBy(listing => listing.TrackPos).ToList()[this.SelectedPlaylistTrackIndex];
-            if (listing != null)
-            {
-                this.MediaDB.Listings.Remove(listing);
-            }
-
-            for (int i = 0; i < this.SelectedPlaylist?.Listings.Count; i++)
-            {
-                listing = this.SelectedPlaylist.Listings.ToList()[i];
-                listing.TrackPos = (listing.TrackPos == i + 1) ? listing.TrackPos : i + 1;
-            }
-
-            this.MediaDB.SaveChanges();
-            this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
-        }
-
-        private void Navigate()
-        {
-            Debug.WriteLine("Navigating");
-            /*if (tvNav.SelectedItem != null)
-            {
-                Type pageType = ((MenuItem)tvNav.SelectedItem).PageType;
-                MainView.Content = (Page)Activator.CreateInstance(pageType);
-            }*/
-        }
-
-        private void RemoveTrack()
-        {
-            var indexToRemove = this.SelectedQueueIndex;
-            if (this.TrackQueue.Count > indexToRemove)
-            {
-                if (this.TrackQueue.Count > 1)
-                {
-                    if (indexToRemove == this.CurrentlyPlayingQueueIndex)
-                    {
-                        this.ResetQueue();
-                    }
-
-                    this.TrackQueue.RemoveAt(indexToRemove);
-
-                    if (indexToRemove < this.CurrentlyPlayingQueueIndex)
-                    {
-                        this.CurrentlyPlayingQueueIndex--;
-                    }
-                }
-                else
-                {
-                    this.ClearQueue();
-                }
-            }
-        }
-
-        private void SlideStarted()
-        {
-            Debug.WriteLine("Slide Started");
-            this.isUserDraggingPosition = true;
-        }
-
-        private void SlideCompleted()
-        {
-            Debug.WriteLine("Slide Completed");
-            this.isUserDraggingPosition = false;
-            this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
-        }
 
         private void AddArtist()
         {
@@ -1049,6 +964,100 @@ namespace MediaPlayer.Core.ViewModels
             this.AddTrack(this.SelectedTrack);
         }
 
+        private void ClearQueue()
+        {
+            this.Close();
+            this.TrackQueue.Clear();
+            this.ChangeTrack(-1);
+        }
+
+        private void CreatePlaylist()
+        {
+            var newPlaylist = new PlaylistModel() { PlaylistName = this.NewPlaylistName, CreateListingAction = this.CreateListing };
+            this.MediaDB.Playlists.Add(newPlaylist);
+            this.MediaDB.SaveChanges();
+            this.NewPlaylistName = string.Empty;
+            this.RaisePropertyChanged(() => this.DisplayPlaylists);
+        }
+
+        private void DeletePlaylist()
+        {
+            if (this.SelectedPlaylist != null)
+            {
+                foreach (ListingModel listing in this.SelectedPlaylist.Listings)
+                {
+                    this.MediaDB.Listings.Remove(listing);
+                }
+
+                this.MediaDB.Playlists.Remove(this.SelectedPlaylist);
+                this.MediaDB.SaveChanges();
+                this.RaisePropertyChanged(() => this.DisplayPlaylists);
+                this.SelectedPlaylist = null;
+            }
+        }
+
+        private void JumpQueue()
+        {
+            if (this.SelectedQueueIndex >= 0 && this.SelectedQueueIndex < this.TrackQueue.Count)
+            {
+                this.ChangeTrack(this.SelectedQueueIndex);
+            }
+        }
+
+        private void MediaEnded()
+        {
+            var newIndex = this.CurrentlyPlayingQueueIndex + 1;
+            if (newIndex == this.TrackQueue.Count)
+            {
+                this.ResetQueue();
+            }
+            else
+            {
+                this.ChangeTrack(newIndex);
+                this.Play();
+            }
+        }
+
+        private void MoveDown()
+        {
+            if (this.SelectedPlaylist is PlaylistModel playlist)
+            {
+                var listing = playlist.OrderedListings.ToList()[this.SelectedPlaylistTrackIndex];
+                if (this.SelectedTrack is TrackModel track &&
+                    listing.Track.Equals(track) &&
+                    listing.TrackPos - 1 == this.SelectedPlaylistTrackIndex &&
+                    listing.TrackPos < playlist.Listings.Count)
+                {
+                    ListingModel listingToSwap = playlist.Listings.Where(listingRecord => listingRecord.TrackPos == listing.TrackPos + 1).First();
+                    var temp = listingToSwap.TrackPos;
+                    listingToSwap.TrackPos = listing.TrackPos;
+                    listing.TrackPos = temp;
+                    this.MediaDB.SaveChanges();
+                    this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
+                }
+            }
+        }
+
+        private void MoveUp()
+        {
+            if (this.SelectedPlaylist is PlaylistModel playlist)
+            {
+                var listing = playlist.OrderedListings.ToList()[this.SelectedPlaylistTrackIndex];
+                if (this.SelectedTrack is TrackModel track &&
+                    listing.Track.Equals(track) &&
+                    listing.TrackPos - 1 == this.SelectedPlaylistTrackIndex &&
+                    listing.TrackPos > 1)
+                {
+                    ListingModel listingToSwap = playlist.Listings.Where(listingRecord => listingRecord.TrackPos == listing.TrackPos - 1).First();
+                    var temp = listingToSwap.TrackPos;
+                    listingToSwap.TrackPos = listing.TrackPos;
+                    listing.TrackPos = temp;
+                    this.MediaDB.SaveChanges();
+                    this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
+                }
+            }
+        }
+
         private void PlayArtist()
         {
             this.PlayArtist(this.SelectedArtist);
@@ -1072,49 +1081,6 @@ namespace MediaPlayer.Core.ViewModels
         private void PlayTrack()
         {
             this.PlayTrack(this.SelectedTrack);
-        }
-
-        private void ClearQueue()
-        {
-            this.Close();
-            this.TrackQueue.Clear();
-            this.ChangeTrack(-1);
-        }
-
-        private void DeletePlaylist()
-        {
-            if (this.SelectedPlaylist != null)
-            {
-                foreach (ListingModel listng in this.SelectedPlaylist.Listings)
-                {
-                    this.MediaDB.Listings.Remove(listng);
-                }
-
-                this.MediaDB.Playlists.Remove(this.SelectedPlaylist);
-                this.MediaDB.SaveChanges();
-                this.RaisePropertyChanged(() => this.DisplayPlaylists);
-                this.SelectedPlaylist = null;
-            }
-        }
-
-        private void MediaEnded()
-        {
-            var newIndex = this.CurrentlyPlayingQueueIndex + 1;
-            if (newIndex == this.TrackQueue.Count)
-            {
-                this.ResetQueue();
-            }
-            else
-            {
-                this.ChangeTrack(newIndex);
-                this.Play();
-            }
-        }
-
-        private void Stop()
-        {
-            this.mediaController.Stop();
-            this.IsTrackPlaying = false;
         }
 
         private void PlayPause()
@@ -1145,50 +1111,64 @@ namespace MediaPlayer.Core.ViewModels
             this.RaisePropertyChanged(() => this.IsTrackPlaying);
         }
 
-        private void SkipForward()
+        private void RemoveListing()
         {
-            if (this.IsTrackLoaded)
+            var listing = this.SelectedPlaylist?.OrderedListings.ToList()[this.SelectedPlaylistTrackIndex];
+            if (listing != null)
             {
-                var newIndex = this.CurrentlyPlayingQueueIndex + 1;
-                newIndex = (newIndex >= this.TrackQueue.Count) ? 0 : newIndex;
-                this.ChangeTrack(newIndex);
+                this.MediaDB.Listings.Remove(listing);
             }
+
+            for (int i = 0; i < this.SelectedPlaylist?.Listings.Count; i++)
+            {
+                listing = this.SelectedPlaylist.Listings.ToList()[i];
+
+                if (listing.TrackPos != i + 1)
+                {
+                    listing.TrackPos += 1;
+                }
+            }
+
+            this.MediaDB.SaveChanges();
+            this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
         }
 
-        private void SkipBack()
+        private void RemoveTrack()
         {
-            if (this.IsTrackLoaded)
+            var indexToRemove = this.SelectedQueueIndex;
+            if (this.TrackQueue.Count > indexToRemove)
             {
-                var newIndex = this.CurrentlyPlayingQueueIndex;
-                if (this.mediaController.Position <= TimeSpan.FromSeconds(5) && newIndex > 0)
+                if (this.TrackQueue.Count > 1)
                 {
-                    this.ChangeTrack(newIndex - 1);
+                    if (indexToRemove == this.CurrentlyPlayingQueueIndex)
+                    {
+                        this.ResetQueue();
+                    }
+
+                    this.TrackQueue.RemoveAt(indexToRemove);
+
+                    if (indexToRemove < this.CurrentlyPlayingQueueIndex)
+                    {
+                        this.CurrentlyPlayingQueueIndex--;
+                    }
                 }
                 else
                 {
-                    this.mediaController.Position = TimeSpan.Zero;
+                    this.ClearQueue();
                 }
             }
-        }
-
-        private void JumpQueue()
-        {
-            if (this.SelectedQueueIndex >= 0 && this.SelectedQueueIndex < this.TrackQueue.Count)
-            {
-                this.ChangeTrack(this.SelectedQueueIndex);
-            }
-        }
-
-        private void ShowAlbums()
-        {
-            this.HideAll();
-            this.ShowingAlbums = true;
         }
 
         private void ShowArtists()
         {
             this.HideAll();
             this.ShowingArtists = true;
+        }
+
+        private void ShowAlbums()
+        {
+            this.HideAll();
+            this.ShowingAlbums = true;
         }
 
         private void ShowGenres()
@@ -1233,9 +1213,136 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingPlaylistTracks = true;
         }
 
+        private void SkipForward()
+        {
+            if (this.IsTrackLoaded)
+            {
+                var newIndex = this.CurrentlyPlayingQueueIndex + 1;
+                newIndex = (newIndex >= this.TrackQueue.Count) ? 0 : newIndex;
+                this.ChangeTrack(newIndex);
+            }
+        }
+
+        private void SkipBack()
+        {
+            if (this.IsTrackLoaded)
+            {
+                var newIndex = this.CurrentlyPlayingQueueIndex;
+                if (this.mediaController.Position <= TimeSpan.FromSeconds(5) && newIndex > 0)
+                {
+                    this.ChangeTrack(newIndex - 1);
+                }
+                else
+                {
+                    this.mediaController.Position = TimeSpan.Zero;
+                }
+            }
+        }
+
+        private void SlideStarted()
+        {
+            Debug.WriteLine("Slide Started");
+            this.isUserDraggingPosition = true;
+        }
+
+        private void SlideCompleted()
+        {
+            Debug.WriteLine("Slide Completed");
+            this.isUserDraggingPosition = false;
+            this.mediaController.Position = TimeSpan.FromSeconds(this.PlayerPosition);
+        }
+
+        private void Stop()
+        {
+            this.mediaController.Stop();
+            this.IsTrackPlaying = false;
+        }
+
         #endregion
 
         #region Private Methods
+
+        private void AddArtist(ArtistModel? artist)
+        {
+            if (artist != null)
+            {
+                foreach (AlbumModel album in artist.Albums)
+                {
+                    this.AddAlbum(album);
+                }
+            }
+        }
+
+        private void AddAlbum(AlbumModel? album)
+        {
+            if (album != null)
+            {
+                foreach (TrackModel track in album.Tracks)
+                {
+                    this.AddTrack(track);
+                }
+            }
+        }
+
+        private void AddGenre(GenreModel? genre)
+        {
+            if (genre != null)
+            {
+                foreach (TrackModel track in genre.Tracks)
+                {
+                    this.AddTrack(track);
+                }
+            }
+        }
+
+        private void AddPlaylist(PlaylistModel? playlist)
+        {
+            if (playlist != null)
+            {
+                foreach (TrackModel track in playlist.Tracks)
+                {
+                    this.AddTrack(track);
+                }
+            }
+        }
+
+        private void AddTrack(TrackModel? track)
+        {
+            if (track != null)
+            {
+                this.TrackQueue.Add(track);
+            }
+        }
+
+        private void ChangeTrack(int newIndex)
+        {
+            this.CurrentlyPlayingQueueIndex = newIndex;
+            this.mediaController.Source = this.LoadedPath;
+            this.RaisePropertyChanged(() => this.IsTrackLoaded);
+        }
+
+        private void Close()
+        {
+            this.Stop();
+            this.mediaController.Close();
+        }
+
+        private void CreateListing(PlaylistModel playlist, TrackModel? track)
+        {
+            if (track != null && playlist != null)
+            {
+                var trackPos = playlist.Listings.Count + 1;
+                this.MediaDB.Listings.Add(new ListingModel() { Track = track, Playlist = playlist, TrackPos = trackPos });
+            }
+
+            this.MediaDB.SaveChanges();
+        }
+
+        private void CreateListing(PlaylistModel playlist)
+        { 
+                this.CreateListing(playlist, this.SelectedTrack);
+        }
+
         private void HideAll()
         {
             this.ShowingAlbums = false;
@@ -1442,94 +1549,16 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
-        private void ResetDatabase()
+        private void Pause()
         {
-            this.MediaDB.RemoveRange(this.MediaDB.Albums);
-            this.MediaDB.RemoveRange(this.MediaDB.Artists);
-            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
-            this.MediaDB.RemoveRange(this.MediaDB.Discs);
-            this.MediaDB.RemoveRange(this.MediaDB.Genres);
-            this.MediaDB.RemoveRange(this.MediaDB.Listings);
-            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
-            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
-            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
-            this.MediaDB.SaveChanges();
+            this.mediaController.Pause();
+            this.IsTrackPlaying = false;
         }
 
-        private void CreateListing(PlaylistModel playlist)
+        private void Play()
         {
-            var track = this.SelectedTrack;
-            if (track != null && playlist != null)
-            {
-                var trackPos = playlist.Listings.Count + 1;
-                this.MediaDB.Listings.Add(new ListingModel() { Track = track, Playlist = playlist, TrackPos = trackPos });
-            }
-
-            this.MediaDB.SaveChanges();
-        }
-
-        private void TimerTick(object? sender, object e)
-        {
-            if (this.IsTrackLoaded)
-            {
-                this.PlayerPosition = this.isUserDraggingPosition ? this.PlayerPosition : (int)this.mediaController.Position.TotalSeconds;
-            }
-            else
-            {
-                this.PlayerPosition = 0;
-            }
-        }
-
-        private void AddArtist(ArtistModel? artist)
-        {
-            if (artist != null)
-            {
-                foreach (AlbumModel album in artist.Albums)
-                {
-                    this.AddAlbum(album);
-                }
-            }
-        }
-
-        private void AddAlbum(AlbumModel? album)
-        {
-            if (album != null)
-            {
-                foreach (TrackModel track in album.Tracks)
-                {
-                    this.AddTrack(track);
-                }
-            }
-        }
-
-        private void AddGenre(GenreModel? genre)
-        {
-            if (genre != null)
-            {
-                foreach (TrackModel track in genre.Tracks)
-                {
-                    this.AddTrack(track);
-                }
-            }
-        }
-
-        private void AddPlaylist(PlaylistModel? playlist)
-        {
-            if (playlist != null)
-            {
-                foreach (TrackModel track in playlist.Tracks)
-                {
-                    this.AddTrack(track);
-                }
-            }
-        }
-
-        private void AddTrack(TrackModel? track)
-        {
-            if (track != null)
-            {
-                this.TrackQueue.Add(track);
-            }
+            this.mediaController.Play();
+            this.IsTrackPlaying = true;
         }
 
         private void PlayArtist(ArtistModel? artist)
@@ -1567,29 +1596,24 @@ namespace MediaPlayer.Core.ViewModels
             this.PlayQueue();
         }
 
-        private void Play()
+        private void PlayQueue()
         {
-            this.mediaController.Play();
-            this.IsTrackPlaying = true;
+            this.ResetQueue();
+            this.Play();
         }
 
-        private void Pause()
+        private void ResetDatabase()
         {
-            this.mediaController.Pause();
-            this.IsTrackPlaying = false;
-        }
-
-        private void Close()
-        {
-            this.Stop();
-            this.mediaController.Close();
-        }
-
-        private void ChangeTrack(int newIndex)
-        {
-            this.CurrentlyPlayingQueueIndex = newIndex;
-            this.mediaController.Source = this.LoadedPath;
-            this.RaisePropertyChanged(() => this.IsTrackLoaded);
+            this.MediaDB.RemoveRange(this.MediaDB.Albums);
+            this.MediaDB.RemoveRange(this.MediaDB.Artists);
+            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
+            this.MediaDB.RemoveRange(this.MediaDB.Discs);
+            this.MediaDB.RemoveRange(this.MediaDB.Genres);
+            this.MediaDB.RemoveRange(this.MediaDB.Listings);
+            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
+            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
+            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
+            this.MediaDB.SaveChanges();
         }
 
         private void ResetQueue()
@@ -1598,10 +1622,16 @@ namespace MediaPlayer.Core.ViewModels
             this.ChangeTrack(0);
         }
 
-        private void PlayQueue()
+        private void TimerTick(object? sender, object e)
         {
-            this.ResetQueue();
-            this.Play();
+            if (this.IsTrackLoaded)
+            {
+                this.PlayerPosition = this.isUserDraggingPosition ? this.PlayerPosition : (int)this.mediaController.Position.TotalSeconds;
+            }
+            else
+            {
+                this.PlayerPosition = 0;
+            }
         }
 
         #endregion

@@ -429,7 +429,7 @@
                                        IsShowing="{Binding ShowingPlaylistTracks}"
                                        ItemsSource="{Binding DisplayPlaylistTracks}"
                                        SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
-                                       SelectedIndex="{Binding SelectedPlaylistTrackIndex}">
+                                       SelectedIndex="{Binding SelectedPlaylistTrackIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -449,6 +449,8 @@
                             </MenuItem.ItemTemplate>
                         </MenuItem>
                         <MenuItem Header="Remove from Playlist" mvx:Bi.nd="Command RemoveListingCommand" />
+                        <MenuItem Header="Move Up" mvx:Bi.nd="Command MoveUpCommand" />
+                        <MenuItem Header="Move Down" mvx:Bi.nd="Command MoveDownCommand" />
                     </ContextMenu>
                 </DataGrid.ContextMenu>
                 <DataGrid.Columns>
