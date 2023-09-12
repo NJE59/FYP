@@ -196,6 +196,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdAlbums"
                                    IsShowing="{Binding ShowingAlbums}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding AlbumSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgAlbums"
                           ItemsSource="{Binding DisplayAlbums}"
                           SelectedItem="{Binding SelectedAlbum, Mode=TwoWay}">
@@ -231,6 +236,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdGenres"
                                    IsShowing="{Binding ShowingGenres}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding GenreSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgGenres"
                           ItemsSource="{Binding DisplayGenres}"
                           SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
@@ -256,6 +266,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdPlaylists"
                                    IsShowing="{Binding ShowingPlaylists}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding PlaylistSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgPlaylists"
                           ItemsSource="{Binding DisplayPlaylists}"
                           SelectedItem="{Binding SelectedPlaylist}">
@@ -286,6 +301,11 @@
             <extensions:CustomGrid x:Name="gdTracks"
                                    Visibility="Visible"
                                    IsShowing="{Binding ShowingTracks}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgTracks"
                           ItemsSource="{Binding DisplayTracks}"
                           SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
@@ -327,7 +347,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdArtistTracks"
                                    IsShowing="{Binding ShowingArtistTracks}">
-                <DataGrid x:Name="dgArtistTracks"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /><DataGrid x:Name="dgArtistTracks"
                               ItemsSource="{Binding DisplayArtistTracks}"
                               SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
                     <DataGrid.ContextMenu>
@@ -368,6 +392,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdAlbumTracks"
                                    IsShowing="{Binding ShowingAlbumTracks}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgAlbumTracks"
                           ItemsSource="{Binding DisplayAlbumTracks}"
                           SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
@@ -409,6 +438,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdGenreTracks"
                                    IsShowing="{Binding ShowingGenreTracks}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgGenreTracks"
                           ItemsSource="{Binding DisplayGenreTracks}"
                           SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
@@ -450,6 +484,11 @@
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdPlaylistTracks"
                                    IsShowing="{Binding ShowingPlaylistTracks}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgPlaylistTracks"
                           ItemsSource="{Binding DisplayPlaylistTracks}"
                           SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"

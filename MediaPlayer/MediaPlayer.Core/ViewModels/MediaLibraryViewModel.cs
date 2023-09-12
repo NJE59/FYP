@@ -550,6 +550,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<AlbumModel>? DisplayAlbums => this.MediaDB.Albums.
+            Where(album => album.AlbumName.ToLower().Contains(this.AlbumSearch.ToLower())).
             OrderBy(album => album.AlbumName).
             ThenBy(album => album.Artist.ArtistName).
             ThenBy(album => album.AlbumID).
@@ -559,6 +560,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<GenreModel>? DisplayGenres => this.MediaDB.Genres.
+            Where(genre => genre.GenreName.ToLower().Contains(this.GenreSearch.ToLower())).
             OrderBy(genre => genre.GenreName).
             ThenBy(genre => genre.GenreID).
             ToObservableCollection();
@@ -567,6 +569,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<PlaylistModel>? DisplayPlaylists => this.MediaDB.Playlists.
+            Where(playlist => playlist.PlaylistName.ToLower().Contains(this.PlaylistSearch.ToLower())).
             OrderBy(playlist => playlist.PlaylistName).
             ToObservableCollection();
 
@@ -574,6 +577,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayTracks => this.MediaDB.Tracks.
+            Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
             OrderBy(track => track.Disc.Album.Artist.ArtistName).
             ThenBy(track => track.Disc.Album.AlbumName).
             ThenBy(track => track.Disc.DiscNum).
@@ -586,6 +590,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayArtistTracks => this.SelectedArtist?.Albums.SelectMany(album => album.Tracks).
+            Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
             OrderBy(track => track.Album.AlbumName).
             ThenBy(track => track.Disc.DiscNum).
             ThenBy(track => track.TrackNum).
@@ -597,6 +602,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayAlbumTracks => this.SelectedAlbum?.Tracks.
+            Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
             OrderBy(track => track.Disc.DiscNum).
             ThenBy(track => track.TrackNum).
             ThenBy(track => track.TrackName).
@@ -607,6 +613,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayGenreTracks => this.SelectedGenre?.Tracks.
+            Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
             OrderBy(track => track.AlbumArtist.ArtistName).
             ThenBy(track => track.Album.AlbumName).
             ThenBy(track => track.Disc.DiscNum).
@@ -621,6 +628,7 @@ namespace MediaPlayer.Core.ViewModels
         public ObservableCollection<TrackModel>? DisplayPlaylistTracks => this.SelectedPlaylist?.
             OrderedListings.
             Select(listing => listing.Track).
+            Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
             ToObservableCollection();
 
         #endregion
@@ -1355,6 +1363,11 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingAlbumTracks = false;
             this.ShowingGenreTracks = false;
             this.ShowingPlaylistTracks = false;
+            this.ArtistSearch = string.Empty;
+            this.AlbumSearch = string.Empty;
+            this.GenreSearch = string.Empty;
+            this.PlaylistSearch = string.Empty;
+            this.TrackSearch = string.Empty;
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -1651,5 +1664,74 @@ namespace MediaPlayer.Core.ViewModels
                 this.RaisePropertyChanged(() => this.DisplayArtists);
             }
         }
+
+        private string albumSearch = string.Empty;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string AlbumSearch
+        {
+            get => this.albumSearch;
+            set
+            {
+                this.SetProperty(ref this.albumSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayAlbums);
+
+            }
+        }
+
+        private string genreSearch = string.Empty;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string GenreSearch
+        {
+            get => this.genreSearch;
+            set
+            {
+                this.SetProperty(ref this.genreSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayGenres);
+
+            }
+        }
+
+        private string playlistSearch = string.Empty;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string PlaylistSearch
+        {
+            get => this.playlistSearch;
+            set
+            {
+                this.SetProperty(ref this.playlistSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayPlaylists);
+
+            }
+        }
+
+        private string trackSearch = string.Empty;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string TrackSearch
+        {
+            get => this.trackSearch;
+            set
+            {
+                this.SetProperty(ref this.trackSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayTracks);
+                this.RaisePropertyChanged(() => this.DisplayArtistTracks);
+                this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
+                this.RaisePropertyChanged(() => this.DisplayGenreTracks);
+                this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
+
+            }
+        }
+
     }
 }
