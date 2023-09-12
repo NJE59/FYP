@@ -8,9 +8,9 @@ namespace MediaPlayer.WPF.Classes
     using System.Windows.Controls;
 
     /// <summary>
-    /// Custom version of the <see cref="DataGrid"/> that features the ability to control its <see cref="Visibility"/> via data binding.
+    /// Custom version of the <see cref="Grid"/> that features the ability to control its <see cref="Visibility"/> via data binding.
     /// </summary>
-    public class CustomDataGrid : DataGrid
+    public class CustomGrid : Grid
     {
         /// <summary>
         /// Gets or sets PLACEHOLDER.
@@ -18,7 +18,7 @@ namespace MediaPlayer.WPF.Classes
         public static readonly DependencyProperty IsShowingProperty = DependencyProperty.RegisterAttached(
             "IsShowing",
             typeof(bool),
-            typeof(CustomDataGrid),
+            typeof(CustomGrid),
             new (default(bool), OnIsShowingChanged));
 
         /// <summary>
@@ -32,9 +32,9 @@ namespace MediaPlayer.WPF.Classes
 
         private static void OnIsShowingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is CustomDataGrid customDataGrid)
+            if (d is CustomGrid customGrid)
             {
-                customDataGrid.Visibility = customDataGrid.IsShowing ? Visibility.Visible : Visibility.Collapsed;
+                customGrid.Visibility = customGrid.IsShowing ? Visibility.Visible : Visibility.Collapsed;
             }
         }
     }
