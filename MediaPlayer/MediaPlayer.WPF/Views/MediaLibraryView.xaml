@@ -148,7 +148,16 @@
                 
         <Grid x:Name="MainViewPanel">
             <Grid.Resources>
+                <Style TargetType="extensions:CustomGrid">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Grid.Row" Value="0" />
+                    <Setter Property="Width" Value="150" />
+                    <Setter Property="HorizontalAlignment" Value="Right" />
+                </Style>
                 <Style TargetType="DataGrid">
+                    <Setter Property="Grid.Row" Value="1" />
                     <Setter Property="AutoGenerateColumns" Value="False" />
                     <Setter Property="EnableRowVirtualization" Value="True" />
                     <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
@@ -158,8 +167,12 @@
                 </Style>
             </Grid.Resources>
             <extensions:CustomGrid x:Name="gdArtists"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingArtists}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBox Text="{Binding ArtistSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgArtists"
                           ItemsSource="{Binding DisplayArtists}"
                           SelectedItem="{Binding SelectedArtist, Mode=TwoWay}">
@@ -182,7 +195,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdAlbums"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingAlbums}">
                 <DataGrid x:Name="dgAlbums"
                           ItemsSource="{Binding DisplayAlbums}"
@@ -218,7 +230,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdGenres"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingGenres}">
                 <DataGrid x:Name="dgGenres"
                           ItemsSource="{Binding DisplayGenres}"
@@ -244,7 +255,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdPlaylists"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingPlaylists}">
                 <DataGrid x:Name="dgPlaylists"
                           ItemsSource="{Binding DisplayPlaylists}"
@@ -316,7 +326,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdArtistTracks"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingArtistTracks}">
                 <DataGrid x:Name="dgArtistTracks"
                               ItemsSource="{Binding DisplayArtistTracks}"
@@ -358,7 +367,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdAlbumTracks"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingAlbumTracks}">
                 <DataGrid x:Name="dgAlbumTracks"
                           ItemsSource="{Binding DisplayAlbumTracks}"
@@ -400,7 +408,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdGenreTracks"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingGenreTracks}">
                 <DataGrid x:Name="dgGenreTracks"
                           ItemsSource="{Binding DisplayGenreTracks}"
@@ -442,7 +449,6 @@
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdPlaylistTracks"
-                                   Visibility="Collapsed"
                                    IsShowing="{Binding ShowingPlaylistTracks}">
                 <DataGrid x:Name="dgPlaylistTracks"
                           ItemsSource="{Binding DisplayPlaylistTracks}"

@@ -541,6 +541,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<ArtistModel>? DisplayArtists => this.MediaDB.Artists.
+            Where(artist => artist.ArtistName.ToLower().Contains(this.ArtistSearch.ToLower())).
             OrderBy(artist => artist.ArtistName).
             ThenBy(artist => artist.ArtistID).
             ToObservableCollection();
@@ -1339,7 +1340,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         private void CreateListing(PlaylistModel playlist)
-        { 
+        {
                 this.CreateListing(playlist, this.SelectedTrack);
         }
 
@@ -1636,5 +1637,19 @@ namespace MediaPlayer.Core.ViewModels
 
         #endregion
 
+        private string artistSearch = string.Empty;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string ArtistSearch
+        {
+            get => this.artistSearch;
+            set
+            {
+                this.SetProperty(ref this.artistSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayArtists);
+            }
+        }
     }
 }
