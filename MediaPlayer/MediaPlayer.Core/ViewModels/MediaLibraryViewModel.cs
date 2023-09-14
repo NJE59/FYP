@@ -41,6 +41,8 @@ namespace MediaPlayer.Core.ViewModels
 
         #region Primitive Backing Fields
 
+        private bool artistCall = false;
+        private bool albumCall = false;
         private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
         private bool showingAlbums = false;
@@ -58,6 +60,11 @@ namespace MediaPlayer.Core.ViewModels
         private int selectedPlaylistTrackIndex;
         private int selectedQueueIndex;
 
+        private string artistSearch = string.Empty;
+        private string albumSearch = string.Empty;
+        private string genreSearch = string.Empty;
+        private string playlistSearch = string.Empty;
+        private string trackSearch = string.Empty;
         private string newPlaylistName = string.Empty;
 
         #endregion
@@ -402,6 +409,75 @@ namespace MediaPlayer.Core.ViewModels
         /// <summary>
         /// Gets or sets PLACEHOLDER.
         /// </summary>
+        public string ArtistSearch
+        {
+            get => this.artistSearch;
+            set
+            {
+                this.SetProperty(ref this.artistSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayArtists);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string AlbumSearch
+        {
+            get => this.albumSearch;
+            set
+            {
+                this.SetProperty(ref this.albumSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayAlbums);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string GenreSearch
+        {
+            get => this.genreSearch;
+            set
+            {
+                this.SetProperty(ref this.genreSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayGenres);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string PlaylistSearch
+        {
+            get => this.playlistSearch;
+            set
+            {
+                this.SetProperty(ref this.playlistSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayPlaylists);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public string TrackSearch
+        {
+            get => this.trackSearch;
+            set
+            {
+                this.SetProperty(ref this.trackSearch, value);
+                this.RaisePropertyChanged(() => this.DisplayTracks);
+                this.RaisePropertyChanged(() => this.DisplayArtistTracks);
+                this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
+                this.RaisePropertyChanged(() => this.DisplayGenreTracks);
+                this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
+            }
+        }
+
+        /// <summary>
+    /// Gets or sets PLACEHOLDER.
+    /// </summary>
         public string NewPlaylistName
         {
             get => this.newPlaylistName;
@@ -428,7 +504,9 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.selectedArtist, value);
                 if (oldArtist != this.selectedArtist)
                 {
+                    this.artistCall = true;
                     this.SelectedAlbum = (this.SelectedAlbum?.Artist == this.SelectedArtist) ? this.SelectedArtist?.Albums.FirstOrDefault() : this.SelectedAlbum;
+                    this.artistCall = false;
                 }
 
                 this.RaisePropertyChanged(() => this.DisplayArtistTracks);
@@ -447,10 +525,16 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.selectedAlbum, value);
                 if (oldAlbum != this.selectedAlbum)
                 {
+                    this.albumCall = true;
                     this.SelectedTrack = (this.SelectedTrack?.Disc.Album == this.SelectedAlbum) ? this.SelectedAlbum?.Tracks.FirstOrDefault() : this.SelectedTrack;
+                    this.albumCall = false;
                 }
 
-                this.SelectedArtist = this.SelectedAlbum?.Artist;
+                if (!this.artistCall)
+                {
+                    this.SelectedArtist = this.SelectedAlbum?.Artist;
+                }
+
                 this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
             }
         }
@@ -491,7 +575,10 @@ namespace MediaPlayer.Core.ViewModels
             set
             {
                 this.SetProperty(ref this.selectedTrack, value);
-                this.SelectedAlbum = (this.SelectedTrack != null) ? this.SelectedTrack.Disc.Album : this.SelectedAlbum;
+                if (!this.albumCall)
+                {
+                    this.SelectedAlbum = (this.SelectedTrack != null) ? this.SelectedTrack.Disc.Album : this.SelectedAlbum;
+                }
             }
         }
 
@@ -1038,9 +1125,7 @@ namespace MediaPlayer.Core.ViewModels
                     listing.TrackPos < playlist.Listings.Count)
                 {
                     ListingModel listingToSwap = playlist.Listings.Where(listingRecord => listingRecord.TrackPos == listing.TrackPos + 1).First();
-                    var temp = listingToSwap.TrackPos;
-                    listingToSwap.TrackPos = listing.TrackPos;
-                    listing.TrackPos = temp;
+                    (listing.TrackPos, listingToSwap.TrackPos) = (listingToSwap.TrackPos, listing.TrackPos);
                     this.MediaDB.SaveChanges();
                     this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
                 }
@@ -1058,9 +1143,7 @@ namespace MediaPlayer.Core.ViewModels
                     listing.TrackPos > 1)
                 {
                     ListingModel listingToSwap = playlist.Listings.Where(listingRecord => listingRecord.TrackPos == listing.TrackPos - 1).First();
-                    var temp = listingToSwap.TrackPos;
-                    listingToSwap.TrackPos = listing.TrackPos;
-                    listing.TrackPos = temp;
+                    (listing.TrackPos, listingToSwap.TrackPos) = (listingToSwap.TrackPos, listing.TrackPos);
                     this.MediaDB.SaveChanges();
                     this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
                 }
@@ -1349,7 +1432,7 @@ namespace MediaPlayer.Core.ViewModels
 
         private void CreateListing(PlaylistModel playlist)
         {
-                this.CreateListing(playlist, this.SelectedTrack);
+            this.CreateListing(playlist, this.SelectedTrack);
         }
 
         private void HideAll()
@@ -1649,89 +1732,6 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         #endregion
-
-        private string artistSearch = string.Empty;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public string ArtistSearch
-        {
-            get => this.artistSearch;
-            set
-            {
-                this.SetProperty(ref this.artistSearch, value);
-                this.RaisePropertyChanged(() => this.DisplayArtists);
-            }
-        }
-
-        private string albumSearch = string.Empty;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public string AlbumSearch
-        {
-            get => this.albumSearch;
-            set
-            {
-                this.SetProperty(ref this.albumSearch, value);
-                this.RaisePropertyChanged(() => this.DisplayAlbums);
-
-            }
-        }
-
-        private string genreSearch = string.Empty;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public string GenreSearch
-        {
-            get => this.genreSearch;
-            set
-            {
-                this.SetProperty(ref this.genreSearch, value);
-                this.RaisePropertyChanged(() => this.DisplayGenres);
-
-            }
-        }
-
-        private string playlistSearch = string.Empty;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public string PlaylistSearch
-        {
-            get => this.playlistSearch;
-            set
-            {
-                this.SetProperty(ref this.playlistSearch, value);
-                this.RaisePropertyChanged(() => this.DisplayPlaylists);
-
-            }
-        }
-
-        private string trackSearch = string.Empty;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public string TrackSearch
-        {
-            get => this.trackSearch;
-            set
-            {
-                this.SetProperty(ref this.trackSearch, value);
-                this.RaisePropertyChanged(() => this.DisplayTracks);
-                this.RaisePropertyChanged(() => this.DisplayArtistTracks);
-                this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
-                this.RaisePropertyChanged(() => this.DisplayGenreTracks);
-                this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
-
-            }
-        }
 
     }
 }
