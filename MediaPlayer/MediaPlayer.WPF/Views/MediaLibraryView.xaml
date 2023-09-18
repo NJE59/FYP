@@ -112,7 +112,7 @@
                     Content="Create New Playlist"
                     Margin="2"
                     IsEnabled="{Binding CanCreatePlaylist}"
-                    mvx:Bi.nd="Command CreateNewPlaylistCommand" />
+                    mvx:Bi.nd="Command CreatePlaylistCommand" />
             <StackPanel>
                 <StackPanel.Resources>
                     <Style TargetType="Button">
@@ -161,7 +161,7 @@
                     <Setter Property="AutoGenerateColumns" Value="False" />
                     <Setter Property="EnableRowVirtualization" Value="True" />
                     <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
-                    <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
                 </Style>
@@ -301,14 +301,27 @@
             <extensions:CustomGrid x:Name="gdTracks"
                                    Visibility="Visible"
                                    IsShowing="{Binding ShowingTracks}">
+                <extensions:CustomGrid.Resources>
+                    <CollectionViewSource x:Key="AllTracks" Source="{Binding DisplayTracks}">
+                        <CollectionViewSource.GroupDescriptions>
+                            <PropertyGroupDescription PropertyName="Album" />
+                        </CollectionViewSource.GroupDescriptions>
+                    </CollectionViewSource>
+                </extensions:CustomGrid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgTracks"
-                          ItemsSource="{Binding DisplayTracks}"
-                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+                          ItemsSource="{Binding Source={StaticResource AllTracks}}"
+                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                          SelectedIndex="{Binding SelectedTrackIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding PlayTracksFromCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -331,10 +344,6 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Album Name"
-                                            Binding="{Binding AlbumName}"
-                                            Width="SizeToHeader"
-                                            IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Number"
                                             Binding="{Binding TrackNum}"
                                             Width="SizeToHeader"
@@ -342,18 +351,57 @@
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
                                             IsReadOnly="True" />
+                        <DataGridTextColumn Header="Contributing Artists"
+                                            Binding="{Binding DisplayContributingArtists}"
+                                            IsReadOnly="True" />
+                        <DataGridTextColumn Header="Genres"
+                                            Binding="{Binding DisplayGenres}"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander IsExpanded="True" Header="{Binding Items[0].AlbumName}">
+                                                    <Expander.Content>
+                                                        <ItemsPresenter />
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdArtistTracks"
                                    IsShowing="{Binding ShowingArtistTracks}">
+                <extensions:CustomGrid.Resources>
+                    <CollectionViewSource x:Key="ArtistTracks" Source="{Binding DisplayArtistTracks}">
+                        <CollectionViewSource.GroupDescriptions>
+                            <PropertyGroupDescription PropertyName="Album" />
+                        </CollectionViewSource.GroupDescriptions>
+                    </CollectionViewSource>
+                </extensions:CustomGrid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" /><DataGrid x:Name="dgArtistTracks"
-                              ItemsSource="{Binding DisplayArtistTracks}"
-                              SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+                <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <DataGrid x:Name="dgArtistTracks"
+                          ItemsSource="{Binding Source={StaticResource ArtistTracks}}"
+                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                          SelectedIndex="{Binding SelectedArtistTrackIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding PlayArtistFromCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -376,10 +424,6 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Album Name"
-                                            Binding="{Binding AlbumName}"
-                                            Width="SizeToHeader"
-                                            IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Number"
                                             Binding="{Binding TrackNum}"
                                             Width="SizeToHeader"
@@ -387,19 +431,57 @@
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
                                             IsReadOnly="True" />
+                        <DataGridTextColumn Header="Contributing Artists"
+                                            Binding="{Binding DisplayContributingArtists}"
+                                            IsReadOnly="True" />
+                        <DataGridTextColumn Header="Genres"
+                                            Binding="{Binding DisplayGenres}"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander IsExpanded="True" Header="{Binding Items[0].AlbumName}">
+                                                    <Expander.Content>
+                                                        <ItemsPresenter />
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdAlbumTracks"
                                    IsShowing="{Binding ShowingAlbumTracks}">
+                <extensions:CustomGrid.Resources>
+                    <CollectionViewSource x:Key="AlbumTracks" Source="{Binding DisplayAlbumTracks}">
+                        <CollectionViewSource.GroupDescriptions>
+                            <PropertyGroupDescription PropertyName="Disc" />
+                        </CollectionViewSource.GroupDescriptions>
+                    </CollectionViewSource>
+                </extensions:CustomGrid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgAlbumTracks"
-                          ItemsSource="{Binding DisplayAlbumTracks}"
-                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+                          ItemsSource="{Binding Source={StaticResource AlbumTracks}}"
+                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                          SelectedIndex="{Binding SelectedAlbumTrackIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding PlayAlbumFromCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -433,19 +515,62 @@
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
                                             IsReadOnly="True" />
+                        <DataGridTextColumn Header="Contributing Artists"
+                                            Binding="{Binding DisplayContributingArtists}"
+                                            IsReadOnly="True" />
+                        <DataGridTextColumn Header="Genres"
+                                            Binding="{Binding DisplayGenres}"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="Disc " />
+                                                        <TextBlock Text="{Binding Items[0].DiscNum}" />
+                                                        <TextBlock Text=": " />
+                                                        <TextBlock Text="{Binding Items[0].DiscName}" />
+                                                    </StackPanel>
+                                                    <ItemsPresenter />
+                                                </StackPanel>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
+
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdGenreTracks"
                                    IsShowing="{Binding ShowingGenreTracks}">
+                <extensions:CustomGrid.Resources>
+                    <CollectionViewSource x:Key="GenreTracks" Source="{Binding DisplayGenreTracks}">
+                        <CollectionViewSource.GroupDescriptions>
+                            <PropertyGroupDescription PropertyName="Album" />
+                        </CollectionViewSource.GroupDescriptions>
+                    </CollectionViewSource>
+                </extensions:CustomGrid.Resources>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgGenreTracks"
-                          ItemsSource="{Binding DisplayGenreTracks}"
-                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}">
+                          ItemsSource="{Binding Source={StaticResource GenreTracks}}"
+                          SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
+                          SelectedIndex="{Binding SelectedGenreTrackIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding PlayGenreFromCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -468,10 +593,6 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Album Name"
-                                            Binding="{Binding AlbumName}"
-                                            Width="SizeToHeader"
-                                            IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Number"
                                             Binding="{Binding TrackNum}"
                                             Width="SizeToHeader"
@@ -479,20 +600,56 @@
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
                                             IsReadOnly="True" />
+                        <DataGridTextColumn Header="Contributing Artists"
+                                            Binding="{Binding DisplayContributingArtists}"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander IsExpanded="True" Header="{Binding Items[0].AlbumName}">
+                                                    <Expander.Content>
+                                                        <ItemsPresenter />
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
+
                 </DataGrid>
             </extensions:CustomGrid>
             <extensions:CustomGrid x:Name="gdPlaylistTracks"
                                    IsShowing="{Binding ShowingPlaylistTracks}">
+                <extensions:CustomGrid.Resources>
+                    <CollectionViewSource x:Key="PlaylistTracks" Source="{Binding DisplayPlaylistTracks}">
+                        <CollectionViewSource.GroupDescriptions>
+                            <PropertyGroupDescription PropertyName="Album" />
+                        </CollectionViewSource.GroupDescriptions>
+                    </CollectionViewSource>
+                </extensions:CustomGrid.Resources>
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <TextBox Text="{Binding TrackSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <DataGrid x:Name="dgPlaylistTracks"
-                          ItemsSource="{Binding DisplayPlaylistTracks}"
+                          ItemsSource="{Binding Source={StaticResource PlaylistTracks}}"
                           SelectedItem="{Binding SelectedTrack, Mode=TwoWay}"
                           SelectedIndex="{Binding SelectedPlaylistTrackIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDoubleClick">
+                            <i:InvokeCommandAction Command="{Binding PlayPlaylistFromCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Play" mvx:Bi.nd="Command PlayTrackCommand">
@@ -520,7 +677,33 @@
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
                                             IsReadOnly="True" />
+                        <DataGridTextColumn Header="Contributing Artists"
+                                            Binding="{Binding DisplayContributingArtists}"
+                                            IsReadOnly="True" />
+                        <DataGridTextColumn Header="Genres"
+                                            Binding="{Binding DisplayGenres}"
+                                            IsReadOnly="True" />
                     </DataGrid.Columns>
+                    <DataGrid.GroupStyle>
+                        <GroupStyle>
+                            <GroupStyle.ContainerStyle>
+                                <Style TargetType="{x:Type GroupItem}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type GroupItem}">
+                                                <Expander IsExpanded="True" Header="{Binding Items[0].AlbumName}">
+                                                    <Expander.Content>
+                                                        <ItemsPresenter />
+                                                    </Expander.Content>
+                                                </Expander>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
+
                 </DataGrid>
             </extensions:CustomGrid>
         </Grid>

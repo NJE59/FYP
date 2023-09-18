@@ -43,6 +43,8 @@ namespace MediaPlayer.Core.ViewModels
 
         private bool artistCall = false;
         private bool albumCall = false;
+        private bool trackCall = false;
+        private bool isSwitchingView = false;
         private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
         private bool showingAlbums = false;
@@ -130,7 +132,7 @@ namespace MediaPlayer.Core.ViewModels
         /// <param name="newMediaControllerFactory"><inheritdoc cref="IMediaControllerFactory" path='/summary'/></param>
         public MediaLibraryViewModel(ITimerFactory newTimerFactory, IMediaControllerFactory newMediaControllerFactory)
         {
-            // this.ResetDatabase();
+            this.ResetDatabase();
             this.addArtistCommand = new MvxCommand(this.AddArtist);
             this.addAlbumCommand = new MvxCommand(this.AddAlbum);
             this.addGenreCommand = new MvxCommand(this.AddGenre);
@@ -176,43 +178,6 @@ namespace MediaPlayer.Core.ViewModels
             this.RaisePropertyChanged(() => this.ShowingGenreTracks);
 
             this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
-
-            var list = this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").FirstOrDefault();
-            if (list != null)
-            {
-                this.MediaDB.Playlists.Remove(list);
-            }
-
-            list = this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").FirstOrDefault();
-            if (list != null)
-            {
-                this.MediaDB.Playlists.Remove(list);
-            }
-
-            this.MediaDB.SaveChanges();
-            if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "Playlist1").Any())
-            {
-                var playlist1 = new PlaylistModel() { PlaylistName = "Playlist1", CreateListingAction = this.CreateListing };
-                this.MediaDB.Playlists.Add(playlist1);
-                this.MediaDB.SaveChanges();
-                var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).First().Albums.First().Tracks;
-                var track1 = tracks1.First();
-                var track2 = tracks1.Last();
-                this.CreateListing(playlist1, track1);
-                this.CreateListing(playlist1, track2);
-            }
-
-            if (!this.MediaDB.Playlists.Where(playlist => playlist.PlaylistName == "New Playlist").Any())
-            {
-                var newPlaylist = new PlaylistModel() { PlaylistName = "New Playlist", CreateListingAction = this.CreateListing };
-                this.MediaDB.Playlists.Add(newPlaylist);
-                this.MediaDB.SaveChanges();
-                var tracks1 = this.MediaDB.Artists.OrderBy(artist => artist.ArtistID).Last().Albums.First().Tracks;
-                var track1 = tracks1.First();
-                var track2 = tracks1.Last();
-                this.CreateListing(newPlaylist, track1);
-                this.CreateListing(newPlaylist, track2);
-            }
 
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
             this.SelectedAlbum = this.SelectedArtist?.Albums.FirstOrDefault();
@@ -504,9 +469,12 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.selectedArtist, value);
                 if (oldArtist != this.selectedArtist)
                 {
-                    this.artistCall = true;
-                    this.SelectedAlbum = (this.SelectedAlbum?.Artist == this.SelectedArtist) ? this.SelectedArtist?.Albums.FirstOrDefault() : this.SelectedAlbum;
-                    this.artistCall = false;
+                    if (!this.albumCall && !this.isSwitchingView)
+                    {
+                        this.artistCall = true;
+                        this.SelectedAlbum = (this.SelectedAlbum?.Artist == this.SelectedArtist) ? this.SelectedArtist?.Albums.FirstOrDefault() : this.SelectedAlbum;
+                        this.artistCall = false;
+                    }
                 }
 
                 this.RaisePropertyChanged(() => this.DisplayArtistTracks);
@@ -525,17 +493,22 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.selectedAlbum, value);
                 if (oldAlbum != this.selectedAlbum)
                 {
-                    this.albumCall = true;
-                    this.SelectedTrack = (this.SelectedTrack?.Disc.Album == this.SelectedAlbum) ? this.SelectedAlbum?.Tracks.FirstOrDefault() : this.SelectedTrack;
-                    this.albumCall = false;
-                }
+                    if (!this.trackCall && !this.isSwitchingView)
+                    {
+                        this.albumCall = true;
+                        this.SelectedTrack = (this.SelectedTrack?.Disc.Album == this.SelectedAlbum) ? this.SelectedAlbum?.Tracks.FirstOrDefault() : this.SelectedTrack;
+                        this.albumCall = false;
+                    }
 
-                if (!this.artistCall)
-                {
-                    this.SelectedArtist = this.SelectedAlbum?.Artist;
-                }
+                    if (!this.artistCall && !this.isSwitchingView)
+                    {
+                        this.albumCall = true;
+                        this.SelectedArtist = this.SelectedAlbum?.Artist;
+                        this.albumCall = false;
+                    }
 
-                this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
+                    this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
+                }
             }
         }
 
@@ -548,7 +521,11 @@ namespace MediaPlayer.Core.ViewModels
             set
             {
                 this.SetProperty(ref this.selectedGenre, value);
-                this.SelectedTrack = this.DisplayGenreTracks?.First();
+                if (!this.isSwitchingView)
+                {
+                    this.SelectedTrack = this.DisplayGenreTracks?.First();
+                }
+
                 this.RaisePropertyChanged(() => this.DisplayGenreTracks);
             }
         }
@@ -575,9 +552,11 @@ namespace MediaPlayer.Core.ViewModels
             set
             {
                 this.SetProperty(ref this.selectedTrack, value);
-                if (!this.albumCall)
+                if (!this.albumCall && !this.isSwitchingView)
                 {
+                    this.trackCall = true;
                     this.SelectedAlbum = (this.SelectedTrack != null) ? this.SelectedTrack.Disc.Album : this.SelectedAlbum;
+                    this.trackCall = false;
                 }
             }
         }
@@ -1254,54 +1233,63 @@ namespace MediaPlayer.Core.ViewModels
         private void ShowArtists()
         {
             this.HideAll();
+            this.SelectedArtist = this.DisplayArtists?.First();
             this.ShowingArtists = true;
         }
 
         private void ShowAlbums()
         {
             this.HideAll();
+            this.SelectedAlbum = this.DisplayAlbums?.First();
             this.ShowingAlbums = true;
         }
 
         private void ShowGenres()
         {
             this.HideAll();
+            this.SelectedGenre = this.DisplayGenres?.First();
             this.ShowingGenres = true;
         }
 
         private void ShowPlaylists()
         {
             this.HideAll();
+            this.SelectedPlaylist = this.DisplayPlaylists?.FirstOrDefault();
             this.ShowingPlaylists = true;
         }
 
         private void ShowTracks()
         {
             this.HideAll();
+            this.SelectedTrack = this.DisplayTracks?.First();
             this.ShowingTracks = true;
         }
 
         private void ShowArtistTracks()
         {
             this.HideAll();
+            this.SelectedTrack = this.DisplayArtistTracks?.First();
             this.ShowingArtistTracks = true;
         }
 
         private void ShowAlbumTracks()
         {
             this.HideAll();
+            this.SelectedTrack = this.DisplayAlbumTracks?.First();
             this.ShowingAlbumTracks = true;
         }
 
         private void ShowGenreTracks()
         {
             this.HideAll();
+            this.SelectedTrack = this.DisplayGenreTracks?.First();
             this.ShowingGenreTracks = true;
         }
 
         private void ShowPlaylistTracks()
         {
             this.HideAll();
+            this.SelectedTrack = this.DisplayPlaylistTracks?.First();
             this.ShowingPlaylistTracks = true;
         }
 
@@ -1351,7 +1339,30 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         #endregion
+        private void PlayArtistFrom()
+        {
+            this.PlayArtistFrom(this.SelectedArtist, this.SelectedArtistTrackIndex);
+        }
 
+        private void PlayAlbumFrom()
+        {
+            this.PlayAlbumFrom(this.SelectedAlbum, this.SelectedAlbumTrackIndex);
+        }
+
+        private void PlayGenreFrom()
+        {
+            this.PlayGenreFrom(this.SelectedGenre, this.SelectedGenreTrackIndex);
+        }
+
+        private void PlayPlaylistFrom()
+        {
+            this.PlayPlaylistFrom(this.SelectedPlaylist, this.SelectedPlaylistTrackIndex);
+        }
+
+        private void PlayTracksFrom()
+        {
+            this.PlayTracksFrom(this.SelectedTrackIndex);
+        }
         #region Private Methods
 
         private void AddArtist(ArtistModel? artist)
@@ -1437,6 +1448,8 @@ namespace MediaPlayer.Core.ViewModels
 
         private void HideAll()
         {
+            this.isSwitchingView = true;
+
             this.ShowingAlbums = false;
             this.ShowingArtists = false;
             this.ShowingGenres = false;
@@ -1446,11 +1459,33 @@ namespace MediaPlayer.Core.ViewModels
             this.ShowingAlbumTracks = false;
             this.ShowingGenreTracks = false;
             this.ShowingPlaylistTracks = false;
+
             this.ArtistSearch = string.Empty;
             this.AlbumSearch = string.Empty;
             this.GenreSearch = string.Empty;
             this.PlaylistSearch = string.Empty;
             this.TrackSearch = string.Empty;
+
+            this.isSwitchingView = false;
+        }
+
+        private void Init()
+        {
+            var ww = this.MediaDB.Albums.Where(album => album.AlbumName == "The Whirlwind [Special Edition]").First();
+            ww.Discs.Last().DiscName = "Bonus Disc";
+            var tge = this.MediaDB.Albums.Where(album => album.AlbumName == "The Grand Experiemnt [Special Edition]").First();
+            tge.Discs.Last().DiscName = string.Empty;
+            tge.Discs.First().DiscName = "Bonus Disc";
+
+            var tga = this.MediaDB.Albums.Where(album => album.AlbumName == "The Great Adventure").First();
+            tga.Discs.First().DiscName = "Act 1";
+            tga.Discs.Last().DiscName = "Act 2";
+
+            var tsoad = this.MediaDB.Albums.Where(album => album.AlbumName == "The Similitude Of A Dream").First();
+            tsoad.Discs.First().DiscName = "Act 1";
+            tsoad.Discs.Last().DiscName = "Act 2";
+
+            this.MediaDB.SaveChanges();
         }
 
         private void LoadSongs(string rootFolder, DateTime lastUpdated)
@@ -1644,6 +1679,8 @@ namespace MediaPlayer.Core.ViewModels
                     }
                 }
             }
+
+            this.Init();
         }
 
         private void Pause()
@@ -1732,6 +1769,154 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         #endregion
+
+        private void PlayArtistFrom(ArtistModel? artist, int startingIndex)
+        {
+            this.ClearQueue();
+            this.AddArtist(artist);
+            this.PlayQueueFrom(startingIndex);
+        }
+
+        private void PlayAlbumFrom(AlbumModel? album, int startingIndex)
+        {
+            this.ClearQueue();
+            this.AddAlbum(album);
+            this.PlayQueueFrom(startingIndex);
+        }
+
+        private void PlayGenreFrom(GenreModel? genre, int startingIndex)
+        {
+            this.ClearQueue();
+            this.AddGenre(genre);
+            this.PlayQueueFrom(startingIndex);
+        }
+
+        private void PlayPlaylistFrom(PlaylistModel? playlist, int startingIndex)
+        {
+            this.ClearQueue();
+            this.AddPlaylist(playlist);
+            this.PlayQueueFrom(startingIndex);
+        }
+
+        private void PlayTracksFrom(int startingIndex)
+        {
+            this.ClearQueue();
+            if (this.DisplayTracks != null && this.DisplayTracks.Count > 0)
+            {
+                foreach (TrackModel track in this.DisplayTracks)
+                {
+                    this.AddTrack(track);
+                }
+            }
+
+            this.PlayQueueFrom(startingIndex);
+        }
+
+        private void PlayQueueFrom(int startingIndex)
+        {
+            this.Close();
+            this.ChangeTrack(startingIndex);
+            this.Play();
+        }
+
+        private int selectedTrackIndex;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedTrackIndex
+        {
+            get => this.selectedTrackIndex;
+            set => this.SetProperty(ref this.selectedTrackIndex, value);
+        }
+
+        private int selectedArtistTrackIndex;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedArtistTrackIndex
+        {
+            get => this.selectedArtistTrackIndex;
+            set => this.SetProperty(ref this.selectedArtistTrackIndex, value);
+        }
+
+        private int selectedAlbumTrackIndex;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedAlbumTrackIndex
+        {
+            get => this.selectedAlbumTrackIndex;
+            set => this.SetProperty(ref this.selectedAlbumTrackIndex, value);
+        }
+
+        private int selectedGenreTrackIndex;
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedGenreTrackIndex
+        {
+            get => this.selectedGenreTrackIndex;
+            set => this.SetProperty(ref this.selectedGenreTrackIndex, value);
+        }
+
+        private IMvxCommand playTracksFromCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayTracksFromCommand
+        {
+            get => this.playTracksFromCommand ??= new MvxCommand(this.PlayTracksFrom);
+            set => this.SetProperty(ref this.playTracksFromCommand, value);
+        }
+
+        private IMvxCommand playArtistFromCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayArtistFromCommand
+        {
+            get => this.playArtistFromCommand ??= new MvxCommand(this.PlayArtistFrom);
+            set => this.SetProperty(ref this.playArtistFromCommand, value);
+        }
+
+        private IMvxCommand playAlbumFromCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayAlbumFromCommand
+        {
+            get => this.playAlbumFromCommand ??= new MvxCommand(this.PlayAlbumFrom);
+            set => this.SetProperty(ref this.playAlbumFromCommand, value);
+        }
+
+        private IMvxCommand playGenreFromCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayGenreFromCommand
+        {
+            get => this.playGenreFromCommand ??= new MvxCommand(this.PlayGenreFrom);
+            set => this.SetProperty(ref this.playGenreFromCommand, value);
+        }
+
+        private IMvxCommand playPlaylistFromCommand;
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayPlaylistFromCommand
+        {
+            get => this.playPlaylistFromCommand ??= new MvxCommand(this.PlayPlaylistFrom);
+            set => this.SetProperty(ref this.playPlaylistFromCommand, value);
+        }
 
     }
 }

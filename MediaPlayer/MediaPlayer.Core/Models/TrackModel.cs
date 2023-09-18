@@ -199,6 +199,33 @@ namespace MediaPlayer.Core.Models
         /// Gets PLACEHOLDER.
         /// </summary>
         [NotMapped]
+        public string? DiscName => this.Disc.DiscName;
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
         public ObservableCollection<GenreModel> Genres => this.SongStyles.Select(songStyle => songStyle.TrackGenre).ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHODLER.
+        /// </summary>
+        [NotMapped]
+        public string DisplayGenres => string.Join("; ", this.Genres.Select(genre => genre.GenreName));
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public ObservableCollection<ArtistModel> ContributingArtists => this.Contributions.
+            Select(contribution => contribution.Contributor).
+            OrderBy(artist => artist.ArtistName).
+            ToObservableCollection();
+
+        /// <summary>
+        /// Gets PLACEHOLDER.
+        /// </summary>
+        [NotMapped]
+        public string DisplayContributingArtists => string.Join("; ", this.ContributingArtists.Select(artist => artist.ArtistName));
     }
 }
