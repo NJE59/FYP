@@ -91,6 +91,5 @@ namespace MediaPlayer.Core.Models
         /// </summary>
         [NotMapped]
         public ArtistModel AlbumArtist => this.Album.Artist;
-
     }
 }

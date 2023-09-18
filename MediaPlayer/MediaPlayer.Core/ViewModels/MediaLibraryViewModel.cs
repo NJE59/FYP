@@ -59,6 +59,10 @@ namespace MediaPlayer.Core.ViewModels
         private int currentlyPlayingQueueIndex;
         private int playerPosition = 0;
         private int playerVolume = 50;
+        private int selectedTrackIndex;
+        private int selectedArtistTrackIndex;
+        private int selectedAlbumTrackIndex;
+        private int selectedGenreTrackIndex;
         private int selectedPlaylistTrackIndex;
         private int selectedQueueIndex;
 
@@ -103,6 +107,11 @@ namespace MediaPlayer.Core.ViewModels
         private IMvxCommand playGenreCommand;
         private IMvxCommand playPlaylistCommand;
         private IMvxCommand playTrackCommand;
+        private IMvxCommand playTracksFromCommand;
+        private IMvxCommand playArtistFromCommand;
+        private IMvxCommand playAlbumFromCommand;
+        private IMvxCommand playGenreFromCommand;
+        private IMvxCommand playPlaylistFromCommand;
         private IMvxCommand playPauseCommand;
         private IMvxCommand removeListingCommand;
         private IMvxCommand removeTrackCommand;
@@ -145,12 +154,17 @@ namespace MediaPlayer.Core.ViewModels
             this.mediaEndedCommand = new MvxCommand(this.MediaEnded);
             this.moveDownCommand = new MvxCommand(this.MoveDown);
             this.moveUpCommand = new MvxCommand(this.MoveUp);
+            this.playPauseCommand = new MvxCommand(this.PlayPause);
             this.playArtistCommand = new MvxCommand(this.PlayArtist);
             this.playAlbumCommand = new MvxCommand(this.PlayAlbum);
             this.playGenreCommand = new MvxCommand(this.PlayGenre);
             this.playPlaylistCommand = new MvxCommand(this.PlayPlaylist);
             this.playTrackCommand = new MvxCommand(this.PlayTrack);
-            this.playPauseCommand = new MvxCommand(this.PlayPause);
+            this.playTracksFromCommand = new MvxCommand(this.PlayTracksFrom);
+            this.playArtistFromCommand = new MvxCommand(this.PlayArtistFrom);
+            this.playAlbumFromCommand = new MvxCommand(this.PlayAlbumFrom);
+            this.playGenreFromCommand = new MvxCommand(this.PlayGenreFrom);
+            this.playPlaylistFromCommand = new MvxCommand(this.PlayPlaylistFrom);
             this.removeListingCommand = new MvxCommand(this.RemoveListing);
             this.removeTrackCommand = new MvxCommand(this.RemoveTrack);
             this.showArtistsCommand = new MvxCommand(this.ShowArtists);
@@ -351,6 +365,42 @@ namespace MediaPlayer.Core.ViewModels
                 this.SetProperty(ref this.playerVolume, value);
                 this.mediaController.Volume = (double)this.PlayerVolume / 100D;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedTrackIndex
+        {
+            get => this.selectedTrackIndex;
+            set => this.SetProperty(ref this.selectedTrackIndex, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedArtistTrackIndex
+        {
+            get => this.selectedArtistTrackIndex;
+            set => this.SetProperty(ref this.selectedArtistTrackIndex, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedAlbumTrackIndex
+        {
+            get => this.selectedAlbumTrackIndex;
+            set => this.SetProperty(ref this.selectedAlbumTrackIndex, value);
+        }
+
+        /// <summary>
+        /// Gets or sets PLACEHOLDER.
+        /// </summary>
+        public int SelectedGenreTrackIndex
+        {
+            get => this.selectedGenreTrackIndex;
+            set => this.SetProperty(ref this.selectedGenreTrackIndex, value);
         }
 
         /// <summary>
@@ -810,6 +860,15 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> for the play/pause ToggleButton.
+        /// </summary>
+        public IMvxCommand PlayPauseCommand
+        {
+            get => this.playPauseCommand ??= new MvxCommand(this.PlayPause);
+            set => this.SetProperty(ref this.playPauseCommand, value);
+        }
+
+        /// <summary>
         /// Gets or sets the <see cref="MvxCommand"/> to play an <see cref="ArtistModel"/>'s tracks.
         /// </summary>
         public IMvxCommand PlayArtistCommand
@@ -855,12 +914,48 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> for the play/pause ToggleButton.
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
         /// </summary>
-        public IMvxCommand PlayPauseCommand
+        public IMvxCommand PlayTracksFromCommand
         {
-            get => this.playPauseCommand ??= new MvxCommand(this.PlayPause);
-            set => this.SetProperty(ref this.playPauseCommand, value);
+            get => this.playTracksFromCommand ??= new MvxCommand(this.PlayTracksFrom);
+            set => this.SetProperty(ref this.playTracksFromCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayArtistFromCommand
+        {
+            get => this.playArtistFromCommand ??= new MvxCommand(this.PlayArtistFrom);
+            set => this.SetProperty(ref this.playArtistFromCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayAlbumFromCommand
+        {
+            get => this.playAlbumFromCommand ??= new MvxCommand(this.PlayAlbumFrom);
+            set => this.SetProperty(ref this.playAlbumFromCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayGenreFromCommand
+        {
+            get => this.playGenreFromCommand ??= new MvxCommand(this.PlayGenreFrom);
+            set => this.SetProperty(ref this.playGenreFromCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// </summary>
+        public IMvxCommand PlayPlaylistFromCommand
+        {
+            get => this.playPlaylistFromCommand ??= new MvxCommand(this.PlayPlaylistFrom);
+            set => this.SetProperty(ref this.playPlaylistFromCommand, value);
         }
 
         /// <summary>
@@ -1129,31 +1224,6 @@ namespace MediaPlayer.Core.ViewModels
             }
         }
 
-        private void PlayArtist()
-        {
-            this.PlayArtist(this.SelectedArtist);
-        }
-
-        private void PlayAlbum()
-        {
-            this.PlayAlbum(this.SelectedAlbum);
-        }
-
-        private void PlayGenre()
-        {
-            this.PlayGenre(this.SelectedGenre);
-        }
-
-        private void PlayPlaylist()
-        {
-            this.PlayPlaylist(this.SelectedPlaylist);
-        }
-
-        private void PlayTrack()
-        {
-            this.PlayTrack(this.SelectedTrack);
-        }
-
         private void PlayPause()
         {
             if (this.IsTrackLoaded == true)
@@ -1180,6 +1250,56 @@ namespace MediaPlayer.Core.ViewModels
             }
 
             this.RaisePropertyChanged(() => this.IsTrackPlaying);
+        }
+
+        private void PlayArtist()
+        {
+            this.PlayArtist(this.SelectedArtist);
+        }
+
+        private void PlayAlbum()
+        {
+            this.PlayAlbum(this.SelectedAlbum);
+        }
+
+        private void PlayGenre()
+        {
+            this.PlayGenre(this.SelectedGenre);
+        }
+
+        private void PlayPlaylist()
+        {
+            this.PlayPlaylist(this.SelectedPlaylist);
+        }
+
+        private void PlayTrack()
+        {
+            this.PlayTrack(this.SelectedTrack);
+        }
+
+        private void PlayArtistFrom()
+        {
+            this.PlayArtistFrom(this.SelectedArtist, this.SelectedArtistTrackIndex);
+        }
+
+        private void PlayAlbumFrom()
+        {
+            this.PlayAlbumFrom(this.SelectedAlbum, this.SelectedAlbumTrackIndex);
+        }
+
+        private void PlayGenreFrom()
+        {
+            this.PlayGenreFrom(this.SelectedGenre, this.SelectedGenreTrackIndex);
+        }
+
+        private void PlayPlaylistFrom()
+        {
+            this.PlayPlaylistFrom(this.SelectedPlaylist, this.SelectedPlaylistTrackIndex);
+        }
+
+        private void PlayTracksFrom()
+        {
+            this.PlayTracksFrom(this.SelectedTrackIndex);
         }
 
         private void RemoveListing()
@@ -1339,30 +1459,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         #endregion
-        private void PlayArtistFrom()
-        {
-            this.PlayArtistFrom(this.SelectedArtist, this.SelectedArtistTrackIndex);
-        }
 
-        private void PlayAlbumFrom()
-        {
-            this.PlayAlbumFrom(this.SelectedAlbum, this.SelectedAlbumTrackIndex);
-        }
-
-        private void PlayGenreFrom()
-        {
-            this.PlayGenreFrom(this.SelectedGenre, this.SelectedGenreTrackIndex);
-        }
-
-        private void PlayPlaylistFrom()
-        {
-            this.PlayPlaylistFrom(this.SelectedPlaylist, this.SelectedPlaylistTrackIndex);
-        }
-
-        private void PlayTracksFrom()
-        {
-            this.PlayTracksFrom(this.SelectedTrackIndex);
-        }
         #region Private Methods
 
         private void AddArtist(ArtistModel? artist)
@@ -1736,40 +1833,6 @@ namespace MediaPlayer.Core.ViewModels
             this.Play();
         }
 
-        private void ResetDatabase()
-        {
-            this.MediaDB.RemoveRange(this.MediaDB.Albums);
-            this.MediaDB.RemoveRange(this.MediaDB.Artists);
-            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
-            this.MediaDB.RemoveRange(this.MediaDB.Discs);
-            this.MediaDB.RemoveRange(this.MediaDB.Genres);
-            this.MediaDB.RemoveRange(this.MediaDB.Listings);
-            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
-            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
-            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
-            this.MediaDB.SaveChanges();
-        }
-
-        private void ResetQueue()
-        {
-            this.Close();
-            this.ChangeTrack(0);
-        }
-
-        private void TimerTick(object? sender, object e)
-        {
-            if (this.IsTrackLoaded)
-            {
-                this.PlayerPosition = this.isUserDraggingPosition ? this.PlayerPosition : (int)this.mediaController.Position.TotalSeconds;
-            }
-            else
-            {
-                this.PlayerPosition = 0;
-            }
-        }
-
-        #endregion
-
         private void PlayArtistFrom(ArtistModel? artist, int startingIndex)
         {
             this.ClearQueue();
@@ -1819,104 +1882,39 @@ namespace MediaPlayer.Core.ViewModels
             this.Play();
         }
 
-        private int selectedTrackIndex;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public int SelectedTrackIndex
+        private void ResetDatabase()
         {
-            get => this.selectedTrackIndex;
-            set => this.SetProperty(ref this.selectedTrackIndex, value);
+            this.MediaDB.RemoveRange(this.MediaDB.Albums);
+            this.MediaDB.RemoveRange(this.MediaDB.Artists);
+            this.MediaDB.RemoveRange(this.MediaDB.Contributions);
+            this.MediaDB.RemoveRange(this.MediaDB.Discs);
+            this.MediaDB.RemoveRange(this.MediaDB.Genres);
+            this.MediaDB.RemoveRange(this.MediaDB.Listings);
+            this.MediaDB.RemoveRange(this.MediaDB.Playlists);
+            this.MediaDB.RemoveRange(this.MediaDB.SongStyles);
+            this.MediaDB.RemoveRange(this.MediaDB.Tracks);
+            this.MediaDB.SaveChanges();
         }
 
-        private int selectedArtistTrackIndex;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public int SelectedArtistTrackIndex
+        private void ResetQueue()
         {
-            get => this.selectedArtistTrackIndex;
-            set => this.SetProperty(ref this.selectedArtistTrackIndex, value);
+            this.Close();
+            this.ChangeTrack(0);
         }
 
-        private int selectedAlbumTrackIndex;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public int SelectedAlbumTrackIndex
+        private void TimerTick(object? sender, object e)
         {
-            get => this.selectedAlbumTrackIndex;
-            set => this.SetProperty(ref this.selectedAlbumTrackIndex, value);
+            if (this.IsTrackLoaded)
+            {
+                this.PlayerPosition = this.isUserDraggingPosition ? this.PlayerPosition : (int)this.mediaController.Position.TotalSeconds;
+            }
+            else
+            {
+                this.PlayerPosition = 0;
+            }
         }
 
-        private int selectedGenreTrackIndex;
-
-        /// <summary>
-        /// Gets or sets PLACEHOLDER.
-        /// </summary>
-        public int SelectedGenreTrackIndex
-        {
-            get => this.selectedGenreTrackIndex;
-            set => this.SetProperty(ref this.selectedGenreTrackIndex, value);
-        }
-
-        private IMvxCommand playTracksFromCommand;
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand PlayTracksFromCommand
-        {
-            get => this.playTracksFromCommand ??= new MvxCommand(this.PlayTracksFrom);
-            set => this.SetProperty(ref this.playTracksFromCommand, value);
-        }
-
-        private IMvxCommand playArtistFromCommand;
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand PlayArtistFromCommand
-        {
-            get => this.playArtistFromCommand ??= new MvxCommand(this.PlayArtistFrom);
-            set => this.SetProperty(ref this.playArtistFromCommand, value);
-        }
-
-        private IMvxCommand playAlbumFromCommand;
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand PlayAlbumFromCommand
-        {
-            get => this.playAlbumFromCommand ??= new MvxCommand(this.PlayAlbumFrom);
-            set => this.SetProperty(ref this.playAlbumFromCommand, value);
-        }
-
-        private IMvxCommand playGenreFromCommand;
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand PlayGenreFromCommand
-        {
-            get => this.playGenreFromCommand ??= new MvxCommand(this.PlayGenreFrom);
-            set => this.SetProperty(ref this.playGenreFromCommand, value);
-        }
-
-        private IMvxCommand playPlaylistFromCommand;
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand PlayPlaylistFromCommand
-        {
-            get => this.playPlaylistFromCommand ??= new MvxCommand(this.PlayPlaylistFrom);
-            set => this.SetProperty(ref this.playPlaylistFromCommand, value);
-        }
+        #endregion
 
     }
 }
