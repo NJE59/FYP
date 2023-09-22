@@ -47,6 +47,7 @@ namespace MediaPlayer.Core.ViewModels
         private bool isSwitchingView = false;
         private bool isTrackPlaying = false;
         private bool isUserDraggingPosition = false;
+        private bool isSearching = false;
         private bool showingAlbums = false;
         private bool showingArtists = false;
         private bool showingGenres = false;
@@ -141,7 +142,7 @@ namespace MediaPlayer.Core.ViewModels
         /// <param name="newMediaControllerFactory"><inheritdoc cref="IMediaControllerFactory" path='/summary'/></param>
         public MediaLibraryViewModel(ITimerFactory newTimerFactory, IMediaControllerFactory newMediaControllerFactory)
         {
-            this.ResetDatabase();
+            // this.ResetDatabase();
             this.addArtistCommand = new MvxCommand(this.AddArtist);
             this.addAlbumCommand = new MvxCommand(this.AddAlbum);
             this.addGenreCommand = new MvxCommand(this.AddGenre);
@@ -191,7 +192,9 @@ namespace MediaPlayer.Core.ViewModels
             this.RaisePropertyChanged(() => this.ShowingAlbumTracks);
             this.RaisePropertyChanged(() => this.ShowingGenreTracks);
 
-            this.LoadSongs("D:\\natha\\Music\\1test", DateTime.MinValue);
+            var folderPath = File.ReadAllText("Folder.txt");
+
+            this.LoadSongs(folderPath, DateTime.MinValue);
 
             this.SelectedArtist = this.MediaDB.Artists.FirstOrDefault();
             this.SelectedAlbum = this.SelectedArtist?.Albums.FirstOrDefault();
@@ -481,12 +484,14 @@ namespace MediaPlayer.Core.ViewModels
             get => this.trackSearch;
             set
             {
+                this.isSearching = true;
                 this.SetProperty(ref this.trackSearch, value);
                 this.RaisePropertyChanged(() => this.DisplayTracks);
                 this.RaisePropertyChanged(() => this.DisplayArtistTracks);
                 this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
                 this.RaisePropertyChanged(() => this.DisplayGenreTracks);
                 this.RaisePropertyChanged(() => this.DisplayPlaylistTracks);
+                this.isSearching = false;
             }
         }
 
@@ -539,25 +544,28 @@ namespace MediaPlayer.Core.ViewModels
             get => this.selectedAlbum;
             set
             {
-                var oldAlbum = this.selectedAlbum;
-                this.SetProperty(ref this.selectedAlbum, value);
-                if (oldAlbum != this.selectedAlbum)
+                if (!this.isSearching)
                 {
-                    if (!this.trackCall && !this.isSwitchingView)
+                    var oldAlbum = this.selectedAlbum;
+                    this.SetProperty(ref this.selectedAlbum, value);
+                    if (oldAlbum != this.selectedAlbum)
                     {
-                        this.albumCall = true;
-                        this.SelectedTrack = (this.SelectedTrack?.Disc.Album == this.SelectedAlbum) ? this.SelectedAlbum?.Tracks.FirstOrDefault() : this.SelectedTrack;
-                        this.albumCall = false;
-                    }
+                        if (!this.trackCall && !this.isSwitchingView)
+                        {
+                            this.albumCall = true;
+                            this.SelectedTrack = (this.SelectedTrack?.Disc.Album == this.SelectedAlbum) ? this.SelectedAlbum?.Tracks.FirstOrDefault() : this.SelectedTrack;
+                            this.albumCall = false;
+                        }
 
-                    if (!this.artistCall && !this.isSwitchingView)
-                    {
-                        this.albumCall = true;
-                        this.SelectedArtist = this.SelectedAlbum?.Artist;
-                        this.albumCall = false;
-                    }
+                        if (!this.artistCall && !this.isSwitchingView)
+                        {
+                            this.albumCall = true;
+                            this.SelectedArtist = this.SelectedAlbum?.Artist;
+                            this.albumCall = false;
+                        }
 
-                    this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
+                        this.RaisePropertyChanged(() => this.DisplayAlbumTracks);
+                    }
                 }
             }
         }
@@ -657,6 +665,7 @@ namespace MediaPlayer.Core.ViewModels
         /// Gets PLACEHOLDER.
         /// </summary>
         public ObservableCollection<ArtistModel>? DisplayArtists => this.MediaDB.Artists.
+            Where(artist => artist.Albums.Count > 0).
             Where(artist => artist.ArtistName.ToLower().Contains(this.ArtistSearch.ToLower())).
             OrderBy(artist => artist.ArtistName).
             ThenBy(artist => artist.ArtistID).
@@ -1409,7 +1418,7 @@ namespace MediaPlayer.Core.ViewModels
         private void ShowPlaylistTracks()
         {
             this.HideAll();
-            this.SelectedTrack = this.DisplayPlaylistTracks?.First();
+            this.SelectedTrack = this.DisplayPlaylistTracks?.FirstOrDefault();
             this.ShowingPlaylistTracks = true;
         }
 
@@ -1582,6 +1591,10 @@ namespace MediaPlayer.Core.ViewModels
             tsoad.Discs.First().DiscName = "Act 1";
             tsoad.Discs.Last().DiscName = "Act 2";
 
+            /*var cls = this.MediaDB.Albums.Where(albumCall => albumCall.AlbumName == "The Classical Album 2015").First();
+            var dsc = cls.Discs.Where(disc => disc.DiscNum == 3).First();
+            dsc.DiscName = "Christmas Songs";*/
+
             this.MediaDB.SaveChanges();
         }
 
@@ -1684,8 +1697,7 @@ namespace MediaPlayer.Core.ViewModels
                         {
                             var disc = (album.Discs.
                                 Where(discRec =>
-                                    discRec.DiscNum == discGroup.Key.DiscNum &&
-                                    discRec.DiscName == discGroup.Key.DiscName).SingleOrDefault()
+                                    discRec.DiscNum == discGroup.Key.DiscNum).SingleOrDefault()
                                 is DiscModel discCheck) ?
                                     discCheck :
                                     this.MediaDB.Discs.Add(new DiscModel()
@@ -1777,7 +1789,75 @@ namespace MediaPlayer.Core.ViewModels
                 }
             }
 
-            this.Init();
+            foreach (var track in this.MediaDB.Tracks)
+            {
+                if (!track.Path.Contains(rootFolder))
+                {
+                    foreach (var contribution in track.Contributions)
+                    {
+                        this.MediaDB.Contributions.Remove(contribution);
+                    }
+
+                    foreach (var listing in track.Listings)
+                    {
+                        this.MediaDB.Listings.Remove(listing);
+                    }
+
+                    foreach (var songStyle in track.SongStyles)
+                    {
+                        this.MediaDB.SongStyles.Remove(songStyle);
+                    }
+
+                    this.MediaDB.Tracks.Remove(track);
+                }
+            }
+
+            this.MediaDB.SaveChanges();
+
+            foreach (var disc in this.MediaDB.Discs)
+            {
+                if (disc.Tracks.Count == 0)
+                {
+                    this.MediaDB.Discs.Remove(disc);
+                }
+            }
+
+            this.MediaDB.SaveChanges();
+
+            foreach (var album in this.MediaDB.Albums)
+            {
+                if (album.Discs.Count == 0)
+                {
+                    this.MediaDB.Albums.Remove(album);
+                }
+            }
+
+            this.MediaDB.SaveChanges();
+
+            foreach (var artist in this.MediaDB.Artists)
+            {
+                if (artist.Albums.Count == 0 && artist.Contributions.Count == 0)
+                {
+                    this.MediaDB.Artists.Remove(artist);
+                }
+            }
+
+            this.MediaDB.SaveChanges();
+
+            foreach (var genre in this.MediaDB.Genres)
+            {
+                if (genre.TrackGenres.Count == 0)
+                {
+                    this.MediaDB.Genres.Remove(genre);
+                }
+            }
+
+            this.MediaDB.SaveChanges();
+
+            if (rootFolder.Contains("1"))
+            {
+                this.Init();
+            }
         }
 
         private void Pause()

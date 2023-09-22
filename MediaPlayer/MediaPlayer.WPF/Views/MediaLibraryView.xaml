@@ -14,23 +14,6 @@
     <views:MvxWpfView.Resources>
     </views:MvxWpfView.Resources>
     <DockPanel>
-        <Menu x:Name="TopMenu" DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header=" = Open" />
-                <Separator />
-                <MenuItem Header="Exit" />
-            </MenuItem>
-            <MenuItem Header="Playlists">
-                <MenuItem Header="Create Playlist" />
-                <MenuItem Header="Playlists" ItemsSource="{Binding DisplayPlaylists}">
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Header="{Binding PlaylistName}" />
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
-                </MenuItem>
-            </MenuItem>
-        </Menu>
 
         <StatusBar x:Name="PlayPanel" DockPanel.Dock="Bottom">
             <StatusBar.ItemsPanel>
@@ -127,7 +110,7 @@
             </StackPanel>
         </DockPanel>
 
-        <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="150">
+        <Grid x:Name="QueuePanel" DockPanel.Dock="Right" Width="200">
             <ListView ItemsSource="{Binding TrackQueue}"
                       SelectedIndex="{Binding SelectedQueueIndex, Mode=TwoWay}">
                 <ListView.ContextMenu>
@@ -139,8 +122,8 @@
                 </ListView.ContextMenu>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn DisplayMemberBinding="{Binding TrackName}" />
-                        <GridViewColumn DisplayMemberBinding="{Binding DisplayDuration}" Width="Auto" />
+                        <GridViewColumn DisplayMemberBinding="{Binding TrackName}" Width="150"/>
+                        <GridViewColumn DisplayMemberBinding="{Binding DisplayDuration}" Width="50" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -160,10 +143,14 @@
                     <Setter Property="Grid.Row" Value="1" />
                     <Setter Property="AutoGenerateColumns" Value="False" />
                     <Setter Property="EnableRowVirtualization" Value="True" />
-                    <Setter Property="RowDetailsVisibilityMode" Value="VisibleWhenSelected" />
+                    <Setter Property="EnableColumnVirtualization" Value="True" />
+                    <Setter Property="RowDetailsVisibilityMode" Value="Collapsed" />
                     <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
                     <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible" />
                     <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden" />
+                    <Setter Property="CanUserAddRows" Value="False" />
+                    <Setter Property="SelectionMode" Value="Single" />
+                    <Setter Property="CanUserSortColumns" Value="False" />
                 </Style>
             </Grid.Resources>
             <extensions:CustomGrid x:Name="gdArtists"
@@ -190,7 +177,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Name" 
                                             Binding="{Binding ArtistName}"
-                                            Width="*" />
+                                            Width="Auto" />
                     </DataGrid.Columns>
                 </DataGrid>
             </extensions:CustomGrid>
@@ -223,12 +210,15 @@
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Album Name"
+                                            Width="Auto"
                                             Binding="{Binding AlbumName}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Artist Name"
+                                            Width="Auto"
                                             Binding="{Binding Artist.ArtistName}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Year"
+                                            Width="Auto"
                                             Binding="{Binding ReleaseYear}"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
@@ -258,7 +248,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Gerne Name"
                                             Binding="{Binding GenreName}"
-                                            Width="SizeToHeader"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
 
@@ -293,7 +283,7 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Playlist Name"
                                             Binding="{Binding PlaylistName}"
-                                            Width="SizeToHeader"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
                 </DataGrid>
@@ -344,17 +334,20 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Track Number"
+                        <DataGridTextColumn Header="#"
                                             Binding="{Binding TrackNum}"
-                                            Width="SizeToHeader"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Contributing Artists"
+                                            Width="Auto"
                                             Binding="{Binding DisplayContributingArtists}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Genres"
+                                            Width="Auto"
                                             Binding="{Binding DisplayGenres}"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
@@ -424,18 +417,21 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Track Number"
+                        <DataGridTextColumn Header="#"
                                             Binding="{Binding TrackNum}"
-                                            Width="SizeToHeader"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Contributing Artists"
                                             Binding="{Binding DisplayContributingArtists}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Genres"
                                             Binding="{Binding DisplayGenres}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
                     <DataGrid.GroupStyle>
@@ -504,21 +500,20 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Album Name"
-                                            Binding="{Binding AlbumName}"
-                                            Width="SizeToHeader"
-                                            IsReadOnly="True" />
-                        <DataGridTextColumn Header="Track Number"
+                        <DataGridTextColumn Header="#"
                                             Binding="{Binding TrackNum}"
-                                            Width="SizeToHeader"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Contributing Artists"
+                                            Width="Auto"
                                             Binding="{Binding DisplayContributingArtists}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Genres"
+                                            Width="Auto"
                                             Binding="{Binding DisplayGenres}"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
@@ -593,14 +588,16 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Track Number"
+                        <DataGridTextColumn Header="#"
                                             Binding="{Binding TrackNum}"
-                                            Width="SizeToHeader"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Track Name"
+                                            Width="Auto"
                                             Binding="{Binding TrackName}"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Contributing Artists"
+                                            Width="Auto"
                                             Binding="{Binding DisplayContributingArtists}"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
@@ -629,11 +626,7 @@
             <extensions:CustomGrid x:Name="gdPlaylistTracks"
                                    IsShowing="{Binding ShowingPlaylistTracks}">
                 <extensions:CustomGrid.Resources>
-                    <CollectionViewSource x:Key="PlaylistTracks" Source="{Binding DisplayPlaylistTracks}">
-                        <CollectionViewSource.GroupDescriptions>
-                            <PropertyGroupDescription PropertyName="Album" />
-                        </CollectionViewSource.GroupDescriptions>
-                    </CollectionViewSource>
+                    <CollectionViewSource x:Key="PlaylistTracks" Source="{Binding DisplayPlaylistTracks}" />
                 </extensions:CustomGrid.Resources>
 
                 <Grid.RowDefinitions>
@@ -676,34 +669,17 @@
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="Track Name"
                                             Binding="{Binding TrackName}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Contributing Artists"
                                             Binding="{Binding DisplayContributingArtists}"
-                                            IsReadOnly="True" />
+                                           Width="Auto"
+                                             IsReadOnly="True" />
                         <DataGridTextColumn Header="Genres"
                                             Binding="{Binding DisplayGenres}"
+                                            Width="Auto"
                                             IsReadOnly="True" />
                     </DataGrid.Columns>
-                    <DataGrid.GroupStyle>
-                        <GroupStyle>
-                            <GroupStyle.ContainerStyle>
-                                <Style TargetType="{x:Type GroupItem}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type GroupItem}">
-                                                <Expander IsExpanded="True" Header="{Binding Items[0].AlbumName}">
-                                                    <Expander.Content>
-                                                        <ItemsPresenter />
-                                                    </Expander.Content>
-                                                </Expander>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </GroupStyle.ContainerStyle>
-                        </GroupStyle>
-                    </DataGrid.GroupStyle>
-
                 </DataGrid>
             </extensions:CustomGrid>
         </Grid>
