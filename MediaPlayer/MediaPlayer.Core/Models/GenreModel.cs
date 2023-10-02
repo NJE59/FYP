@@ -67,7 +67,7 @@ namespace MediaPlayer.Core.Models
         // NotMapped Accessors
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the full list of tracks in this genre.
         /// </summary>
         [NotMapped]
         public ObservableCollection<TrackModel> Tracks => this.TrackGenres.Select(songStyle => songStyle.Track).ToObservableCollection();

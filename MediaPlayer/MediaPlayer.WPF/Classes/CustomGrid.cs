@@ -1,4 +1,4 @@
-﻿// <copyright file="CustomDataGrid.cs" company="Nathan Errington">
+﻿// <copyright file="CustomGrid.cs" company="Nathan Errington">
 // Copyright (c) Nathan Errington. All rights reserved.
 // </copyright>
 
@@ -13,7 +13,7 @@ namespace MediaPlayer.WPF.Classes
     public class CustomGrid : Grid
     {
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Dependency property for the boolean value showing whether or not the <see cref="CustomGrid"/> is currently visible.
         /// </summary>
         public static readonly DependencyProperty IsShowingProperty = DependencyProperty.RegisterAttached(
             "IsShowing",
@@ -22,7 +22,7 @@ namespace MediaPlayer.WPF.Classes
             new (default(bool), OnIsShowingChanged));
 
         /// <summary>
-        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// Gets or sets a value indicating whether the <see cref="CustomGrid"/> is currently visible.
         /// </summary>
         public bool IsShowing
         {

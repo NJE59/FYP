@@ -105,7 +105,7 @@ namespace MediaPlayer.Core.Models
         public bool IsMultiDisc => this.Discs.Count > 1;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the full list of tracks in this album.
         /// </summary>
         [NotMapped]
         public ObservableCollection<TrackModel> Tracks => this.Discs.SelectMany(disc => disc.Tracks).

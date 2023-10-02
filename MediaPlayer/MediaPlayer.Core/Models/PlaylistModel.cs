@@ -61,7 +61,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to create a new listing for this playlist.
         /// </summary>
         [NotMapped]
         public IMvxCommand CreateListingCommand
@@ -71,7 +71,7 @@ namespace MediaPlayer.Core.Models
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the action to create a new listing for this playlist.
         /// </summary>
         [NotMapped]
         public Action<PlaylistModel>? CreateListingAction

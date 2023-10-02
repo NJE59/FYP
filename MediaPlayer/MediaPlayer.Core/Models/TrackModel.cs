@@ -190,31 +190,31 @@ namespace MediaPlayer.Core.Models
         public Uri LoadPath => new (this.Path);
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the number of the <see cref="DiscModel"/> this track belongs to.
         /// </summary>
         [NotMapped]
         public int DiscNum => this.Disc.DiscNum;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the name of the <see cref="DiscModel"/> this track belongs to.
         /// </summary>
         [NotMapped]
         public string? DiscName => this.Disc.DiscName;
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets a collection of all the genres this track belongs to.
         /// </summary>
         [NotMapped]
         public ObservableCollection<GenreModel> Genres => this.SongStyles.Select(songStyle => songStyle.TrackGenre).ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHODLER.
+        /// Gets a string of the names of all the genres this track belongs to.
         /// </summary>
         [NotMapped]
         public string DisplayGenres => string.Join("; ", this.Genres.Select(genre => genre.GenreName));
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets a collection of all the artists who contributed to this track.
         /// </summary>
         [NotMapped]
         public ObservableCollection<ArtistModel> ContributingArtists => this.Contributions.
@@ -223,7 +223,7 @@ namespace MediaPlayer.Core.Models
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets a string of the names of all the artists who contributed to this track.
         /// </summary>
         [NotMapped]
         public string DisplayContributingArtists => string.Join("; ", this.ContributingArtists.Select(artist => artist.ArtistName));

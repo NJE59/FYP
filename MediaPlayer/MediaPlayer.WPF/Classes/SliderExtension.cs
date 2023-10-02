@@ -10,12 +10,12 @@ namespace MediaPlayer.WPF.Classes
     using MvvmCross.Commands;
 
     /// <summary>
-    /// PLACEHOLDER.
+    /// Extension for the WPF <see cref="Slider"/> control to add events for when the user starts and stops dragging the thumb.
     /// </summary>
     public class SliderExtension
     {
         /// <summary>
-        /// PLACEHOLDER.
+        /// Dependency property for the Drag Started event command.
         /// </summary>
         public static readonly DependencyProperty DragStartedCommandProperty = DependencyProperty.RegisterAttached(
             "DragStartedCommand",
@@ -24,7 +24,7 @@ namespace MediaPlayer.WPF.Classes
             new PropertyMetadata(default(IMvxCommand), OnDragStartedCommandChanged));
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Dependency property for the Drag Completed event command.
         /// </summary>
         public static readonly DependencyProperty DragCompletedCommandProperty = DependencyProperty.RegisterAttached(
             "DragCompletedCommand",
@@ -33,7 +33,7 @@ namespace MediaPlayer.WPF.Classes
             new PropertyMetadata(default(IMvxCommand), OnDragCompletedCommandChanged));
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Gets the Drag Started event command.
         /// </summary>
         /// <param name="element"><inheritdoc cref="DependencyObject" path='/summary'/></param>
         /// <returns><inheritdoc cref="IMvxCommand" path='/summary'/></returns>
@@ -43,7 +43,7 @@ namespace MediaPlayer.WPF.Classes
         }
 
         /// <summary>
-        /// PLACEHLDER.
+        /// Sets the Drag Started event command.
         /// </summary>
         /// <param name="element"><inheritdoc cref="DependencyObject" path='/summary'/></param>
         /// <param name="value"><inheritdoc cref="IMvxCommand" path='/summary'/></param>
@@ -53,7 +53,7 @@ namespace MediaPlayer.WPF.Classes
         }
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Gets the Drag Completed event command.
         /// </summary>
         /// <param name="element"><inheritdoc cref="DependencyObject" path='/summary'/></param>
         /// <returns><inheritdoc cref="IMvxCommand" path='/summary'/></returns>
@@ -63,7 +63,7 @@ namespace MediaPlayer.WPF.Classes
         }
 
         /// <summary>
-        /// PLACEHLDER.
+        /// Sets the Drag Completed event command.
         /// </summary>
         /// <param name="element"><inheritdoc cref="DependencyObject" path='/summary'/></param>
         /// <param name="value"><inheritdoc cref="IMvxCommand" path='/summary'/></param>

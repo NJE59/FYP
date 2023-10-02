@@ -222,7 +222,7 @@ namespace MediaPlayer.Core.ViewModels
         #region Primitive Backed Properties
 
         /// <summary>
-        /// Gets a value indicating whether PLACEHOLDER.
+        /// Gets a value indicating whether the current name for a new playlist is viable.
         /// </summary>
         public bool CanCreatePlaylist => this.newPlaylistName != string.Empty &&
             !this.MediaDB.Playlists.Select(playlist => playlist.PlaylistName).Where(name => name == this.newPlaylistName).Any();
@@ -273,7 +273,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// Gets or sets a value indicating whether whether the UI should be showing the Playlists DataGrid.
         /// </summary>
         public bool ShowingPlaylists
         {
@@ -318,7 +318,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether PLACEHOLDER.
+        /// Gets or sets a value indicating whether the UI should be showing the <see cref="SelectedPlaylist"/>'s tracks DataGrid.
         /// </summary>
         public bool ShowingPlaylistTracks
         {
@@ -371,7 +371,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the index of the currently selected track.
         /// </summary>
         public int SelectedTrackIndex
         {
@@ -380,7 +380,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the index of the currently selected track from the currently selected artist.
         /// </summary>
         public int SelectedArtistTrackIndex
         {
@@ -389,7 +389,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the index of the currently selected track from the currently selected album.
         /// </summary>
         public int SelectedAlbumTrackIndex
         {
@@ -398,7 +398,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the index of the currently selected track from the currently selected genre.
         /// </summary>
         public int SelectedGenreTrackIndex
         {
@@ -407,7 +407,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the index of the currently selected track from the currently selected playlist.
         /// </summary>
         public int SelectedPlaylistTrackIndex
         {
@@ -425,7 +425,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the search value for artists.
         /// </summary>
         public string ArtistSearch
         {
@@ -438,7 +438,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the search value for albums.
         /// </summary>
         public string AlbumSearch
         {
@@ -451,7 +451,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the search value for genres.
         /// </summary>
         public string GenreSearch
         {
@@ -464,7 +464,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the search value for playlists.
         /// </summary>
         public string PlaylistSearch
         {
@@ -477,7 +477,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the search value for tracks.
         /// </summary>
         public string TrackSearch
         {
@@ -496,8 +496,8 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-    /// Gets or sets PLACEHOLDER.
-    /// </summary>
+        /// Gets or sets the vlaue for the name of the new playlists to be made.
+        /// </summary>
         public string NewPlaylistName
         {
             get => this.newPlaylistName;
@@ -589,7 +589,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets PLACEHOLDER.
+        /// Gets or sets the playlist currently selected in the Library.
         /// </summary>
         public PlaylistModel? SelectedPlaylist
         {
@@ -662,7 +662,7 @@ namespace MediaPlayer.Core.ViewModels
         #region Non-Primitive Accessors
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of artists to display.
         /// </summary>
         public ObservableCollection<ArtistModel>? DisplayArtists => this.MediaDB.Artists.
             Where(artist => artist.Albums.Count > 0).
@@ -672,7 +672,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of albums to display.
         /// </summary>
         public ObservableCollection<AlbumModel>? DisplayAlbums => this.MediaDB.Albums.
             Where(album => album.AlbumName.ToLower().Contains(this.AlbumSearch.ToLower())).
@@ -682,7 +682,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of genres to display.
         /// </summary>
         public ObservableCollection<GenreModel>? DisplayGenres => this.MediaDB.Genres.
             Where(genre => genre.GenreName.ToLower().Contains(this.GenreSearch.ToLower())).
@@ -691,7 +691,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of playlists to display.
         /// </summary>
         public ObservableCollection<PlaylistModel>? DisplayPlaylists => this.MediaDB.Playlists.
             Where(playlist => playlist.PlaylistName.ToLower().Contains(this.PlaylistSearch.ToLower())).
@@ -699,7 +699,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of tracks to display.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayTracks => this.MediaDB.Tracks.
             Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
@@ -712,7 +712,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of tracks from the selected artist to display.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayArtistTracks => this.SelectedArtist?.Albums.SelectMany(album => album.Tracks).
             Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
@@ -724,7 +724,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of tracks from the selected album to display.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayAlbumTracks => this.SelectedAlbum?.Tracks.
             Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
@@ -735,7 +735,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of tracks from the selected genre to display.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayGenreTracks => this.SelectedGenre?.Tracks.
             Where(track => track.TrackName.ToLower().Contains(this.TrackSearch.ToLower())).
@@ -748,7 +748,7 @@ namespace MediaPlayer.Core.ViewModels
             ToObservableCollection();
 
         /// <summary>
-        /// Gets PLACEHOLDER.
+        /// Gets the current filtered lists of tracks from the selected playlist to display.
         /// </summary>
         public ObservableCollection<TrackModel>? DisplayPlaylistTracks => this.SelectedPlaylist?.
             OrderedListings.
@@ -788,7 +788,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to add a <see cref="PlaylistModel"/>'s tracks to the <see cref="TrackQueue"/>.
         /// </summary>
         public IMvxCommand AddPlaylistCommand
         {
@@ -815,7 +815,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to create a new <see cref="PlaylistModel"/>.
         /// </summary>
         public IMvxCommand CreatePlaylistCommand
         {
@@ -824,7 +824,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to delete the w <see cref="PlaylistModel"/>.
         /// </summary>
         public IMvxCommand DeletePlaylistCommand
         {
@@ -851,7 +851,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to swap the currently selected song in the currnetly selected playlist with the one below it.
         /// </summary>
         public IMvxCommand MoveDownCommand
         {
@@ -860,7 +860,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to swap the currently selected song in the currnetly selected playlist with the one above it.
         /// </summary>
         public IMvxCommand MoveUpCommand
         {
@@ -905,7 +905,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="PlaylistModel"/>'s tracks.
         /// </summary>
         public IMvxCommand PlayPlaylistCommand
         {
@@ -923,7 +923,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play all tracks from the currently selected one.
         /// </summary>
         public IMvxCommand PlayTracksFromCommand
         {
@@ -932,7 +932,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="ArtistModel"/>'s tracks from the currently selected one.
         /// </summary>
         public IMvxCommand PlayArtistFromCommand
         {
@@ -941,7 +941,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="AlbumModel"/>'s tracks from the currently selected one.
         /// </summary>
         public IMvxCommand PlayAlbumFromCommand
         {
@@ -950,7 +950,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="GenreModel"/>'s tracks from the currently selected one.
         /// </summary>
         public IMvxCommand PlayGenreFromCommand
         {
@@ -959,7 +959,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to play a <see cref="PlaylistModel"/>'s tracks from the currently selected one.
         /// </summary>
         public IMvxCommand PlayPlaylistFromCommand
         {
@@ -968,7 +968,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to remove a song and its listing from a playlist.
         /// </summary>
         public IMvxCommand RemoveListingCommand
         {
@@ -989,16 +989,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
-        /// </summary>
-        public IMvxCommand ShowAlbumsCommand
-        {
-            get => this.showAlbumsCommand ??= new MvxCommand(this.ShowAlbums);
-            set => this.SetProperty(ref this.showAlbumsCommand, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the artists DataGrid.
         /// </summary>
         public IMvxCommand ShowArtistsCommand
         {
@@ -1007,7 +998,16 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the albums DataGrid.
+        /// </summary>
+        public IMvxCommand ShowAlbumsCommand
+        {
+            get => this.showAlbumsCommand ??= new MvxCommand(this.ShowAlbums);
+            set => this.SetProperty(ref this.showAlbumsCommand, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the <see cref="MvxCommand"/> to show the genres DataGrid.
         /// </summary>
         public IMvxCommand ShowGenresCommand
         {
@@ -1016,7 +1016,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the playlists DataGrid.
         /// </summary>
         public IMvxCommand ShowPlaylistsCommand
         {
@@ -1025,7 +1025,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the tracks DataGrid.
         /// </summary>
         public IMvxCommand ShowTracksCommand
         {
@@ -1034,7 +1034,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the artist tracks DataGrid.
         /// </summary>
         public IMvxCommand ShowArtistTracksCommand
         {
@@ -1043,7 +1043,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the album tracks DataGrid.
         /// </summary>
         public IMvxCommand ShowAlbumTracksCommand
         {
@@ -1052,7 +1052,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the genre tracks DataGrid.
         /// </summary>
         public IMvxCommand ShowGenreTracksCommand
         {
@@ -1061,7 +1061,7 @@ namespace MediaPlayer.Core.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the <see cref="MvxCommand"/> to PLACEHOLDER.
+        /// Gets or sets the <see cref="MvxCommand"/> to show the playlist tracks DataGrid.
         /// </summary>
         public IMvxCommand ShowPlaylistTracksCommand
         {

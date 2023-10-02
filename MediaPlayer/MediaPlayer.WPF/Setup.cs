@@ -17,7 +17,7 @@ namespace MediaPlayer.WPF
     public class Setup : MvxWpfSetup<Core.Application>
     {
         /// <summary>
-        /// PLACEHOLDER.
+        /// Creates the log provider.
         /// </summary>
         /// <returns><inheritdoc cref="SerilogLoggerProvider" path='/summary'/></returns>
         protected override ILoggerProvider? CreateLogProvider()
@@ -26,7 +26,7 @@ namespace MediaPlayer.WPF
         }
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Creates the log factory.
         /// </summary>
         /// <returns><inheritdoc cref="SerilogLoggerFactory" path='/summary'/></returns>
         protected override ILoggerFactory? CreateLogFactory()
@@ -40,7 +40,7 @@ namespace MediaPlayer.WPF
         }
 
         /// <summary>
-        /// PLACEHOLDER.
+        /// Sets the associations between <see cref="ITimerFactory"/> and <see cref="TimerFactory"/> and <see cref="IMediaControllerFactory"/> and <see cref="MediaControllerFactory"/> for Inversion of Control.
         /// </summary>
         /// <param name="iocProvider"><inheritdoc cref="Mvx.IoCProvider" path='/summary'/></param>
         protected override void InitializeFirstChance(IMvxIoCProvider iocProvider)
